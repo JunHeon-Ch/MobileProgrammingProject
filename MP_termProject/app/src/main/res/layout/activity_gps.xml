@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".GpsActivity">
+
+    <TextView
+        android:id="@+id/gpsInfoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GPS 에 수신된 현재위치"
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/resultTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="결과창"
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ToggleButton
+        android:id="@+id/gpsToggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textOff="위치정보수신시작"
+        android:textOn="위치정보수신종료"/>
+
+</LinearLayout>
