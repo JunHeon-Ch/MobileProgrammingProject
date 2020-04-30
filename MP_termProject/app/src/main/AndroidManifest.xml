@@ -3,6 +3,7 @@
     package="com.example.mp_termproject">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -12,12 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBlKPQFIEDt_eky3dVgUCKItVKIDYJV16U"/>
+            android:value="AIzaSyBlKPQFIEDt_eky3dVgUCKItVKIDYJV16U" />
 
+        <activity android:name=".GpsActivity"></activity>
+        <activity android:name=".CurrentLocationActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

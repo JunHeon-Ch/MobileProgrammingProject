@@ -6,11 +6,9 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <fragment
+    <Button
+        android:id="@+id/curLocBtn"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/map"
-        tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
-
+        android:layout_height="wrap_content"
+        android:text="현재 위치 주소 가져오기" />
 </LinearLayout>
