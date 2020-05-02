@@ -17,8 +17,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBlKPQFIEDt_eky3dVgUCKItVKIDYJV16U" />
 
-        <activity android:name=".GpsActivity"></activity>
-        <activity android:name=".CurrentLocationActivity"></activity>
+        <activity android:name=".GpsActivity" />
+        <activity android:name=".CurrentLocationActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
