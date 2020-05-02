@@ -16,11 +16,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button curLocBtn = findViewById(R.id.curLocBtn);
-        curLocBtn.setOnClickListener(new View.OnClickListener() {
+        Button curLocButton = findViewById(R.id.curLocButton);
+        curLocButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), GpsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button searchButton = findViewById(R.id.searchButton);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
 
                 startActivity(intent);
             }
