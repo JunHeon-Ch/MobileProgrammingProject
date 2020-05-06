@@ -16,11 +16,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button curLocBtn = findViewById(R.id.curLocBtn);
-        curLocBtn.setOnClickListener(new View.OnClickListener() {
+        Button myClosetButton = findViewById(R.id.myClosetButton);
+        myClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), GpsActivity.class);
+                // GpsActivity.class -> 나의옷장클래스로 변경
+                Intent intent = new Intent(getApplicationContext(), ShareColsetActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button sharedClosetButton = findViewById(R.id.sharedClosetButton);
+        sharedClosetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ShareColsetActivity.class);
 
                 startActivity(intent);
             }
