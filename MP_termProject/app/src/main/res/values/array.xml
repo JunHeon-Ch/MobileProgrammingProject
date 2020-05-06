@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="category_array">
-        <item>선택안함</item>
+        <item>카테고리</item>
         <item>아우터</item>
         <item>상의</item>
         <item>하의</item>
