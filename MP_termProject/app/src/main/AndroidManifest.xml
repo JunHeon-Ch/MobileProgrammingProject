@@ -3,9 +3,7 @@
     package="com.example.mp_termproject">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-  <!--    인터넷 권한-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 인터넷 권한 -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -23,10 +21,10 @@
 
         <activity android:name=".GpsActivity" />
         <activity android:name=".CurrentLocationActivity" />
+        <activity android:name=".SignUpActivity" />
+        <activity android:name=".SearchActivity" />
         <activity android:name=".MainActivity">
-        <activity android:name=".SignUpActivity">
-
-          <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
