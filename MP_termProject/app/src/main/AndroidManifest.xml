@@ -13,26 +13,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".MyClosetAddActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBlKPQFIEDt_eky3dVgUCKItVKIDYJV16U" />
 
-        <activity android:name=".ShareColsetActivity" />
+        <activity android:name=".ModeActivity" />
         <activity android:name=".GpsActivity" />
         <activity android:name=".CurrentLocationActivity" />
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".SearchActivity" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".LoginActivity">
-        </activity>
-        <activity android:name=".SignUpActivity">
         </activity>
     </application>
 

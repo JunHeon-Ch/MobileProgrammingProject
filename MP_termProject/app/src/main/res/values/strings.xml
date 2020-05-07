@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">MP_termProject</string>
+    <string name="app_name">Our Closet</string>
+    <string name="my_closet">MY</string>
+    <string name="our_closet">OUR</string>
+    <string name="look_book">LOOKBOOK</string>
     <string name="sign_up">회원가입</string>
     <string name="email">이메일</string>
     <string name="password">비밀번호</string>

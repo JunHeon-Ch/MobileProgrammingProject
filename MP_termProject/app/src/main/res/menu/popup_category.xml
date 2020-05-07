@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/top"
+        android:title="@string/category_top" />
+    <item
+        android:id="@+id/outer"
+        android:title="@string/category_outer" />
+    <item
+        android:id="@+id/onepiece"
+        android:title="@string/category_onepiece"/>
+    <item
+        android:id="@+id/pants"
+        android:title="@string/category_pants" />
+    <item
+        android:id="@+id/skirt"
+        android:title="@string/category_skirt" />
+    <item
+        android:id="@+id/bag"
+        android:title="@string/category_bag" />
+    <item
+        android:id="@+id/shoes"
+        android:title="@string/category_shoes" />
+    <item
+        android:id="@+id/watch"
+        android:title="@string/category_watch" />
+    <item
+        android:id="@+id/headwear"
+        android:title="@string/category_headwear" />
+    <item
+        android:id="@+id/eyewear"
+        android:title="@string/category_eyewear" />
+    <item
+        android:id="@+id/accessory"
+        android:title="@string/category_accessory" />
+</menu>

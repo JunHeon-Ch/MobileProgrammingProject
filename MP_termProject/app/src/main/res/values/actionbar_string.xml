@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="actionbar_search">검색</string>
+    <string name="actionbar_add">추가</string>
+    <string name="actionbar_filter">필터</string>
+</resources>

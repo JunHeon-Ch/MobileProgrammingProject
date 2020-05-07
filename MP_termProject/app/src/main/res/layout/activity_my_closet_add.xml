@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MyClosetAddActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/my_closet_add_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="100dp"
+                app:srcCompat="@drawable/closesample" />
+
+            <TextView
+                android:id="@+id/my_closet_add_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textSize="20sp"
+                android:textColor="@color/text_color"
+                android:text="@string/popup_item_name" />
+
+            <TextView
+                android:id="@+id/my_closet_add_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textSize="20sp"
+                android:textColor="@color/text_color"
+                android:text="@string/popup_category" />
+
+            <TextView
+                android:id="@+id/my_closet_add_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textSize="20sp"
+                android:textColor="@color/text_color"
+                android:text="@string/popup_color" />
+
+            <TextView
+                android:id="@+id/my_closet_add_brand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textSize="20sp"
+                android:textColor="@color/text_color"
+                android:text="@string/popup_brand" />
+
+            <TextView
+                android:id="@+id/my_closet_add_season"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textSize="20sp"
+                android:textColor="@color/text_color"
+                android:text="@string/popup_season" />
+
+            <TextView
+                android:id="@+id/my_closet_add_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textSize="20sp"
+                android:textColor="@color/text_color"
+                android:text="@string/popup_size" />
+
+            <TextView
+                android:id="@+id/my_closet_add_sheared"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:textSize="20sp"
+                android:textColor="@color/text_color"
+                android:text="@string/popup_shared" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
