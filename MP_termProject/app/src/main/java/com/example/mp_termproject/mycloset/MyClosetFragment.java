@@ -49,6 +49,7 @@ public class MyClosetFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int curId = item.getItemId();
+        Intent intent;
 
         switch (curId){
             case R.id.actionbar_search:
@@ -61,7 +62,15 @@ public class MyClosetFragment extends Fragment {
 //              카메라 권한 얻은 후 사진을 얻어 변수에 저장 -> 저장한 이미지 grabCut으로 배경 제거
 //              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
 
-                Intent intent = new Intent(getContext(), MyClosetAddActivity.class);
+                intent = new Intent(getContext(), MyClosetAddActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.actionbar_filter:
+//                필터 옵션 메뉴 선택
+//                필터 선택 후 My Closet 화면에 조건에 맞는 아이템을 보여줌
+
+                intent = new Intent(getContext(), MyClosetFilterActivity.class);
                 startActivity(intent);
                 break;
         }
