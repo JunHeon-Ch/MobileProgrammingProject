@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <fragment
+        android:name="com.example.mp_termproject.mycloset.MyClosetFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/modeFragment"
+        android:layout_above="@+id/buttonLayout"/>
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/myClosetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MYCLOSET" />
+
+        <Button
+            android:id="@+id/lookBookButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LOOKBOOK" />
+
+        <Button
+            android:id="@+id/ourClosetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OURCLOSET" />
+    </LinearLayout>
+
+</RelativeLayout>
