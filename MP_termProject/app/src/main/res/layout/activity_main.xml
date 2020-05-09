@@ -2,25 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
-<Button
-    android:id="@+id/logoutButton"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/logout"/>
+    <Button
+        android:id="@+id/mainLogoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/logout" />
+
+    <Button
+        android:id="@+id/mainLoginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/login" />
+
+    <Button
+        android:id="@+id/mainSignUpButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/sign_up" />
 
 
     <Button
-        android:id="@+id/myClosetButton"
+        android:id="@+id/modeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="나의 옷장"/>
-
-    <Button
-        android:id="@+id/sharedClosetButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="공유 옷장"/>
+        android:layout_gravity="center"
+        android:text="모드" />
 </LinearLayout>

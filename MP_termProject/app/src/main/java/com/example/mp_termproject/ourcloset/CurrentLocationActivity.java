@@ -1,4 +1,4 @@
-package com.example.mp_termproject;
+package com.example.mp_termproject.ourcloset;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.mp_termproject.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;

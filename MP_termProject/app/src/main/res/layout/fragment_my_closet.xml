@@ -5,14 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SearchActivity">
+    tools:context=".mycloset.MyClosetFragment">
 
-    <Spinner
-        android:id="@+id/categorySpinner"
-        android:layout_height="wrap_content"
+    <ScrollView
         android:layout_width="match_parent"
-        android:entries="@array/category_array"/>
+        android:layout_height="match_parent"
+        android:background="#eeeeee">
 
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 
 </LinearLayout>
