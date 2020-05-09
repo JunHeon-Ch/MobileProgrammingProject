@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.mp_termproject.lookbook.LookBookFragment;
+import com.example.mp_termproject.mycloset.MyClosetFragment;
+import com.example.mp_termproject.ourcloset.OurClosetFragment;
+
 public class ModeActivity extends AppCompatActivity {
     MyClosetFragment myClosetFragment;
     LookBookFragment lookBookFragment;
@@ -43,7 +47,5 @@ public class ModeActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.modeFragment, ourClosetFragment).commit();
             }
         });
-
-
     }
 }

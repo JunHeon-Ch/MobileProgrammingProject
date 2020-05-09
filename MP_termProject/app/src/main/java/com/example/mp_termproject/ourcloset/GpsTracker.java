@@ -1,4 +1,4 @@
-package com.example.mp_termproject;
+package com.example.mp_termproject.ourcloset;
 
 import android.Manifest;
 import android.app.Service;

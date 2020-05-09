@@ -8,10 +8,7 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-
+import com.example.mp_termproject.signup.SignUpActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             switch (v.getId()){
                 case R.id.mainLogoutButton:
                     FirebaseAuth.getInstance().signOut();
-                    Intent intent = new Intent(getApplicationContext(),SignUpActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                     startActivity(intent);
                     break;
             }
