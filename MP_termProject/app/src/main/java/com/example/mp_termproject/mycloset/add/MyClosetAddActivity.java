@@ -1,4 +1,4 @@
-package com.example.mp_termproject.mycloset;
+package com.example.mp_termproject.mycloset.add;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -285,8 +286,17 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
                 alert.setMessage("저장되었습니다");
 
-                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("ok",   new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(MyClosetAddActivity.this,
+                                itemName.getText() + "\n"
+                                + category.getText() +"\n"
+                                + color.getText() +"\n"
+                                + brand.getText() +"\n"
+                                + season.getText() +"\n"
+                                + size.getText() +"\n"
+                                + shared.getText() +"\n",
+                                Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });
