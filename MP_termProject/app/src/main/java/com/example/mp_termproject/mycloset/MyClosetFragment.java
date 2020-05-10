@@ -15,7 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mp_termproject.R;
-import com.example.mp_termproject.mycloset.MyClosetAddActivity;
+import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
+import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
 
 
 public class MyClosetFragment extends Fragment {
@@ -28,8 +29,7 @@ public class MyClosetFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("MY CLOSET");
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
-                container,
-                false);
+                container, false);
         setHasOptionsMenu(true);
 
 //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
