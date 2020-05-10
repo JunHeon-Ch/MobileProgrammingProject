@@ -13,7 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mycloset.filter.MyClosetFilterActivity"></activity>
+        <activity android:name=".lookbook.add.CoordinatorActivity"></activity>
+        <activity android:name=".lookbook.filter.LookBookFilterActivity" />
+        <activity android:name=".lookbook.add.LookbookAddActivity" />
+        <activity android:name=".mycloset.filter.MyClosetFilterActivity" />
         <activity android:name=".mycloset.add.MyClosetAddActivity" />
 
         <meta-data

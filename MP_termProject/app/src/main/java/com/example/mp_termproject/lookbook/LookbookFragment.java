@@ -1,4 +1,4 @@
-package com.example.mp_termproject.mycloset;
+package com.example.mp_termproject.lookbook;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,24 +15,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mp_termproject.R;
-import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
-import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
+import com.example.mp_termproject.lookbook.add.LookbookAddActivity;
+import com.example.mp_termproject.lookbook.filter.LookBookFilterActivity;
 
 
-public class MyClosetFragment extends Fragment {
+public class LookbookFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("MY CLOSET");
-
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
-                container, false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("LOOKBOOK");
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_lookbook,
+                container,
+                false);
         setHasOptionsMenu(true);
 
-//        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
+
+//        db에 저장된 룩북 읽어와서 뿌려주는거 구현
 
 
         return rootView;
@@ -59,10 +60,8 @@ public class MyClosetFragment extends Fragment {
                 break;
             case R.id.actionbar_add:
 //              추가 메뉴 옵션 선택
-//              카메라 권한 얻은 후 사진을 얻어 변수에 저장 -> 저장한 이미지 grabCut으로 배경 제거
-//              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
 
-                intent = new Intent(getContext(), MyClosetAddActivity.class);
+                intent = new Intent(getContext(), LookbookAddActivity.class);
                 startActivity(intent);
                 break;
 
@@ -70,7 +69,7 @@ public class MyClosetFragment extends Fragment {
 //                필터 옵션 메뉴 선택
 //                필터 선택 후 My Closet 화면에 조건에 맞는 아이템을 보여줌
 
-                intent = new Intent(getContext(), MyClosetFilterActivity.class);
+                intent = new Intent(getContext(), LookBookFilterActivity.class);
                 startActivity(intent);
                 break;
         }
