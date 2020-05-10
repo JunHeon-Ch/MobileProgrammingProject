@@ -60,6 +60,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
                     }
                 });
 
+                alert.setCancelable(false);
                 alert.show();
             }
         });
@@ -89,8 +90,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
         });
 
         // color text 클릭시 color popup menu 띄우기 (다중 선택)
-        final ArrayList<String> selectedColorList = new ArrayList<>();
-
         color = findViewById(R.id.my_closet_add_color);
         color.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,7 +280,13 @@ public class MyClosetAddActivity extends AppCompatActivity {
         switch (curId) {
             case R.id.actionbar_store:
 
-                // db에 저장
+
+
+//                상운 구현부
+//                image, itemName, category, color, brand, season, shared 값 데이터베이스에 저장
+
+
+
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
                 alert.setMessage("저장되었습니다");

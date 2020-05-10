@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.mp_termproject.lookbook.LookBookFragment;
+import com.example.mp_termproject.lookbook.LookbookFragment;
 import com.example.mp_termproject.mycloset.MyClosetFragment;
 import com.example.mp_termproject.ourcloset.OurClosetFragment;
 
 public class ModeActivity extends AppCompatActivity {
     MyClosetFragment myClosetFragment;
-    LookBookFragment lookBookFragment;
+    LookbookFragment lookBookFragment;
     OurClosetFragment ourClosetFragment;
 
     @Override
@@ -21,7 +21,7 @@ public class ModeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mode);
 
         myClosetFragment = new MyClosetFragment();
-        lookBookFragment = new LookBookFragment();
+        lookBookFragment = new LookbookFragment();
         ourClosetFragment = new OurClosetFragment();
 
         Button myClosetButton = findViewById(R.id.myClosetButton);
@@ -29,6 +29,7 @@ public class ModeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.modeFragment, myClosetFragment).commit();
+
             }
         });
 
