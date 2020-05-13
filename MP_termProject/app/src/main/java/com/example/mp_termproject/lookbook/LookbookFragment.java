@@ -33,7 +33,11 @@ public class LookbookFragment extends Fragment {
         setHasOptionsMenu(true);
 
 
+
+//        상운구현부
 //        db에 저장된 룩북 읽어와서 뿌려주는거 구현
+
+
 
 
         return rootView;

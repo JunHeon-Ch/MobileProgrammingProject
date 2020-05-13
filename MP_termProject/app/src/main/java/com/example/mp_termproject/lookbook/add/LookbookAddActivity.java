@@ -8,13 +8,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,9 +28,12 @@ import java.util.ArrayList;
 
 public class LookbookAddActivity extends AppCompatActivity {
 
-    LinearLayout coordinatorLayout;
+    static final int REQUEST_COORDINATOR = 1;
+
+    ImageView coordinatorImage;
     TextView occasion;
     TextView season;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +41,15 @@ public class LookbookAddActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_lookbook_add);
 
-        coordinatorLayout = findViewById(R.id.coordinator);
-        coordinatorLayout.setOnClickListener(new View.OnClickListener() {
+        coordinatorImage = findViewById(R.id.coordinator_image);
+        coordinatorImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), CoordinatorActivity.class);
-                startActivity(intent);
-
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                inflater.inflate(R.layout.fragment_coordinator, coordinatorLayout, true);
+                startActivityForResult(intent, REQUEST_COORDINATOR);
             }
         });
+
 
         occasion = findViewById(R.id.lookbook_add_occation);
         occasion.setOnClickListener(new View.OnClickListener() {
@@ -56,15 +61,15 @@ public class LookbookAddActivity extends AppCompatActivity {
 
                 builder.setMultiChoiceItems(R.array.occation, null,
                         new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int pos, boolean isChecked) {
-                        if (isChecked == true) {
-                            selectedItems.add(items[pos]);
-                        } else {
-                            selectedItems.remove(pos);
-                        }
-                    }
-                });
+                            @Override
+                            public void onClick(DialogInterface dialog, int pos, boolean isChecked) {
+                                if (isChecked == true) {
+                                    selectedItems.add(items[pos]);
+                                } else {
+                                    selectedItems.remove(pos);
+                                }
+                            }
+                        });
 
                 builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
@@ -137,6 +142,15 @@ public class LookbookAddActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_COORDINATOR){
+            if(resultCode == RESULT_OK){
+                byte[] bytes = data.getByteArrayExtra("bytes");
+                bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                coordinatorImage.setImageBitmap(bitmap);
+            }
+        }
     }
 
     // 옵션메뉴 생성
@@ -159,7 +173,9 @@ public class LookbookAddActivity extends AppCompatActivity {
 
 
 
+
 //                상운 구현부
+//                코디 db에 Bitmap bitmap, TextView occasion, season에 저장된 정보 저장
 
 
 
@@ -167,7 +183,7 @@ public class LookbookAddActivity extends AppCompatActivity {
                 AlertDialog.Builder alert = new AlertDialog.Builder(LookbookAddActivity.this);
                 alert.setMessage("저장되었습니다");
 
-                alert.setPositiveButton("ok",   new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         finish();
                     }
