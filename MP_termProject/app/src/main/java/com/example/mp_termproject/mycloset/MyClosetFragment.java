@@ -21,6 +21,8 @@ import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
 
 import java.util.ArrayList;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class MyClosetFragment extends Fragment {
 
@@ -92,7 +94,7 @@ public class MyClosetFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQUEST_FILTER){
-            if(resultCode == -1){
+            if(resultCode == RESULT_OK){
                 Bundle bundle = data.getExtras();
 
                 ArrayList<String> categoryItemList = bundle.getStringArrayList("category");
