@@ -1,5 +1,6 @@
 package com.example.mp_termproject.mycloset.filter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -197,30 +198,17 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                 }
 
 
+                Intent intent = getIntent();
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("category", categorySelectedList);
+                bundle.putStringArrayList("color", colorSelectedList);
+                bundle.putStringArrayList("season", seasonSelectedList);
+                bundle.putString("share", shareSelected);
+                intent.putExtras(bundle);
 
-
-//                상운 구현부
-//                categorySelectedList, colorSelectedList, seasonSelectedList, shareSelected에
-//                저장된 데이터들이 필터 기준임.
-//                예를들어, categorySelectedList에  상의 Top, 아우터 Outer 이렇게 저장되있으면
-//                "상의, 아우터만 데이터베이스에서 가져와라" 이 뜻
-//                만약 리스트가 null인 경우, 필터 기준없이 다 가져오면 됨.
-//                예를 들어, 카테고리 -> 상의 / 컬러 -> null / 시즌 -> 봄 / 공유 -> 비공유 이면
-//                "카테고리가 상의고, 시즌은 봄이고, 공유는 비공유이고, 컬러는 모든 컬러를 가져와라"
-
-
-
-
-
-
-                Toast.makeText(this,
-                        categorySelectedList.toString() + "\n"
-                                + colorSelectedList.toString() + "\n"
-                                + seasonSelectedList.toString() + "\n"
-                                + shareSelected + "\n",
-                        Toast.LENGTH_SHORT).show();
-
+                setResult(RESULT_OK, intent);
                 finish();
+
                 break;
         }
 
