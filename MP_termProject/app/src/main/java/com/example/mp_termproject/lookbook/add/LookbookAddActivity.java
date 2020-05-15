@@ -1,26 +1,23 @@
 package com.example.mp_termproject.lookbook.add;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
 
@@ -143,8 +140,8 @@ public class LookbookAddActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_COORDINATOR){
-            if(resultCode == RESULT_OK){
+        if (requestCode == REQUEST_COORDINATOR) {
+            if (resultCode == RESULT_OK) {
                 byte[] bytes = data.getByteArrayExtra("bytes");
                 bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
@@ -172,12 +169,8 @@ public class LookbookAddActivity extends AppCompatActivity {
             case R.id.actionbar_store:
 
 
-
-
 //                상운 구현부
 //                코디 db에 Bitmap bitmap, TextView occasion, season에 저장된 정보 저장
-
-
 
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(LookbookAddActivity.this);
@@ -185,6 +178,11 @@ public class LookbookAddActivity extends AppCompatActivity {
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(LookbookAddActivity.this,
+                                bitmap.toString() + "\n"
+                                        + occasion.getText() + "\n"
+                                        + season.getText() + "\n",
+                                Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });

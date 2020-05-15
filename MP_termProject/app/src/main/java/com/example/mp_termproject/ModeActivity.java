@@ -24,11 +24,13 @@ public class ModeActivity extends AppCompatActivity {
         lookBookFragment = new LookbookFragment();
         ourClosetFragment = new OurClosetFragment();
 
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, myClosetFragment).commit();
+
         Button myClosetButton = findViewById(R.id.myClosetButton);
         myClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.modeFragment, myClosetFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, myClosetFragment).commit();
 
             }
         });
@@ -37,7 +39,7 @@ public class ModeActivity extends AppCompatActivity {
         lookBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.modeFragment, lookBookFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, lookBookFragment).commit();
             }
         });
 
@@ -45,7 +47,7 @@ public class ModeActivity extends AppCompatActivity {
         ourClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.modeFragment, ourClosetFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, ourClosetFragment).commit();
             }
         });
     }
