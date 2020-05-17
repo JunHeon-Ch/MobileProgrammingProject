@@ -1,13 +1,16 @@
 package com.example.mp_termproject.mycloset;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,12 +23,14 @@ import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.camera.CameraActivity;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 
 public class MyClosetFragment extends Fragment {
 
     static final int REQUEST_FILTER = 1;
+    final static int REQUEST_IMAGE_CAPTURE = 2;
 
     @Nullable
     @Override
@@ -75,6 +80,8 @@ public class MyClosetFragment extends Fragment {
 //              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
 //                myStartActivity(CameraActivity.class);
 
+                sendTakePhotoIntent();
+
                 intent = new Intent(getContext(), MyClosetAddActivity.class);
                 startActivity(intent);
                 break;
@@ -90,9 +97,31 @@ public class MyClosetFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private void sendTakePhotoIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == -1) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] bytes = stream.toByteArray();
+
+            Intent intent = new Intent(getContext(), MyClosetAddActivity.class);
+            extras.putByteArray("image", bytes);
+
+            intent.putExtras(extras);
+            startActivity(intent);
+        }
 
         if(requestCode == REQUEST_FILTER){
             if(resultCode == -1){
@@ -125,8 +154,10 @@ public class MyClosetFragment extends Fragment {
             }
         }
     }
+
     private void myStartActivity(Class c) {
         Intent intent = new Intent(getContext(), c);
+
         startActivity(intent);
     }
 }
