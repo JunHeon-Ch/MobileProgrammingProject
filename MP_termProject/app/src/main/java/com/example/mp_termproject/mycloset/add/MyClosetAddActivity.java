@@ -20,7 +20,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
+import com.example.mp_termproject.mycloset.ImageDTO;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class MyClosetAddActivity extends AppCompatActivity {
@@ -33,6 +40,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
     TextView season;
     TextView size;
     TextView shared;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,19 +251,18 @@ public class MyClosetAddActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MyClosetAddActivity.this);
                 final String[] items = getResources().getStringArray(R.array.shared);
-                final ArrayList<String> selectedItem  = new ArrayList<>();
+                final ArrayList<String> selectedItem = new ArrayList<>();
                 selectedItem.add(items[0]);
 
-                builder.setSingleChoiceItems(R.array.shared, 0, new DialogInterface.OnClickListener(){
+                builder.setSingleChoiceItems(R.array.shared, 0, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int pos)
-                    {
+                    public void onClick(DialogInterface dialog, int pos) {
                         selectedItem.clear();
                         selectedItem.add(items[pos]);
                     }
                 });
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int pos) {
                         shared.setText(selectedItem.get(0));
@@ -289,27 +296,47 @@ public class MyClosetAddActivity extends AppCompatActivity {
         switch (curId) {
             case R.id.actionbar_store:
 
-
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 //                상운 구현부
-//                image, itemName, category, color, brand, season, shared 값 데이터베이스에 저장
+//                image, itemName, category, col    or, brand, season, shared 값 데이터베이스에 저장
+                String userID = user.getUid();
+                String imgURL = "이미지테스트url";
+                String categoryText = category.getText().toString();
+                String imgNameText = itemName.getText().toString();
+                String colorText= color.getText().toString();
+                String brandText=brand.getText().toString();
+                String seasonText=season.getText().toString();
+                String sizeText=size.getText().toString();
+                String sharedText=shared.getText().toString();
 
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference();
+
+
+
+//                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/profileImage.jpg");
+//                UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText,imgNameText,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
+                db.collection("images").document(user.getUid()).set(imgDto);
 
 
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
                 alert.setMessage("저장되었습니다");
 
-                alert.setPositiveButton("ok",   new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Toast.makeText(MyClosetAddActivity.this,
                                 itemName.getText() + "\n"
-                                + category.getText() +"\n"
-                                + color.getText() +"\n"
-                                + brand.getText() +"\n"
-                                + season.getText() +"\n"
-                                + size.getText() +"\n"
-                                + shared.getText() +"\n",
+                                        + category.getText() + "\n"
+                                        + color.getText() + "\n"
+                                        + brand.getText() + "\n"
+                                        + season.getText() + "\n"
+                                        + size.getText() + "\n"
+                                        + shared.getText() + "\n",
                                 Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -321,4 +348,25 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public static byte[] viewToBitmap(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        if (view instanceof SurfaceView) {
+            SurfaceView surfaceView = (SurfaceView) view;
+            surfaceView.setZOrderOnTop(true);
+            surfaceView.draw(canvas);
+            surfaceView.setZOrderOnTop(false);
+        } else {
+            //For ViewGroup & View
+            view.draw(canvas);
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] bytes = stream.toByteArray();
+
+        return bytes;
+    }
+
 }
