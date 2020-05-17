@@ -43,35 +43,35 @@ public class MyClosetFilterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_closet_filter);
 
         // listview 생성 및 adapter 지정.
-        categoryList = findViewById(R.id.filter_list_category);
+        categoryList = findViewById(R.id.mycloset_filter_list_category);
         categories = getResources().getStringArray(R.array.category);
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_multiple_choice, categories);
         categoryList.setAdapter(categoryAdapter);
 
 
-        colorList = findViewById(R.id.filter_list_color);
+        colorList = findViewById(R.id.mycloset_filter_list_color);
         colors = getResources().getStringArray(R.array.colors);
         ArrayAdapter<String> colorAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_multiple_choice, colors);
         colorList.setAdapter(colorAdapter);
 
 
-        seasonList = findViewById(R.id.filter_list_season);
+        seasonList = findViewById(R.id.mycloset_filter_list_season);
         seasons = getResources().getStringArray(R.array.season);
         ArrayAdapter<String> seasonAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_multiple_choice, seasons);
         seasonList.setAdapter(seasonAdapter);
 
 
-        sharedList = findViewById(R.id.filter_list_shared);
+        sharedList = findViewById(R.id.mycloset_filter_list_shared);
         share = getResources().getStringArray(R.array.shared);
         ArrayAdapter<String> shareAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_single_choice, share);
         sharedList.setAdapter(shareAdapter);
 
 
-        category = findViewById(R.id.filter_type_category);
+        category = findViewById(R.id.mycloset_filter_type_category);
         category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +82,7 @@ public class MyClosetFilterActivity extends AppCompatActivity {
             }
         });
 
-        color = findViewById(R.id.filter_type_color);
+        color = findViewById(R.id.mycloset_filter_type_color);
         color.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +93,7 @@ public class MyClosetFilterActivity extends AppCompatActivity {
             }
         });
 
-        season = findViewById(R.id.filter_type_season);
+        season = findViewById(R.id.mycloset_filter_type_season);
         season.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +104,7 @@ public class MyClosetFilterActivity extends AppCompatActivity {
             }
         });
 
-        shared = findViewById(R.id.filter_type_shared);
+        shared = findViewById(R.id.mycloset_filter_type_shared);
         shared.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

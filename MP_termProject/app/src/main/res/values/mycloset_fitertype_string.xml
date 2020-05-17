@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="filter_type_category">Category</string>
-    <string name="filter_type_color">Color</string>
-    <string name="filter_type_season">Season</string>
-    <string name="filter_type_shared">Shared</string>
+    <string name="mycloset_filter_type_category">Category</string>
+    <string name="mycloset_filter_type_color">Color</string>
+    <string name="mycloset_filter_type_season">Season</string>
+    <string name="mycloset_filter_type_shared">Shared</string>
 </resources>
