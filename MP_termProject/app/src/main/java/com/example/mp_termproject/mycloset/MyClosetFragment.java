@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -33,6 +34,9 @@ public class MyClosetFragment extends Fragment {
     static final int REQUEST_FILTER = 1;
     final static int REQUEST_IMAGE_CAPTURE = 2;
 
+    EditText searchText;
+    ImageView searchImage;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -44,7 +48,19 @@ public class MyClosetFragment extends Fragment {
                 container, false);
         setHasOptionsMenu(true);
 
+        searchText = rootView.findViewById(R.id.search);
+        searchImage = rootView.findViewById(R.id.search_image);
+        searchImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
+//                  상운 구현부
+//                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
+                    Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
 
+                }
+            }
+        });
 
 //        상운 구현부
 //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
@@ -70,11 +86,6 @@ public class MyClosetFragment extends Fragment {
         Intent intent;
 
         switch (curId){
-            case R.id.actionbar_search:
-//              검색 메뉴 옵션 선택
-//              검색 구현
-
-                break;
             case R.id.actionbar_add:
 //              추가 메뉴 옵션 선택
 //              카메라 권한 얻은 후 사진을 얻어 변수에 저장 -> 저장한 이미지 grabCut으로 배경 제거
