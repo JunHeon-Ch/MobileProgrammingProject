@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lookbook_filter_type_occasion">Occasion</string>
+    <string name="lookbook_filter_type_season">Season</string>
+</resources>
