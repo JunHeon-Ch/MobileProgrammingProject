@@ -1,4 +1,4 @@
-package com.example.mp_termproject.lookbook;
+package com.example.ourcloset.lookbook;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,9 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mp_termproject.R;
-import com.example.mp_termproject.lookbook.add.LookbookAddActivity;
-import com.example.mp_termproject.lookbook.filter.LookbookFilterActivity;
-import com.example.mp_termproject.lookbook.filter.LookbookFilterActivity;
+import com.example.ourcloset.lookbook.add.LookbookAddActivity;
+import com.example.ourcloset.lookbook.filter.LookbookFilterActivity;
 
 import java.util.ArrayList;
 

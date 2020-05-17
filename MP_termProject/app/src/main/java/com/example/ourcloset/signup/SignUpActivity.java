@@ -1,4 +1,4 @@
-package com.example.mp_termproject.signup;
+package com.example.ourcloset.signup;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
-import com.example.mp_termproject.login.LoginActivity;
+import com.example.ourcloset.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

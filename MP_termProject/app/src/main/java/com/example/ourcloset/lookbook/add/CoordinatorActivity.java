@@ -1,7 +1,6 @@
-package com.example.mp_termproject.lookbook.add;
+package com.example.ourcloset.lookbook.add;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,7 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
 
 import com.example.mp_termproject.R;
 

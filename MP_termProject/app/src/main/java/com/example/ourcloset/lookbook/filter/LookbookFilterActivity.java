@@ -1,4 +1,4 @@
-package com.example.mp_termproject.lookbook.filter;
+package com.example.ourcloset.lookbook.filter;
 
 import android.content.Intent;
 import android.os.Bundle;

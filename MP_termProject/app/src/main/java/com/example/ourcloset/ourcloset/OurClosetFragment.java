@@ -1,4 +1,4 @@
-package com.example.mp_termproject.ourcloset;
+package com.example.ourcloset.ourcloset;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

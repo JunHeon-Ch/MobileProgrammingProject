@@ -1,4 +1,4 @@
-package com.example.mp_termproject.ourcloset;
+package com.example.ourcloset.ourcloset;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 
 import com.example.mp_termproject.R;
 

@@ -1,4 +1,4 @@
-package com.example.mp_termproject;
+package com.example.ourcloset;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,9 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.mp_termproject.lookbook.LookbookFragment;
-import com.example.mp_termproject.mycloset.MyClosetFragment;
-import com.example.mp_termproject.ourcloset.OurClosetFragment;
+import com.example.mp_termproject.R;
+import com.example.ourcloset.lookbook.LookbookFragment;
+import com.example.ourcloset.mycloset.MyClosetFragment;
+import com.example.ourcloset.ourcloset.OurClosetFragment;
 
 public class ModeActivity extends AppCompatActivity {
     MyClosetFragment myClosetFragment;

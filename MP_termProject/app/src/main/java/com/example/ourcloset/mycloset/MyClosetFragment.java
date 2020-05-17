@@ -1,4 +1,4 @@
-package com.example.mp_termproject.mycloset;
+package com.example.ourcloset.mycloset;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mp_termproject.R;
-import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
-import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
+import com.example.ourcloset.mycloset.add.MyClosetAddActivity;
+import com.example.ourcloset.mycloset.filter.MyClosetFilterActivity;
 
 import java.util.ArrayList;
 
