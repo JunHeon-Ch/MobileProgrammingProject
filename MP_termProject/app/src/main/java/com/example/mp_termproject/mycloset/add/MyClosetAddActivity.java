@@ -17,6 +17,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -40,6 +44,12 @@ public class MyClosetAddActivity extends AppCompatActivity {
         // 번들로 받은 배경제거된 이미지 image 변수에 저장
 
         image = findViewById(R.id.my_closet_add_image);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/profileImage.jpg");
+
+
 
 
         // itemName text 클릭시 item name 입력 popup 띄우기
