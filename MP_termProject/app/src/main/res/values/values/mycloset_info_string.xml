@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="popup_item_name">상품명</string>
+    <string name="popup_category">카테고리</string>
+    <string name="popup_color">컬러</string>
+    <string name="popup_brand">브랜드</string>
+    <string name="popup_season">시즌</string>
+    <string name="popup_size">사이즈</string>
+    <string name="popup_shared">공유</string>
+</resources>

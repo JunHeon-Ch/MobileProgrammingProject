@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="coordinator_reset">Reset</string>
+    <string name="coordinator_apply">Apply</string>
+
+</resources>
