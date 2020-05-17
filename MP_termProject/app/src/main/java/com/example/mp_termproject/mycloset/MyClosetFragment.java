@@ -2,6 +2,7 @@ package com.example.mp_termproject.mycloset;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,8 +26,8 @@ import java.util.ArrayList;
 
 public class MyClosetFragment extends Fragment {
 
-    static final int REQUEST_FILTER = 1;
-
+    final static int REQUEST_FILTER = 1;
+    final static int REQUEST_IMAGE_CAPTURE = 2;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -75,8 +76,10 @@ public class MyClosetFragment extends Fragment {
 //              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
 //                myStartActivity(CameraActivity.class);
 
-                intent = new Intent(getContext(), MyClosetAddActivity.class);
-                startActivity(intent);
+                sendTakePhotoIntent();
+
+//                intent = new Intent(getContext(), MyClosetAddActivity.class);
+//                startActivity(intent);
                 break;
 
             case R.id.actionbar_filter:
@@ -88,6 +91,13 @@ public class MyClosetFragment extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendTakePhotoIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
     }
 
     @Override
