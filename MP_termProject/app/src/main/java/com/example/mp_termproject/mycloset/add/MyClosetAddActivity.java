@@ -1,11 +1,17 @@
 package com.example.mp_termproject.mycloset.add;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,7 +23,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
+import com.example.mp_termproject.lookbook.add.CoordinatorActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class MyClosetAddActivity extends AppCompatActivity {
@@ -37,10 +45,14 @@ public class MyClosetAddActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
 
+
         // 번들로 받은 배경제거된 이미지 image 변수에 저장
+        Intent intent = getIntent();
+        byte[] bytes = intent.getByteArrayExtra("image");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
         image = findViewById(R.id.my_closet_add_image);
-
+        image.setImageBitmap(bitmap);
 
         // itemName text 클릭시 item name 입력 popup 띄우기
         itemName = findViewById(R.id.my_closet_add_name);
@@ -314,6 +326,4 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }
