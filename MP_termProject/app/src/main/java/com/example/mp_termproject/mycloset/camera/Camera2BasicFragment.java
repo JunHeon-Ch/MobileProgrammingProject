@@ -1010,6 +1010,7 @@ public class Camera2BasicFragment extends Fragment
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/profileImage.jpg");
 
+
             UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
 
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
