@@ -1,4 +1,4 @@
-package com.example.ourcloset;
+package com.example.mp_termproject;
 
 import org.junit.Test;
 

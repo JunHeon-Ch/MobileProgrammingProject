@@ -1,4 +1,4 @@
-package com.example.ourcloset;
+package com.example.mp_termproject;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,15 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-<<<<<<< Updated upstream:MP_termProject/app/src/main/java/com/example/ourcloset/MainActivity.java
-import com.example.mp_termproject.R;
-import com.example.ourcloset.signup.SignUpActivity;
-=======
 import com.example.mp_termproject.signup.MemberInitActivity;
 import com.example.mp_termproject.signup.SignUpActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
->>>>>>> Stashed changes:MP_termProject/app/src/main/java/com/example/mp_termproject/MainActivity.java
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;

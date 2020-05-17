@@ -1,4 +1,4 @@
-package com.example.ourcloset.login;
+package com.example.mp_termproject.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +9,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mp_termproject.MainActivity;
 import com.example.mp_termproject.R;
-import com.example.ourcloset.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -66,7 +66,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
 
-        } else {
+        }
+        else {
             startToast("이메일 또는 비밀번호를 입력하시오");
         }
     }

@@ -1,4 +1,4 @@
-package com.example.ourcloset.mycloset.add;
+package com.example.mp_termproject.mycloset.add;
 
 import android.content.DialogInterface;
 import android.graphics.Color;

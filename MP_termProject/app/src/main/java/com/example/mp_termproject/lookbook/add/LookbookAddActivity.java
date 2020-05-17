@@ -1,4 +1,4 @@
-package com.example.ourcloset.lookbook.add;
+package com.example.mp_termproject.lookbook.add;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 
 import com.example.mp_termproject.R;
 

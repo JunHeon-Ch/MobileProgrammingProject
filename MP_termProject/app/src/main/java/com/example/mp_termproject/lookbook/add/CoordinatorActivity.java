@@ -1,10 +1,5 @@
-package com.example.ourcloset.lookbook.add;
+package com.example.mp_termproject.lookbook.add;
 
-<<<<<<< Updated upstream:MP_termProject/app/src/main/java/com/example/ourcloset/lookbook/add/CoordinatorActivity.java
-import androidx.appcompat.app.AppCompatActivity;
-
-=======
->>>>>>> Stashed changes:MP_termProject/app/src/main/java/com/example/mp_termproject/lookbook/add/CoordinatorActivity.java
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,10 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-<<<<<<< Updated upstream:MP_termProject/app/src/main/java/com/example/ourcloset/lookbook/add/CoordinatorActivity.java
-=======
 import androidx.appcompat.app.AppCompatActivity;
->>>>>>> Stashed changes:MP_termProject/app/src/main/java/com/example/mp_termproject/lookbook/add/CoordinatorActivity.java
 
 import com.example.mp_termproject.R;
 

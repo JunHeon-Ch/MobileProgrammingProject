@@ -1,4 +1,4 @@
-package com.example.ourcloset.mycloset.filter;
+package com.example.mp_termproject.mycloset.filter;
 
 import android.content.Intent;
 import android.os.Bundle;

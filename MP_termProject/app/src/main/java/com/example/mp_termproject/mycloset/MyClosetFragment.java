@@ -1,4 +1,4 @@
-package com.example.ourcloset.lookbook;
+package com.example.mp_termproject.mycloset;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,20 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mp_termproject.R;
-<<<<<<< Updated upstream:MP_termProject/app/src/main/java/com/example/ourcloset/lookbook/LookbookFragment.java
-import com.example.ourcloset.lookbook.add.LookbookAddActivity;
-import com.example.ourcloset.lookbook.filter.LookbookFilterActivity;
-=======
-import com.example.mp_termproject.lookbook.add.LookbookAddActivity;
-import com.example.mp_termproject.lookbook.filter.LookbookFilterActivity;
->>>>>>> Stashed changes:MP_termProject/app/src/main/java/com/example/mp_termproject/lookbook/LookbookFragment.java
+import com.example.mp_termproject.mycloset.camera.CameraActivity;
+import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
 
 import java.util.ArrayList;
 
-import static android.app.Activity.RESULT_OK;
 
-
-public class LookbookFragment extends Fragment {
+public class MyClosetFragment extends Fragment {
 
     static final int REQUEST_FILTER = 1;
 
@@ -38,16 +31,17 @@ public class LookbookFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("LOOKBOOK");
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_lookbook,
-                container,
-                false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("MY CLOSET");
+
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
+                container, false);
         setHasOptionsMenu(true);
 
 
 
-//        상운구현부
-//        db에 저장된 룩북 읽어와서 뿌려주는거 구현
+//        상운 구현부
+//        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
+
 
 
 
@@ -76,16 +70,19 @@ public class LookbookFragment extends Fragment {
                 break;
             case R.id.actionbar_add:
 //              추가 메뉴 옵션 선택
+//              카메라 권한 얻은 후 사진을 얻어 변수에 저장 -> 저장한 이미지 grabCut으로 배경 제거
+//              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
+                myStartActivity(CameraActivity.class);
 
-                intent = new Intent(getContext(), LookbookAddActivity.class);
-                startActivity(intent);
+//                intent = new Intent(getContext(), MyClosetAddActivity.class);
+//                startActivity(intent);
                 break;
 
             case R.id.actionbar_filter:
 //                필터 옵션 메뉴 선택
 //                필터 선택 후 My Closet 화면에 조건에 맞는 아이템을 보여줌
 
-                intent = new Intent(getContext(), LookbookFilterActivity.class);
+                intent = new Intent(getContext(), MyClosetFilterActivity.class);
                 startActivityForResult(intent, REQUEST_FILTER);
                 break;
         }
@@ -97,11 +94,13 @@ public class LookbookFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQUEST_FILTER){
-            if(resultCode == RESULT_OK){
+            if(resultCode == -1){
                 Bundle bundle = data.getExtras();
 
-                ArrayList<String> occasionItemList = bundle.getStringArrayList("occasion");
+                ArrayList<String> categoryItemList = bundle.getStringArrayList("category");
+                ArrayList<String> colorItemList = bundle.getStringArrayList("color");
                 ArrayList<String> seasonItemList = bundle.getStringArrayList("season");
+                String sharedItem = bundle.getString("share");
 
 
 
@@ -117,10 +116,16 @@ public class LookbookFragment extends Fragment {
 
 
                 Toast.makeText(getContext(),
-                        occasionItemList.toString() + "\n"
-                                + seasonItemList.toString() + "\n",
+                        categoryItemList.toString() + "\n"
+                                + colorItemList.toString() + "\n"
+                                + seasonItemList.toString() + "\n"
+                                + sharedItem + "\n",
                         Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    private void myStartActivity(Class c) {
+        Intent intent = new Intent(getContext(), c);
+        startActivity(intent);
     }
 }

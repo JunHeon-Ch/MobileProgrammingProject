@@ -1,4 +1,4 @@
-package com.example.ourcloset.ourcloset;
+package com.example.mp_termproject.ourcloset;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -16,33 +16,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< Updated upstream
-        <activity android:name="com.example.ourcloset.lookbook.add.CoordinatorActivity"></activity>
-        <activity android:name="com.example.ourcloset.lookbook.filter.LookbookFilterActivity" />
-        <activity android:name="com.example.ourcloset.lookbook.add.LookbookAddActivity" />
-        <activity android:name="com.example.ourcloset.mycloset.filter.MyClosetFilterActivity" />
-        <activity android:name="com.example.ourcloset.mycloset.add.MyClosetAddActivity" />
-
-=======
         <activity android:name=".lookbook.add.CoordinatorActivity"></activity>
         <activity android:name=".lookbook.add.LookbookAddActivity" />
         <activity android:name=".mycloset.filter.MyClosetFilterActivity" />
         <activity android:name=".mycloset.add.MyClosetAddActivity" />
         <activity android:name=".mycloset.camera.CameraActivity">
         </activity>
->>>>>>> Stashed changes
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBlKPQFIEDt_eky3dVgUCKItVKIDYJV16U" />
 
-<<<<<<< Updated upstream
-        <activity android:name="com.example.ourcloset.ModeActivity" />
-        <activity android:name="com.example.ourcloset.ourcloset.GpsActivity" />
-        <activity android:name="com.example.ourcloset.ourcloset.CurrentLocationActivity" />
-        <activity android:name="com.example.ourcloset.signup.SignUpActivity" />
-        <activity android:name="com.example.ourcloset.login.LoginActivity" />
-        <activity android:name="com.example.ourcloset.MainActivity">
-=======
         <activity android:name=".ModeActivity" />
         <activity android:name=".ourcloset.GpsActivity" />
         <activity android:name=".ourcloset.CurrentLocationActivity" />
@@ -55,7 +38,6 @@
         <activity android:name=".login.LoginActivity" />
         <activity android:name=".MainActivity">
 
->>>>>>> Stashed changes
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
