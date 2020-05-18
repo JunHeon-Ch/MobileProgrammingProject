@@ -6,7 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.graphics.Color;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +28,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.ImageDTO;
+
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,6 +55,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
     TextView size;
     TextView shared;
 
+    byte[] bytes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +66,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         // 번들로 받은 배경제거된 이미지 image 변수에 저장
         Intent intent = getIntent();
-        byte[] bytes = intent.getByteArrayExtra("image");
+        bytes = intent.getByteArrayExtra("image");
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
         image = findViewById(R.id.my_closet_add_image);
@@ -303,7 +316,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
 //                상운 구현부
 //                image, itemName, category, col    or, brand, season, shared 값 데이터베이스에 저장
                 String userID = user.getUid();
-                String imgURL = "이미지테스트url";
+                String imgURL;
                 String categoryText = category.getText().toString();
                 String imgNameText = itemName.getText().toString();
                 String colorText= color.getText().toString();
@@ -312,17 +325,44 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 String sizeText=size.getText().toString();
                 String sharedText=shared.getText().toString();
 
+                // storage에 저장할 값들 저장해두기
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
+                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/"+imgNameText+".jpg");
 
+                // img url 저장
+                imgURL = "users/" + user.getUid() + "/"+imgNameText+".jpg";
 
+                // storage에 upload
+                UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            Log.e("실패1", "실패");
+                            throw task.getException();
+                        }
 
-//                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/profileImage.jpg");
-//                UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
-
+                        // Continue with the task to get the download URL
+                        return mountainImagesRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            Log.e("성공", "성공: " + downloadUri);
+                        } else {
+                            // Handle failures
+                            // ...
+                            Log.e("실패2", "실패");
+                        }
+                    }
+                });
+                // 데이터베이스에 저장
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText,imgNameText,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
-                db.collection("images").document(user.getUid()).set(imgDto);
+                ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
+                db.collection("images").document(user.getUid()+imgNameText).set(imgDto);
 
 
 

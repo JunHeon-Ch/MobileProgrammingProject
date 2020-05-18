@@ -11,7 +11,7 @@ public class ImageDTO {
     String size;
     String shared;
 
-    public ImageDTO(String id, String url, String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
+    public ImageDTO(String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
         this.userID = userID;
         this.imgURL = imgURL;
         this.category = category;

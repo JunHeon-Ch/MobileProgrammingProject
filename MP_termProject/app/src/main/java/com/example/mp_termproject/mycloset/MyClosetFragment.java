@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class MyClosetFragment extends Fragment {
 
-    static final int REQUEST_FILTER = 1;
+    final static int REQUEST_FILTER = 1;
     final static int REQUEST_IMAGE_CAPTURE = 2;
 
     EditText searchText;
@@ -93,8 +93,9 @@ public class MyClosetFragment extends Fragment {
 
                 sendTakePhotoIntent();
 
-                intent = new Intent(getContext(), MyClosetAddActivity.class);
-                startActivity(intent);
+//                intent = new Intent(getContext(), MyClosetAddActivity.class);
+//                startActivity(intent);
+
                 break;
 
             case R.id.actionbar_filter:
