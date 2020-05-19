@@ -363,7 +363,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 // 데이터베이스에 저장
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText,imgNameText,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
+                ImageDTO imgDto = new ImageDTO(userID, imgURL,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
                 db.collection("images/check").document(user.getUid()).set(imgDto);
 
 
