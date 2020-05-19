@@ -1,7 +1,10 @@
 package com.example.mp_termproject.mycloset;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +20,7 @@ public class ImageDTO {
     String season;
     String size;
     String shared;
+    int imgNum;
 
     public ImageDTO(String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
         this.userID = userID;
@@ -28,36 +32,41 @@ public class ImageDTO {
         this.season = season;
         this.size = size;
         this.shared = shared;
+
     }
 
     @Exclude
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("userID", userID);
-        result.put("imgURL", imgURL);
-        result.put("category", category);
-        result.put("itemName", itemName);
-        result.put("color", color);
-        result.put("brand", brand);
-        result.put("season", season);
-        result.put("size", size);
-        result.put("shared", shared);
+//    public Map<String, Object> toMap() {
+//        HashMap<String, Object> result = new HashMap<>();
+//        result.put("userID", userID);
+//        result.put("imgURL", imgURL);
+//        result.put("category", category);
+//        result.put("itemName", itemName);
+//        result.put("color", color);
+//        result.put("brand", brand);
+//        result.put("season", season);
+//        result.put("size", size);
+//        result.put("shared", shared);
+//
+//        return result;
+//    }
 
-        return result;
-    }
-//    public void writeNewPost(String id, String url, String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
+//    private void writeNewPost(FirebaseFirestore db,String id, String url, String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
 //        // Create new post at /user-posts/$userid/$postid and at
 //        // /posts/$postid simultaneously
-//        String key = mDatabase.child("posts").push().getKey();
-//        ImageDTO img = new ImageDTO( id,  url,  userID,  imgURL,  category,  itemName,  color,  brand,  season,  size,  shared) {
+//        DatabaseReference mDatabase;
+//        mDatabase = FirebaseDatabase.getInstance().getReference();
+//        String key = db.child("users").push().getKey();
+//        ImageDTO img = new ImageDTO(id, url, userID, imgURL, category, itemName, color, brand, season, size, shared) {
 //            Map<String, Object> imgValue = img.toMap();
 //
 //            Map<String, Object> childUpdates = new HashMap<>();
-//        childUpdates.put("/posts/" + key, imgValue);
-//        childUpdates.put("/user-posts/" + userId + "/" + key, imgValue);
+//        childUpdates.put("/posts/"+key, imgValue);
+//        childUpdates.put("/user-posts/"+userId +"/"+key,imgValue);
 //
 //        mDatabase.updateChildren(childUpdates);
-//        }
+//        };
+//    }
 
     public String getUserID() {
         return userID;

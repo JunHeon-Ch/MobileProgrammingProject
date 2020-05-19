@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +40,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -311,6 +313,9 @@ public class MyClosetAddActivity extends AppCompatActivity {
             case R.id.actionbar_store:
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                // img num 확인 & img num user info에 업데이트
+
+
 
 //                상운 구현부
 //                image, itemName, category, col    or, brand, season, shared 값 데이터베이스에 저장
@@ -358,34 +363,47 @@ public class MyClosetAddActivity extends AppCompatActivity {
                         }
                     }
                 });
+
                 // 데이터베이스에 저장
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
                 ImageDTO imgDto = new ImageDTO(userID, imgURL,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
-                db.collection("images/check").document(user.getUid()).set(imgDto);
+
+                db.collection("images").document(user.getUid()).set(imgDto)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
+                                alert.setMessage("저장되었습니다");
+
+                                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Toast.makeText(MyClosetAddActivity.this,
+                                                itemName.getText() + "\n"
+                                                        + category.getText() + "\n"
+                                                        + color.getText() + "\n"
+                                                        + brand.getText() + "\n"
+                                                        + season.getText() + "\n"
+                                                        + size.getText() + "\n"
+                                                        + shared.getText() + "\n",
+                                                Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+
+                                alert.show();
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            public void onFailure(@NonNull Exception e) {
+                             Toast.makeText(MyClosetAddActivity.this,"사진 업로드가 실패했습니다.",Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
 
 
-
-                AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
-                alert.setMessage("저장되었습니다");
-
-                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Toast.makeText(MyClosetAddActivity.this,
-                                itemName.getText() + "\n"
-                                        + category.getText() + "\n"
-                                        + color.getText() + "\n"
-                                        + brand.getText() + "\n"
-                                        + season.getText() + "\n"
-                                        + size.getText() + "\n"
-                                        + shared.getText() + "\n",
-                                Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
-
-                alert.show();
 
         }
 

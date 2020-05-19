@@ -5,12 +5,14 @@ public class UserInfo {
     private String phoneNumber;
     private String birthDay;
     private String address;
-
-    public UserInfo(String name, String phoneNumber, String birthDay, String address){
+    private int imgNum;
+    public UserInfo(String name, String phoneNumber, String birthDay, String address, int imgNum){
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDay = birthDay;
         this.address = address;
+        this.imgNum = imgNum;
+
     }
 
     public String getName(){
@@ -36,5 +38,11 @@ public class UserInfo {
     }
     public void setAddress(String address){
         this.address = address;
+    }
+    public int getImgNum(){
+        return this.imgNum;
+    }
+    public void setImgNum(int imgNum){
+        this.imgNum = imgNum;
     }
 }
