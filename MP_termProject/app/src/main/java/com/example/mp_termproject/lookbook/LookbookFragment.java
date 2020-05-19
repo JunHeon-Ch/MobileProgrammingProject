@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +29,8 @@ import static android.app.Activity.RESULT_OK;
 public class LookbookFragment extends Fragment {
 
     static final int REQUEST_FILTER = 1;
+    EditText searchText;
+    ImageView searchImage;
 
     @Nullable
     @Override
@@ -39,6 +43,19 @@ public class LookbookFragment extends Fragment {
                 false);
         setHasOptionsMenu(true);
 
+        searchText = rootView.findViewById(R.id.search);
+        searchImage = rootView.findViewById(R.id.search_image);
+        searchImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
+//                  상운 구현부
+//                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
+                    Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
 
 
 //        상운구현부
@@ -64,11 +81,6 @@ public class LookbookFragment extends Fragment {
         Intent intent;
 
         switch (curId){
-            case R.id.actionbar_search:
-//              검색 메뉴 옵션 선택
-//              검색 구현
-
-                break;
             case R.id.actionbar_add:
 //              추가 메뉴 옵션 선택
 

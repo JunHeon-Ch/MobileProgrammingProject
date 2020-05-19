@@ -1,4 +1,4 @@
-package com.example.mp_termproject.ourcloset;
+package com.example.mp_termproject.ourcloset.gps;
 
 import android.Manifest;
 import android.content.DialogInterface;
