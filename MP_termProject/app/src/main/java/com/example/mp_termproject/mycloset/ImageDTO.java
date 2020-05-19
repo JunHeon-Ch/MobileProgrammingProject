@@ -1,5 +1,12 @@
 package com.example.mp_termproject.mycloset;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@IgnoreExtraProperties
 public class ImageDTO {
     String userID;
     String imgURL;
@@ -22,6 +29,35 @@ public class ImageDTO {
         this.size = size;
         this.shared = shared;
     }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("userID", userID);
+        result.put("imgURL", imgURL);
+        result.put("category", category);
+        result.put("itemName", itemName);
+        result.put("color", color);
+        result.put("brand", brand);
+        result.put("season", season);
+        result.put("size", size);
+        result.put("shared", shared);
+
+        return result;
+    }
+//    public void writeNewPost(String id, String url, String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
+//        // Create new post at /user-posts/$userid/$postid and at
+//        // /posts/$postid simultaneously
+//        String key = mDatabase.child("posts").push().getKey();
+//        ImageDTO img = new ImageDTO( id,  url,  userID,  imgURL,  category,  itemName,  color,  brand,  season,  size,  shared) {
+//            Map<String, Object> imgValue = img.toMap();
+//
+//            Map<String, Object> childUpdates = new HashMap<>();
+//        childUpdates.put("/posts/" + key, imgValue);
+//        childUpdates.put("/user-posts/" + userId + "/" + key, imgValue);
+//
+//        mDatabase.updateChildren(childUpdates);
+//        }
 
     public String getUserID() {
         return userID;

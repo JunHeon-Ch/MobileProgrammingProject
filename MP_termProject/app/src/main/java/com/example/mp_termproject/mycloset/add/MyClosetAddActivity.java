@@ -326,7 +326,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText,imgNameText,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
-                db.collection("images").document(user.getUid()).set(imgDto);
+                db.collection("images/check").document(user.getUid()).set(imgDto);
 
 
 
@@ -374,5 +374,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         return bytes;
     }
+
 
 }
