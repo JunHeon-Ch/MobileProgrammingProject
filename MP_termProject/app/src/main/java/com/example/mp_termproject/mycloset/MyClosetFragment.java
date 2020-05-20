@@ -1,13 +1,17 @@
 package com.example.mp_termproject.mycloset;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,15 +20,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.mp_termproject.R;
+import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.camera.CameraActivity;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 
 public class MyClosetFragment extends Fragment {
 
-    static final int REQUEST_FILTER = 1;
+    final static int REQUEST_FILTER = 1;
+    final static int REQUEST_IMAGE_CAPTURE = 2;
+
+    EditText searchText;
+    ImageView searchImage;
 
     @Nullable
     @Override
@@ -37,7 +47,19 @@ public class MyClosetFragment extends Fragment {
                 container, false);
         setHasOptionsMenu(true);
 
+        searchText = rootView.findViewById(R.id.search);
+        searchImage = rootView.findViewById(R.id.search_image);
+        searchImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
+//                  상운 구현부
+//                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
+                    Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
 
+                }
+            }
+        });
 
 //        상운 구현부
 //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
@@ -63,19 +85,17 @@ public class MyClosetFragment extends Fragment {
         Intent intent;
 
         switch (curId){
-            case R.id.actionbar_search:
-//              검색 메뉴 옵션 선택
-//              검색 구현
-
-                break;
             case R.id.actionbar_add:
 //              추가 메뉴 옵션 선택
 //              카메라 권한 얻은 후 사진을 얻어 변수에 저장 -> 저장한 이미지 grabCut으로 배경 제거
 //              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
-                myStartActivity(CameraActivity.class);
+//                myStartActivity(CameraActivity.class);
+
+                sendTakePhotoIntent();
 
 //                intent = new Intent(getContext(), MyClosetAddActivity.class);
 //                startActivity(intent);
+
                 break;
 
             case R.id.actionbar_filter:
@@ -89,9 +109,31 @@ public class MyClosetFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private void sendTakePhotoIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == -1) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] bytes = stream.toByteArray();
+
+            Intent intent = new Intent(getContext(), MyClosetAddActivity.class);
+            extras.putByteArray("image", bytes);
+
+            intent.putExtras(extras);
+            startActivity(intent);
+        }
 
         if(requestCode == REQUEST_FILTER){
             if(resultCode == -1){
@@ -124,8 +166,10 @@ public class MyClosetFragment extends Fragment {
             }
         }
     }
+
     private void myStartActivity(Class c) {
         Intent intent = new Intent(getContext(), c);
+
         startActivity(intent);
     }
 }

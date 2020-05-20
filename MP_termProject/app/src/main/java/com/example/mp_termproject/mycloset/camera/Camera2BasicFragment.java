@@ -6,9 +6,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -49,6 +51,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.mp_termproject.R;
+import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -260,23 +263,23 @@ public class Camera2BasicFragment extends Fragment
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Image mImage = reader.acquireNextImage();
                 mBackgroundHandler.post(new ImageUpLoader(mImage));
-//                ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
-//                byte[] bytes = new byte[buffer.remaining()];
-//                buffer.get(bytes);
-//
-//                Bitmap bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
-//
-//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                byte[] byteArray = stream.toByteArray();
-//
-//                Intent intent = new Intent(getContext(), MyClosetAddActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putByteArray("image", byteArray);
-//                intent.putExtras(bundle);
-//                Log.d("test", byteArray.toString());
-//                startActivity(intent);
-//
+                ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
+                byte[] bytes = new byte[buffer.remaining()];
+                buffer.get(bytes);
+
+                Bitmap bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+
+                Intent intent = new Intent(getContext(), MyClosetAddActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putByteArray("image", byteArray);
+                intent.putExtras(bundle);
+                Log.d("test", byteArray.toString());
+                startActivity(intent);
+
 
             }
         }
@@ -1009,6 +1012,7 @@ public class Camera2BasicFragment extends Fragment
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/profileImage.jpg");
+
 
             UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
 

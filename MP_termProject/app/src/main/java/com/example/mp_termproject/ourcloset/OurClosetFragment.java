@@ -8,6 +8,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,26 +24,42 @@ import com.example.mp_termproject.ourcloset.filter.OurClosetFilterActivity;
 public class OurClosetFragment extends Fragment {
 
     static final int REQUEST_FILTER = 1;
+    EditText searchText;
+    ImageView searchImage;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("OUR CLOSET");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("OUR CLOSET");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_our_closet,
                 container,
                 false);
 
         setHasOptionsMenu(true);
 
+        searchText = rootView.findViewById(R.id.search);
+        searchImage = rootView.findViewById(R.id.search_image);
+        searchImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
+//                  상운 구현부
+//                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
+                    Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
 
         // db에서 다른 사람의 공유된 제품 읽어와서 뿌려주는 거 구현
 
 
-
         return rootView;
     }
+
     // Action Bar에 메뉴옵션 띄우기
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -54,7 +73,7 @@ public class OurClosetFragment extends Fragment {
         int curId = item.getItemId();
         Intent intent;
 
-        switch (curId){
+        switch (curId) {
             case R.id.actionbar_search:
 //              검색 메뉴 옵션 선택
 //              검색 구현

@@ -1,8 +1,17 @@
 package com.example.mp_termproject.mycloset.add;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.graphics.Color;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,13 +27,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
+import com.example.mp_termproject.mycloset.ImageDTO;
+
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+
+import com.google.firebase.storage.UploadTask
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -40,16 +57,22 @@ public class MyClosetAddActivity extends AppCompatActivity {
     TextView size;
     TextView shared;
 
+    byte[] bytes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
 
+
         // 번들로 받은 배경제거된 이미지 image 변수에 저장
+        Intent intent = getIntent();
+        bytes = intent.getByteArrayExtra("image");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
         image = findViewById(R.id.my_closet_add_image);
-
+        image.setImageBitmap(bitmap);
 
         // itemName text 클릭시 item name 입력 popup 띄우기
         itemName = findViewById(R.id.my_closet_add_name);
@@ -245,19 +268,18 @@ public class MyClosetAddActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MyClosetAddActivity.this);
                 final String[] items = getResources().getStringArray(R.array.shared);
-                final ArrayList<String> selectedItem  = new ArrayList<>();
+                final ArrayList<String> selectedItem = new ArrayList<>();
                 selectedItem.add(items[0]);
 
-                builder.setSingleChoiceItems(R.array.shared, 0, new DialogInterface.OnClickListener(){
+                builder.setSingleChoiceItems(R.array.shared, 0, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int pos)
-                    {
+                    public void onClick(DialogInterface dialog, int pos) {
                         selectedItem.clear();
                         selectedItem.add(items[pos]);
                     }
                 });
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int pos) {
                         shared.setText(selectedItem.get(0));
@@ -291,10 +313,59 @@ public class MyClosetAddActivity extends AppCompatActivity {
         switch (curId) {
             case R.id.actionbar_store:
 
-
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 //                상운 구현부
-//                image, itemName, category, color, brand, season, shared 값 데이터베이스에 저장
+//                image, itemName, category, col    or, brand, season, shared 값 데이터베이스에 저장
+                String userID = user.getUid();
+                String imgURL;
+                String categoryText = category.getText().toString();
+                String imgNameText = itemName.getText().toString();
+                String colorText= color.getText().toString();
+                String brandText=brand.getText().toString();
+                String seasonText=season.getText().toString();
+                String sizeText=size.getText().toString();
+                String sharedText=shared.getText().toString();
+
+                // storage에 저장할 값들 저장해두기
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference();
+                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/"+imgNameText+".jpg");
+
+                // img url 저장
+                imgURL = "users/" + user.getUid() + "/"+imgNameText+".jpg";
+
+                // storage에 upload
+                UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            Log.e("실패1", "실패");
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return mountainImagesRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            Log.e("성공", "성공: " + downloadUri);
+                        } else {
+                            // Handle failures
+                            // ...
+                            Log.e("실패2", "실패");
+                        }
+                    }
+                });
+                // 데이터베이스에 저장
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                ImageDTO imgDto = new ImageDTO(userID, imgURL,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
+                db.collection("images/check").document(user.getUid()).set(imgDto);
 
 
 
@@ -302,16 +373,16 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
                 alert.setMessage("저장되었습니다");
 
-                alert.setPositiveButton("ok",   new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Toast.makeText(MyClosetAddActivity.this,
                                 itemName.getText() + "\n"
-                                + category.getText() +"\n"
-                                + color.getText() +"\n"
-                                + brand.getText() +"\n"
-                                + season.getText() +"\n"
-                                + size.getText() +"\n"
-                                + shared.getText() +"\n",
+                                        + category.getText() + "\n"
+                                        + color.getText() + "\n"
+                                        + brand.getText() + "\n"
+                                        + season.getText() + "\n"
+                                        + size.getText() + "\n"
+                                        + shared.getText() + "\n",
                                 Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -322,6 +393,26 @@ public class MyClosetAddActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static byte[] viewToBitmap(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        if (view instanceof SurfaceView) {
+            SurfaceView surfaceView = (SurfaceView) view;
+            surfaceView.setZOrderOnTop(true);
+            surfaceView.draw(canvas);
+            surfaceView.setZOrderOnTop(false);
+        } else {
+            //For ViewGroup & View
+            view.draw(canvas);
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] bytes = stream.toByteArray();
+
+        return bytes;
     }
 
 
