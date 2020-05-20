@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.MainActivity;
+import com.example.mp_termproject.ModeActivity;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,7 @@ public class SignUpActivity extends AppCompatActivity {
         findViewById(R.id.goToLoginButton).setOnClickListener(onClickListener);
 
     }
+
     // 뒤로 가기 버튼을 누르면 main activity 로 넘어가는 것을 막아줌
     @Override
     public void onBackPressed() {
@@ -49,7 +52,13 @@ public class SignUpActivity extends AppCompatActivity {
                     signUp();
                     break;
                 case R.id.goToLoginButton:
-                    myStartActivity(LoginActivity.class);
+                    if (mAuth.getCurrentUser() == null) {
+                        myStartActivity(LoginActivity.class);
+                    }
+                    else{
+                        myStartActivity(MemberInitActivity.class);
+                    }
+
                     break;
             }
         }
@@ -74,7 +83,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     // Sign in success, update UI with the signed-in user's information
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     startToast("회원가입에 성공하였습니다.");
-                                    myStartActivity(MainActivity.class);
+                                    myStartActivity(MemberInitActivity.class);
 
                                 }
                                 // 비밀번호 null 일때
@@ -100,7 +109,7 @@ public class SignUpActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
- private void myStartActivity(Class c) {
+    private void myStartActivity(Class c) {
         Intent intent = new Intent(this, c);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
