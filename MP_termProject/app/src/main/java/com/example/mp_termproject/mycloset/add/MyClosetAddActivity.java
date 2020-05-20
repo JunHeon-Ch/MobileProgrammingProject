@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,6 +19,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class MyClosetAddActivity extends AppCompatActivity {

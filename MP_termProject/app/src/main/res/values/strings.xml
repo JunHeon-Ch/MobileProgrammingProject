@@ -5,6 +5,14 @@
     <string name="passwordCheck">비밀번호 확인</string>
     <string name="login">로그인</string>
     <string name="logout">로그아웃</string>
+<<<<<<< Updated upstream
+=======
+    <string name="mycloset">내옷장</string>
+    <string name="lookbook">룩북</string>
+    <string name="ourcloset">공유옷장</string>
+    <string name="search">검색</string>
+    <string name="address">주소찾기</string>
+>>>>>>> Stashed changes
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

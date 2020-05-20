@@ -1,4 +1,4 @@
-package com.example.mp_termproject.ourcloset;
+package com.example.mp_termproject.gps;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -52,7 +52,7 @@ public class GpsActivity extends AppCompatActivity {
         final TextView textview_address = (TextView) findViewById(R.id.textview);
 
         // GpsTracker를 통해 현재 위도와 경도를 받고 이를 통해 주소를 찾는다
-        // 위도, 경도, 주소를 데이터베이스에 저장 (수정)
+        // 위도, 경도, 주소를 MemberInitActivty로
         Button ShowLocationButton = (Button) findViewById(R.id.button);
         ShowLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,17 +67,6 @@ public class GpsActivity extends AppCompatActivity {
                 textview_address.setText(address);
 
                 Toast.makeText(GpsActivity.this, "현재위치 \n위도 " + latitude + "\n경도 " + longitude, Toast.LENGTH_LONG).show();
-            }
-        });
-
-        // 현재 주소를 구글 맵에 표시해준다.
-        Button showGoogleMapButton = findViewById(R.id.button2);
-        showGoogleMapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CurrentLocationActivity.class);
-
-                startActivity(intent);
             }
         });
     }

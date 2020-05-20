@@ -3,9 +3,10 @@
     package="com.example.mp_termproject">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 인터넷 권한 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -16,30 +17,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".lookbook.filter.LookbookFilterActivity"/>
-        <activity android:name=".ourcloset.filter.OurClosetFilterActivity"/>
-        <activity android:name=".lookbook.add.CoordinatorActivity"></activity>
+
+        <activity android:name=".lookbook.filter.LookbookFilterActivity" />
+        <activity android:name=".ourcloset.filter.OurClosetFilterActivity" />
+        <activity android:name=".lookbook.add.CoordinatorActivity" />
         <activity android:name=".lookbook.add.LookbookAddActivity" />
         <activity android:name=".mycloset.filter.MyClosetFilterActivity" />
         <activity android:name=".mycloset.add.MyClosetAddActivity" />
-        <activity android:name=".mycloset.camera.CameraActivity">
-        </activity>
+        <activity android:name=".mycloset.camera.CameraActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBlKPQFIEDt_eky3dVgUCKItVKIDYJV16U" />
 
         <activity android:name=".ModeActivity" />
-        <activity android:name=".ourcloset.GpsActivity" />
-        <activity android:name=".ourcloset.CurrentLocationActivity" />
+        <activity android:name=".gps.GpsActivity" />
+        <activity android:name=".gps.CurrentLocationActivity" />
         <activity android:name=".signup.SignUpActivity" />
-        <activity android:name=".signup.MemberInitActivity">
-        </activity>
-
-
-
+        <activity android:name=".signup.MemberInitActivity" />
         <activity android:name=".login.LoginActivity" />
         <activity android:name=".MainActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

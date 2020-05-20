@@ -29,10 +29,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+//        로그인 정보가 없다면
         if(user == null){
             myStartActivity(SignUpActivity.class);
         }else{
-
+//            로그인 정보가 있다면
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("users").document(user.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -41,9 +42,12 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document != null) {
+                            // 회원정보가 입력되어 있다면
                             if (document.exists()) {
                                 Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                                myStartActivity(ModeActivity.class);
                             } else {
+//                                회워정보가 입력되지 않았다면
                                 Log.d(TAG, "No such document");
                                 myStartActivity(MemberInitActivity.class);
                             }
@@ -56,30 +60,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        findViewById(R.id.mainLogoutButton).setOnClickListener(onClickListener);
+//        findViewById(R.id.mainLogoutButton).setOnClickListener(onClickListener);
 
-        // 모드 Activity 이동
-        Button modeButton = findViewById(R.id.modeButton);
-        modeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myStartActivity(ModeActivity.class);
-            }
-        });
+//        // 모드 Activity 이동
+//        Button modeButton = findViewById(R.id.modeButton);
+//        modeButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                myStartActivity(ModeActivity.class);
+//            }
+//        });
     }
 
-    View.OnClickListener onClickListener= new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.mainLogoutButton:
-                    FirebaseAuth.getInstance().signOut();
-                    Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                    startActivity(intent);
-                    break;
-            }
-        }
-    };
     private void myStartActivity(Class c) {
         Intent intent = new Intent(this, c);
         startActivity(intent);
