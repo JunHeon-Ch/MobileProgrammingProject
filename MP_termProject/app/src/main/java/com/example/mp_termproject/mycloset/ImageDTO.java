@@ -20,7 +20,7 @@ public class ImageDTO {
     String season;
     String size;
     String shared;
-    int imgNum;
+    double imgNum;
 
     public ImageDTO(String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
         this.userID = userID;

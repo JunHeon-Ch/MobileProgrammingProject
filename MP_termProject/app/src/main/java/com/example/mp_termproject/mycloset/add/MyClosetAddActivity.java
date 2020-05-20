@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.ImageDTO;
 
+import com.example.mp_termproject.signup.UserInfo;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,6 +38,8 @@ import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -46,6 +49,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class MyClosetAddActivity extends AppCompatActivity {
+    private static final String TAG = "MyClosetAddActivity";
 
     ImageView image;
     TextView itemName;
@@ -314,7 +318,9 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 // img num 확인 & img num user info에 업데이트
-
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                //imgnum 저장할 temp userInfo
+                final Double[] imgnum = new Double[1];
 
 
 //                상운 구현부
@@ -329,13 +335,37 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 String sizeText=size.getText().toString();
                 String sharedText=shared.getText().toString();
 
+                // 문서 갖고오기
+                final DocumentReference docRef = db.collection("users").document(user.getUid());
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                // imgNum 받아옴
+
+                                imgnum[0] =  document.getDouble("imgNum");
+                                Log.d(TAG, "DocumentSnapshot data: " + imgnum[0]);
+                                imgnum[0]= imgnum[0]+1;
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+
                 // storage에 저장할 값들 저장해두기
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
-                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/"+imgNameText+".jpg");
+
+                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/"+imgnum[0]+".jpg");
 
                 // img url 저장
-                imgURL = "users/" + user.getUid() + "/"+imgNameText+".jpg";
+                imgURL = "users/" + user.getUid() + "/"+imgnum[0]+".jpg";
 
                 // storage에 upload
                 UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
@@ -365,18 +395,30 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 });
 
                 // 데이터베이스에 저장
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
                 ImageDTO imgDto = new ImageDTO(userID, imgURL,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
 
-                db.collection("images").document(user.getUid()).set(imgDto)
+                db.collection("images").document(user.getUid()).collection("image").document(String.valueOf(imgnum[0])).set(imgDto)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
                                 alert.setMessage("저장되었습니다");
-
+                                docRef
+                                        .update("imgNum", imgnum[0])
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error updating document", e);
+                                            }
+                                        });
                                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         Toast.makeText(MyClosetAddActivity.this,
