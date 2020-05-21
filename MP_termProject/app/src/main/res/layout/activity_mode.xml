@@ -27,19 +27,25 @@
             android:id="@+id/myClosetButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MYCLOSET" />
+            android:text="@string/mycloset" />
 
         <Button
             android:id="@+id/lookBookButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LOOKBOOK" />
+            android:text="@string/lookbook" />
 
         <Button
             android:id="@+id/ourClosetButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OURCLOSET" />
+            android:text="@string/ourcloset" />
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/logout" />
     </LinearLayout>
 
 </RelativeLayout>
