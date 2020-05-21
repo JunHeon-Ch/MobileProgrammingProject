@@ -16,6 +16,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+
 public class MemberInitActivity extends AppCompatActivity {
     private static final String TAG = "MemberInitActivity";
 
