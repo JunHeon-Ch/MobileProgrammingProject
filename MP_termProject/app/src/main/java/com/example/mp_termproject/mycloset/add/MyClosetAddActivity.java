@@ -42,8 +42,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import com.google.firebase.storage.UploadTask
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Map;
