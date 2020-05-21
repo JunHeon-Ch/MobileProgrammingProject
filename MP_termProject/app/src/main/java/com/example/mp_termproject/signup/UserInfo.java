@@ -5,9 +5,9 @@ public class UserInfo {
     private String phoneNumber;
     private String birthDay;
     private String address;
-    private Double imgNum;
+    private Integer imgNum;
 
-    public UserInfo(String name, String phoneNumber, String birthDay, String address, double imgNum){
+    public UserInfo(String name, String phoneNumber, String birthDay, String address, Integer imgNum){
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDay = birthDay;
@@ -43,7 +43,7 @@ public class UserInfo {
     public double getImgNum(){
         return this.imgNum;
     }
-    public void setImgNum(double imgNum){
+    public void setImgNum(Integer imgNum){
         this.imgNum = imgNum;
     }
 }

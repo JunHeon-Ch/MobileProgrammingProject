@@ -6,9 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.graphics.Color;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +27,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.ImageDTO;
 
-import com.example.mp_termproject.signup.UserInfo;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,10 +44,12 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MyClosetAddActivity extends AppCompatActivity {
     private static final String TAG = "MyClosetAddActivity";
-
+    static Double[] imgnum = new Double[1];
+    static boolean isWating = true;
     ImageView image;
     TextView itemName;
     TextView category;
@@ -320,9 +319,9 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 // img num 확인 & img num user info에 업데이트
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 //imgnum 저장할 temp userInfo
-                final Double[] imgnum = new Double[1];
 
 
+                
 //                상운 구현부
 //                image, itemName, category, col    or, brand, season, shared 값 데이터베이스에 저장
                 String userID = user.getUid();
@@ -336,6 +335,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 String sharedText=shared.getText().toString();
 
                 // 문서 갖고오기
+                isWating = true;
+                Log.d("CheckTest","1");
                 final DocumentReference docRef = db.collection("users").document(user.getUid());
                 docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -345,27 +346,39 @@ public class MyClosetAddActivity extends AppCompatActivity {
                             if (document.exists()) {
                                 // imgNum 받아옴
 
-                                imgnum[0] =  document.getDouble("imgNum");
+                                Map<String, Object> temp =   document.getData();
+                                Log.d(TAG, "DocumentSnapshot data: " + (temp.get("imgNum")  instanceof Double));
+                                imgnum[0] = (Double) temp.get("imgNum");
                                 Log.d(TAG, "DocumentSnapshot data: " + imgnum[0]);
-                                imgnum[0]= imgnum[0]+1;
+
+                                //imgnum[0] = (temp == null) ? 0 : (temp + 1);
+                                //imgnum[0]= imgnum[0]+1;
                             } else {
                                 Log.d(TAG, "No such document");
                             }
                         } else {
                             Log.d(TAG, "get failed with ", task.getException());
                         }
+
+                        isWating = false;
                     }
                 });
 
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
+                Log.d(TAG, "new1 data: " + imgnum[0]);
                 // storage에 저장할 값들 저장해두기
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
 
-                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/"+imgnum[0]+".jpg");
+                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/"+ imgnum[0]+".jpg");
 
                 // img url 저장
-                imgURL = "users/" + user.getUid() + "/"+imgnum[0]+".jpg";
+                imgURL = "users/" + user.getUid() + "/"+ imgnum[0]+".jpg";
 
                 // storage에 upload
                 UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
@@ -396,10 +409,10 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                 // 데이터베이스에 저장
 
-
+                Log.d(TAG, "new2 data: " + imgnum[0]);
                 ImageDTO imgDto = new ImageDTO(userID, imgURL,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
-
-                db.collection("images").document(user.getUid()).collection("image").document(String.valueOf(imgnum[0])).set(imgDto)
+                //Log.d("test1", imgnum[0].toString());
+                db.collection("images").document(user.getUid()).collection("image").document("new").set(imgDto)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
