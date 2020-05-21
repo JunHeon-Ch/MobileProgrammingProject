@@ -6,9 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.graphics.Color;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +35,8 @@ import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -46,9 +46,12 @@ import com.google.firebase.storage.UploadTask
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MyClosetAddActivity extends AppCompatActivity {
-
+    private static final String TAG = "MyClosetAddActivity";
+    static Double[] imgnum = new Double[1];
+    static boolean isWating = true;
     ImageView image;
     TextView itemName;
     TextView category;
@@ -315,7 +318,12 @@ public class MyClosetAddActivity extends AppCompatActivity {
             case R.id.actionbar_store:
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                // img num 확인 & img num user info에 업데이트
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                //imgnum 저장할 temp userInfo
 
+
+                
 //                상운 구현부
 //                image, itemName, category, col    or, brand, season, shared 값 데이터베이스에 저장
                 String userID = user.getUid();
@@ -328,13 +336,51 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 String sizeText=size.getText().toString();
                 String sharedText=shared.getText().toString();
 
+                // 문서 갖고오기
+                isWating = true;
+                Log.d("CheckTest","1");
+                final DocumentReference docRef = db.collection("users").document(user.getUid());
+                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                // imgNum 받아옴
+
+                                Map<String, Object> temp =   document.getData();
+                                Log.d(TAG, "DocumentSnapshot data: " + (temp.get("imgNum")  instanceof Double));
+                                imgnum[0] = (Double) temp.get("imgNum");
+                                Log.d(TAG, "DocumentSnapshot data: " + imgnum[0]);
+
+                                //imgnum[0] = (temp == null) ? 0 : (temp + 1);
+                                //imgnum[0]= imgnum[0]+1;
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+
+                        isWating = false;
+                    }
+                });
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "new1 data: " + imgnum[0]);
                 // storage에 저장할 값들 저장해두기
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
-                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/"+imgNameText+".jpg");
+
+                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/"+ imgnum[0]+".jpg");
 
                 // img url 저장
-                imgURL = "users/" + user.getUid() + "/"+imgNameText+".jpg";
+                imgURL = "users/" + user.getUid() + "/"+ imgnum[0]+".jpg";
 
                 // storage에 upload
                 UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
@@ -362,34 +408,59 @@ public class MyClosetAddActivity extends AppCompatActivity {
                         }
                     }
                 });
+
                 // 데이터베이스에 저장
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+                Log.d(TAG, "new2 data: " + imgnum[0]);
                 ImageDTO imgDto = new ImageDTO(userID, imgURL,categoryText,imgNameText,colorText,brandText,seasonText,sizeText,sharedText);
-                db.collection("images/check").document(user.getUid()).set(imgDto);
+                //Log.d("test1", imgnum[0].toString());
+                db.collection("images").document(user.getUid()).collection("image").document("new").set(imgDto)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
+                                alert.setMessage("저장되었습니다");
+                                docRef
+                                        .update("imgNum", imgnum[0])
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error updating document", e);
+                                            }
+                                        });
+                                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Toast.makeText(MyClosetAddActivity.this,
+                                                itemName.getText() + "\n"
+                                                        + category.getText() + "\n"
+                                                        + color.getText() + "\n"
+                                                        + brand.getText() + "\n"
+                                                        + season.getText() + "\n"
+                                                        + size.getText() + "\n"
+                                                        + shared.getText() + "\n",
+                                                Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+
+                                alert.show();
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            public void onFailure(@NonNull Exception e) {
+                             Toast.makeText(MyClosetAddActivity.this,"사진 업로드가 실패했습니다.",Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
 
 
-
-                AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
-                alert.setMessage("저장되었습니다");
-
-                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Toast.makeText(MyClosetAddActivity.this,
-                                itemName.getText() + "\n"
-                                        + category.getText() + "\n"
-                                        + color.getText() + "\n"
-                                        + brand.getText() + "\n"
-                                        + season.getText() + "\n"
-                                        + size.getText() + "\n"
-                                        + shared.getText() + "\n",
-                                Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
-
-                alert.show();
 
         }
 
