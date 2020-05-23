@@ -2,6 +2,7 @@ package com.example.mp_termproject.mycloset;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,12 @@ import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.camera.CameraActivity;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +42,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
@@ -84,9 +93,52 @@ public class MyClosetFragment extends Fragment {
             }
         });
 
-//        상운 구현부
-//        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        int i = 1;
+        while (i < 3) {
+            StorageReference pathReference1 = storageRef.child("closet/" + user + "/" + i + ".0.jpg");
+            pathReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Log.d("test", uri.toString());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("error", e.toString());
+                }
+            });
+
+            StorageReference pathReference2 = storageRef.child("closet/" + user + "/" + (i + 1) + ".0.jpg");
+            pathReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Log.d("test", uri.toString());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("error", e.toString());
+                }
+            });
+
+            MyClosetImageLayout layout = new MyClosetImageLayout(this.getContext());
+            layout.setPathReference1(pathReference1);
+            layout.setPathReference2(pathReference2);
+
+
+//            layout.init();
+
+            LinearLayout imageContainer = rootView.findViewById(R.id.imageContainer);
+            imageContainer.addView(layout);
+            // imgNum으로 비교
+
+            i += 2;
+        }
+//        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
 
         return rootView;
     }
@@ -164,6 +216,7 @@ public class MyClosetFragment extends Fragment {
 //              카메라 권한 얻은 후 사진을 얻어 변수에 저장 -> 저장한 이미지 grabCut으로 배경 제거
 //              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
 //                myStartActivity(CameraActivity.class);
+
                 Log.d("gogogogo", "" + imgnum[0]);
                 intent = new Intent(getContext(), MyClosetAddActivity.class);
                 Bundle bundle = new Bundle();
@@ -224,4 +277,11 @@ public class MyClosetFragment extends Fragment {
 
         startActivity(intent);
     }
+
+//    private void floatImage() {
+//        for(int i = 0; i < 100; i++){
+//            LinearLayout linearLayout = new LinearLayout(getContext());
+//
+//        }
+//    }
 }
