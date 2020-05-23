@@ -21,27 +21,49 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.camera.CameraActivity;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public class MyClosetFragment extends Fragment {
+    private static final String TAG = "MyClosetFragment";
 
     final static int REQUEST_FILTER = 1;
-    final static int REQUEST_IMAGE_CAPTURE = 2;
+    final static int REQUEST_ADD = 2;
+    static ArrayList<ImageDTO> dtoList = new ArrayList<>();
+
+    DocumentReference docRefImageInfo;
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    final DocumentReference docRefUserInfo = db.collection("users").document(user.getUid());
+
+    Double[] imgnum = new Double[1];
 
     EditText searchText;
     ImageView searchImage;
@@ -52,10 +74,10 @@ public class MyClosetFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("MY CLOSET");
-
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
                 container, false);
         setHasOptionsMenu(true);
+
 
         searchText = rootView.findViewById(R.id.search);
         searchImage = rootView.findViewById(R.id.search_image);
@@ -107,6 +129,7 @@ public class MyClosetFragment extends Fragment {
             layout.setPathReference1(pathReference1);
             layout.setPathReference2(pathReference2);
 
+
 //            layout.init();
 
             LinearLayout imageContainer = rootView.findViewById(R.id.imageContainer);
@@ -118,6 +141,59 @@ public class MyClosetFragment extends Fragment {
 //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // 유저 정보접근
+        docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // imgNum 받아옴
+                        Map<String, Object> temp = document.getData();
+                        imgnum[0] = (Double) temp.get("imgNum");
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+
+            }
+        });
+        db.collection("images").document(user.getUid()).collection("image")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                Map<String, Object> temp = document.getData();
+
+                                String id = (String) temp.get("userID");
+                                String url = (String) temp.get("imgURL");
+                                String category = (String) temp.get("category");
+                                String name = (String) temp.get("itemName");
+                                String color = (String) temp.get("color");
+                                String brand = (String) temp.get("brand");
+                                String season = (String) temp.get("season");
+                                String size = (String) temp.get("size");
+                                String shared = (String) temp.get("shared");
+                                ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared);
+                                dtoList.add(dto);
+                                Log.d("snapshot",""+dto.getBrand());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
     }
 
 
@@ -141,11 +217,12 @@ public class MyClosetFragment extends Fragment {
 //              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
 //                myStartActivity(CameraActivity.class);
 
-                Log.d("MyClosetFragment test", "start");
-                sendTakePhotoIntent();
-
-//                intent = new Intent(getContext(), MyClosetAddActivity.class);
-//                startActivity(intent);
+                Log.d("gogogogo", "" + imgnum[0]);
+                intent = new Intent(getContext(), MyClosetAddActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putDouble("imgNum", imgnum[0]);
+                intent.putExtras(bundle);
+                startActivity(intent);
 
                 break;
 
@@ -160,32 +237,10 @@ public class MyClosetFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void sendTakePhotoIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == -1) {
-            Log.d("MyClosetFragment test", "in");
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] bytes = stream.toByteArray();
-
-            Intent intent = new Intent(getContext(), MyClosetAddActivity.class);
-            extras.putByteArray("image", bytes);
-
-            intent.putExtras(extras);
-            startActivity(intent);
-        }
 
         if (requestCode == REQUEST_FILTER) {
             if (resultCode == -1) {
