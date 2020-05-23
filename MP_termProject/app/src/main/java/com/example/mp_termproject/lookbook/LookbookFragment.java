@@ -43,19 +43,6 @@ public class LookbookFragment extends Fragment {
                 false);
         setHasOptionsMenu(true);
 
-        searchText = rootView.findViewById(R.id.search);
-        searchImage = rootView.findViewById(R.id.search_image);
-        searchImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
-//                  상운 구현부
-//                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
-                    Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        });
 
 
 //        상운구현부
