@@ -42,8 +42,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import com.google.firebase.storage.UploadTask
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Map;
@@ -377,7 +375,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
 
-                final StorageReference mountainImagesRef = storageRef.child("users/" + user.getUid() + "/"+ imgnum[0]+".jpg");
+                final StorageReference mountainImagesRef = storageRef.child("closet/" + user.getUid() + "/"+ imgnum[0]+".jpg");
 
                 // img url 저장
                 imgURL = "users/" + user.getUid() + "/"+ imgnum[0]+".jpg";
