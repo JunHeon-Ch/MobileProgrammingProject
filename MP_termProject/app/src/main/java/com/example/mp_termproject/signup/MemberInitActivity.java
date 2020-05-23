@@ -41,7 +41,7 @@ public class MemberInitActivity extends AppCompatActivity {
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-
+    UserInfo userInfo;
     EditText addressEditText;
     String address;
     double latitude;
@@ -84,6 +84,7 @@ public class MemberInitActivity extends AppCompatActivity {
                     latitude = gpsTracker.getLatitude();
                     longitude = gpsTracker.getLongitude();
 
+
                     // Geocoder를 사용해 현주소 받아오기
                     address = getCurrentAddress(latitude, longitude);
                     addressEditText.setText(address);
@@ -91,6 +92,16 @@ public class MemberInitActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             "현재위치 \n위도 " + latitude + "\n경도 " + longitude,
                             Toast.LENGTH_LONG).show();
+                    try {
+
+                        Thread.sleep(1000); //1초 대기
+
+                    } catch (InterruptedException e) {
+
+                        e.printStackTrace();
+
+                    }
+
 
                     break;
             }
@@ -107,7 +118,9 @@ public class MemberInitActivity extends AppCompatActivity {
         if(name.length() > 0 && phoneNumber.length() > 9 && birthDay.length() > 5 && address.length() > 0){
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            UserInfo userInfo = new UserInfo(name, phoneNumber, birthDay, address, 0);
+            userInfo = new UserInfo(name, phoneNumber, birthDay, address, 0);
+            userInfo.setLatitude(latitude);
+            userInfo.setLongitude(longitude);
 
             if(user != null){
                 db.collection("users").document(user.getUid()).set(userInfo)
