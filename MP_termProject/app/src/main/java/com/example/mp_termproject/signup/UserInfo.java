@@ -6,6 +6,8 @@ public class UserInfo {
     private String birthDay;
     private String address;
     private Integer imgNum;
+    private Double Latitude;
+    private Double Longitude;
 
     public UserInfo(String name, String phoneNumber, String birthDay, String address, Integer imgNum){
         this.name = name;
@@ -40,10 +42,19 @@ public class UserInfo {
     public void setAddress(String address){
         this.address = address;
     }
-    public double getImgNum(){
-        return this.imgNum;
+
+    public double getLatitude(){
+        return this.Latitude;
     }
-    public void setImgNum(Integer imgNum){
-        this.imgNum = imgNum;
+    public void setLatitude(Double Latitude){
+        this.Latitude = Latitude;
     }
+    public double getLongitude(){
+        return this.Longitude;
+    }
+    public void setLongitude(Double Longitude){
+        this.Longitude = Longitude;
+    }
+
+
 }

@@ -79,6 +79,16 @@ public class MyClosetFragment extends Fragment {
 //                  상운 구현부
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
                     Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
+                    String sText=searchText.getText().toString();
+                    int i = 0;
+                    Log.d("url123",imgnum[0]+"");
+                    for (i = 0; i < Math.round(imgnum[0]); i++) {
+                        if(sText.equals(dtoList.get(i).getBrand())||sText.equals( dtoList.get(i).getItemName())){
+//                            Toast.makeText(getContext(), dtoList.get(i).getImgURL(), Toast.LENGTH_SHORT).show();
+                                Log.d(" url123",dtoList.get(i).getImgURL()+"");
+                        }
+                    }
+
 
                 }
             }
@@ -119,6 +129,7 @@ public class MyClosetFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            int i = 0;
                             for (QueryDocumentSnapshot document : task.getResult()) {
 //                                Log.d(TAG, document.getId() + " => " + document.getData());
                                 Map<String, Object> temp = document.getData();
@@ -134,7 +145,7 @@ public class MyClosetFragment extends Fragment {
                                 String shared = (String) temp.get("shared");
                                 ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared);
                                 dtoList.add(dto);
-                                Log.d("snapshot",""+dto.getBrand());
+                                Log.d("snapshot", "" + dtoList.get(i));
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
