@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.camera.CameraActivity;
@@ -54,7 +56,7 @@ public class MyClosetFragment extends Fragment {
     private static final String TAG = "MyClosetFragment";
 
     final static int REQUEST_FILTER = 1;
-    final static int REQUEST_ADD = 2;
+
     static ArrayList<ImageDTO> dtoList = new ArrayList<>();
 
     DocumentReference docRefImageInfo;
@@ -63,10 +65,16 @@ public class MyClosetFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     final DocumentReference docRefUserInfo = db.collection("users").document(user.getUid());
 
-    Double[] imgnum = new Double[1];
+    final FirebaseStorage storage = FirebaseStorage.getInstance();
+    final StorageReference storageRef = storage.getReference();
+
+    Double[] imgnum = new Double[]{0.0};
 
     EditText searchText;
     ImageView searchImage;
+
+    ViewGroup rootView;
+    LayoutInflater inflater;
 
     @Nullable
     @Override
@@ -74,9 +82,11 @@ public class MyClosetFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("MY CLOSET");
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
+        rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
                 container, false);
+        this.inflater = inflater;
         setHasOptionsMenu(true);
+
 
 
         searchText = rootView.findViewById(R.id.search);
@@ -103,53 +113,6 @@ public class MyClosetFragment extends Fragment {
             }
         });
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        int i = 1;
-        while (i < 3) {
-            StorageReference pathReference1 = storageRef.child("closet/" + user + "/" + i + ".0.jpg");
-            pathReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Log.d("test", uri.toString());
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("error", e.toString());
-                }
-            });
-
-            StorageReference pathReference2 = storageRef.child("closet/" + user + "/" + (i + 1) + ".0.jpg");
-            pathReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Log.d("test", uri.toString());
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("error", e.toString());
-                }
-            });
-
-            MyClosetImageLayout layout = new MyClosetImageLayout(this.getContext());
-            layout.setPathReference1(pathReference1);
-            layout.setPathReference2(pathReference2);
-
-
-//            layout.init();
-
-            LinearLayout imageContainer = rootView.findViewById(R.id.imageContainer);
-            imageContainer.addView(layout);
-            // imgNum으로 비교
-
-            i += 2;
-        }
-//        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
-
         return rootView;
     }
 
@@ -166,6 +129,10 @@ public class MyClosetFragment extends Fragment {
                         // imgNum 받아옴
                         Map<String, Object> temp = document.getData();
                         imgnum[0] = (Double) temp.get("imgNum");
+
+                        Log.d("floatImages", imgnum[0] + "");
+                        // 화면에 이미지 띄우기
+                        floatImages();
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -175,6 +142,9 @@ public class MyClosetFragment extends Fragment {
 
             }
         });
+
+
+
         db.collection("images").document(user.getUid()).collection("image")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -197,6 +167,7 @@ public class MyClosetFragment extends Fragment {
                                 String shared = (String) temp.get("shared");
                                 ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared);
                                 dtoList.add(dto);
+
                                 Log.d("snapshot", "" + dtoList.get(i));
                             }
                         } else {
@@ -283,16 +254,58 @@ public class MyClosetFragment extends Fragment {
         }
     }
 
+    //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
+    private void floatImages(){
+        LinearLayout linearLayout = null;
+        LinearLayout imageContainer = rootView.findViewById(R.id.imageContainer);
+        final int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                180, getResources().getDisplayMetrics());
+
+        int i = 1;
+        while (i <= imgnum[0]) {
+            StorageReference pathReference = storageRef.child("closet/" + user.getUid() + "/" + i + ".0.jpg");
+
+            if(i % 3 == 1){
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, height);
+                layoutParams.weight = 1;
+
+                linearLayout = new LinearLayout(imageContainer.getContext());
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayout.setLayoutParams(layoutParams);
+
+                imageContainer.addView(linearLayout);
+                Log.d("testi", linearLayout.toString());
+            }
+
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            imageParams.setMargins(5, 5, 5, 5);
+            imageParams.weight = 1;
+
+            ImageView imageView = new ImageView(linearLayout.getContext());
+            imageView.setLayoutParams(imageParams);
+
+            Glide.with(linearLayout)
+                    .load(pathReference)
+                    .into(imageView);
+            linearLayout.addView(imageView);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 수정 & 삭제
+                    Toast.makeText(getContext(), "클릭", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            i++;
+        }
+    }
+
     private void myStartActivity(Class c) {
         Intent intent = new Intent(getContext(), c);
 
         startActivity(intent);
     }
-
-//    private void floatImage() {
-//        for(int i = 0; i < 100; i++){
-//            LinearLayout linearLayout = new LinearLayout(getContext());
-//
-//        }
-//    }
 }
