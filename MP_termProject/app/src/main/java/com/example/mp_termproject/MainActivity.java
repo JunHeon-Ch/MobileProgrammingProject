@@ -58,18 +58,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-
-//        findViewById(R.id.mainLogoutButton).setOnClickListener(onClickListener);
-
-//        // 모드 Activity 이동
-//        Button modeButton = findViewById(R.id.modeButton);
-//        modeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                myStartActivity(ModeActivity.class);
-//            }
-//        });
     }
 
     private void myStartActivity(Class c) {
