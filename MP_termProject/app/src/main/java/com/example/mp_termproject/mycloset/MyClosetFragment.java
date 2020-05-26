@@ -58,7 +58,6 @@ public class MyClosetFragment extends Fragment {
     final static int REQUEST_FILTER = 1;
 
     static ArrayList<ImageDTO> dtoList = new ArrayList<>();
-
     DocumentReference docRefImageInfo;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -98,13 +97,12 @@ public class MyClosetFragment extends Fragment {
 //                  상운 구현부
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
                     Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
-                    String sText=searchText.getText().toString();
+                    String sText = searchText.getText().toString();
                     int i = 0;
-                    Log.d("url123",imgnum[0]+"");
                     for (i = 0; i < Math.round(imgnum[0]); i++) {
-                        if(sText.equals(dtoList.get(i).getBrand())||sText.equals( dtoList.get(i).getItemName())){
+                        if (sText.equals(dtoList.get(i).getBrand()) || sText.equals(dtoList.get(i).getItemName())) {
 //                            Toast.makeText(getContext(), dtoList.get(i).getImgURL(), Toast.LENGTH_SHORT).show();
-                                Log.d(" url123",dtoList.get(i).getImgURL()+"");
+                            Log.d(" url123", dtoList.size() + "");
                         }
                     }
 
@@ -152,6 +150,7 @@ public class MyClosetFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             int i = 0;
+                            dtoList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
 //                                Log.d(TAG, document.getId() + " => " + document.getData());
                                 Map<String, Object> temp = document.getData();
@@ -199,7 +198,9 @@ public class MyClosetFragment extends Fragment {
 //              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
 //                myStartActivity(CameraActivity.class);
 
+
                 Log.d("gogogogo", "" + imgnum[0]);
+
                 intent = new Intent(getContext(), MyClosetAddActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putDouble("imgNum", imgnum[0]);
@@ -228,12 +229,20 @@ public class MyClosetFragment extends Fragment {
             if (resultCode == -1) {
                 Bundle bundle = data.getExtras();
 
-                ArrayList<String> categoryItemList = bundle.getStringArrayList("category");
-                ArrayList<String> colorItemList = bundle.getStringArrayList("color");
-                ArrayList<String> seasonItemList = bundle.getStringArrayList("season");
+                ArrayList<String> categoryItemList = (ArrayList<String>) bundle.getStringArrayList("category");
+                ArrayList<String> colorItemList = (ArrayList<String>) bundle.getStringArrayList("color");
+                ArrayList<String> seasonItemList = (ArrayList<String>) bundle.getStringArrayList("season");
                 String sharedItem = bundle.getString("share");
 
+                ArrayList<ImageDTO> temp = new ArrayList<ImageDTO>();
 
+                temp.addAll(filterCategory(dtoList, categoryItemList));
+                temp.addAll(filterColor(temp, colorItemList));
+                temp.addAll(filterSeason(temp, seasonItemList));
+                temp.addAll(filterShared(temp, sharedItem));
+                if(temp.size()==0){
+                    Toast.makeText(getContext(),"해당하는 값이 없습니다.",Toast.LENGTH_SHORT).show();
+                }
 //                               상운 구현부
 //                categorySelectedList, colorSelectedList, seasonSelectedList, shareSelected에
 //                저장된 데이터들이 필터 기준임.
@@ -308,4 +317,74 @@ public class MyClosetFragment extends Fragment {
 
         startActivity(intent);
     }
+
+
+    private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
+        ArrayList<ImageDTO> temp = new ArrayList<>();
+
+        if (arrayList.size() == 0) {
+            return List;
+        } else {
+            for (int i = 0; i < List.size(); i++) {
+                for (int j = 0; j < arrayList.size(); j++) {
+                    if (List.get(i).getCategory().equals(arrayList.get(j))) {
+                        temp.add(List.get((i)));
+                        Log.d("asdsadassa", "asdasda" + List.get(i));
+                    }
+                }
+            }
+        }
+        return temp;
+    }
+
+    private ArrayList<ImageDTO> filterColor(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
+        ArrayList<ImageDTO> temp = new ArrayList<>();
+
+        if (arrayList.size() == 0) {
+            return List;
+        } else {
+            for (int i = 0; i < List.size(); i++) {
+                for (int j = 0; j < arrayList.size(); j++) {
+                    if (List.get(i).getColor().equals(arrayList.get(j))) {
+                        temp.add(List.get((i)));
+                    }
+                }
+            }
+        }
+        return temp;
+    }
+
+    private ArrayList<ImageDTO> filterSeason(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
+        ArrayList<ImageDTO> temp = new ArrayList<>();
+
+        if (arrayList.size() == 0) {
+            return List;
+        } else {
+            for (int i = 0; i < List.size(); i++) {
+                for (int j = 0; j < arrayList.size(); j++) {
+                    if (List.get(i).getSeason().equals(arrayList.get(j))) {
+                        temp.add(List.get((i)));
+                    }
+                }
+            }
+        }
+        return temp;
+    }
+
+    private ArrayList<ImageDTO> filterShared(ArrayList<ImageDTO> List, String shared) {
+        ArrayList<ImageDTO> temp = new ArrayList<>();
+
+        if (shared == null) {
+            return List;
+        } else {
+            for (int i = 0; i < List.size(); i++) {
+                if (List.get(i).getShared().equals(shared)) {
+                    temp.add(List.get((i)));
+
+                }
+            }
+        }
+        return temp;
+    }
+
 }
