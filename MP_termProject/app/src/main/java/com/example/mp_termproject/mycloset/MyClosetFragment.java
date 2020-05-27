@@ -275,6 +275,7 @@ public class MyClosetFragment extends Fragment {
                 }
             }
         }
+        List.clear();
         return temp;
     }
 
@@ -292,6 +293,7 @@ public class MyClosetFragment extends Fragment {
                 }
             }
         }
+        List.clear();
         return temp;
     }
 
@@ -308,7 +310,9 @@ public class MyClosetFragment extends Fragment {
                 }
             }
         }
+        List.clear();
         return temp;
+
     }
 
 }

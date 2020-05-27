@@ -118,7 +118,7 @@ public class MemberInitActivity extends AppCompatActivity {
         if(name.length() > 0 && phoneNumber.length() > 9 && birthDay.length() > 5 && address.length() > 0){
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            userInfo = new UserInfo(name, phoneNumber, birthDay, address, 0);
+            userInfo = new UserInfo(name, phoneNumber, birthDay, address, 0.0);
             userInfo.setLatitude(latitude);
             userInfo.setLongitude(longitude);
 
