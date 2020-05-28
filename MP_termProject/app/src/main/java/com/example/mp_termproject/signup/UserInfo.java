@@ -6,16 +6,17 @@ public class UserInfo {
     private String birthDay;
     private String address;
     private Integer imgNum;
+    private Integer lookNum;
     private Double Latitude;
     private Double Longitude;
 
-    public UserInfo(String name, String phoneNumber, String birthDay, String address, Integer imgNum){
+    public UserInfo(String name, String phoneNumber, String birthDay, String address, Integer imgNum, Integer lookNum){
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDay = birthDay;
         this.address = address;
         this.imgNum = imgNum;
-
+        this.lookNum = lookNum;
     }
 
     public String getName(){

@@ -115,10 +115,14 @@ public class MemberInitActivity extends AppCompatActivity {
 //        String address = ((EditText)findViewById(R.id.addressEditText)).getText().toString();
 //        latitude, longitude도 회원정보에 추가
 
+        Log.d("test", name);
+        Log.d("test", phoneNumber);
+        Log.d("test", birthDay);
+        Log.d("test", address);
         if(name.length() > 0 && phoneNumber.length() > 9 && birthDay.length() > 5 && address.length() > 0){
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            userInfo = new UserInfo(name, phoneNumber, birthDay, address, 0);
+            userInfo = new UserInfo(name, phoneNumber, birthDay, address, 0, 0);
             userInfo.setLatitude(latitude);
             userInfo.setLongitude(longitude);
 

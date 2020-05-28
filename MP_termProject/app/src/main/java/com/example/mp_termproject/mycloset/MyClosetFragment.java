@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,8 +60,6 @@ public class MyClosetFragment extends Fragment {
 
     static ArrayList<ImageDTO> dtoList = new ArrayList<>();
 
-    DocumentReference docRefImageInfo;
-
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     final DocumentReference docRefUserInfo = db.collection("users").document(user.getUid());
@@ -73,8 +72,7 @@ public class MyClosetFragment extends Fragment {
     EditText searchText;
     ImageView searchImage;
 
-    ViewGroup rootView;
-    LayoutInflater inflater;
+    LinearLayout imageContainer;
 
     @Nullable
     @Override
@@ -82,12 +80,11 @@ public class MyClosetFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("MY CLOSET");
-        rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
                 container, false);
-        this.inflater = inflater;
         setHasOptionsMenu(true);
 
-
+        imageContainer = rootView.findViewById(R.id.imageContainer);
 
         searchText = rootView.findViewById(R.id.search);
         searchImage = rootView.findViewById(R.id.search_image);
@@ -97,7 +94,6 @@ public class MyClosetFragment extends Fragment {
                 if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
 //                  상운 구현부
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
-                    Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
                     String sText=searchText.getText().toString();
                     int i = 0;
                     Log.d("url123",imgnum[0]+"");
@@ -130,9 +126,8 @@ public class MyClosetFragment extends Fragment {
                         Map<String, Object> temp = document.getData();
                         imgnum[0] = (Double) temp.get("imgNum");
 
-                        Log.d("floatImages", imgnum[0] + "");
                         // 화면에 이미지 띄우기
-                        floatImages();
+                        floatTotalImages();
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -167,15 +162,12 @@ public class MyClosetFragment extends Fragment {
                                 String shared = (String) temp.get("shared");
                                 ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared);
                                 dtoList.add(dto);
-
-                                Log.d("snapshot", "" + dtoList.get(i));
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
                     }
                 });
-
     }
 
 
@@ -233,6 +225,7 @@ public class MyClosetFragment extends Fragment {
                 ArrayList<String> seasonItemList = bundle.getStringArrayList("season");
                 String sharedItem = bundle.getString("share");
 
+                Log.d("lalala", categoryItemList.get(0));
 
 //                               상운 구현부
 //                categorySelectedList, colorSelectedList, seasonSelectedList, shareSelected에
@@ -255,9 +248,9 @@ public class MyClosetFragment extends Fragment {
     }
 
     //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
-    private void floatImages(){
+    private void floatTotalImages(){
         LinearLayout linearLayout = null;
-        LinearLayout imageContainer = rootView.findViewById(R.id.imageContainer);
+        imageContainer.removeAllViews();
         final int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 180, getResources().getDisplayMetrics());
 
@@ -268,7 +261,7 @@ public class MyClosetFragment extends Fragment {
             if(i % 3 == 1){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
-                layoutParams.weight = 1;
+                layoutParams.gravity = Gravity.LEFT;
 
                 linearLayout = new LinearLayout(imageContainer.getContext());
                 linearLayout.setOrientation(LinearLayout.HORIZONTAL);
