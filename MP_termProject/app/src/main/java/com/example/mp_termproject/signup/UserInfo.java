@@ -6,6 +6,7 @@ public class UserInfo {
     private String birthDay;
     private String address;
     private Double imgNum;
+    private Double lookNum;
     private Double Latitude;
     private Double Longitude;
 
@@ -15,7 +16,7 @@ public class UserInfo {
         this.birthDay = birthDay;
         this.address = address;
         this.imgNum = imgNum;
-
+        this.lookNum = lookNum;
     }
 
     public String getName(){

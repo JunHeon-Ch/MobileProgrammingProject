@@ -1,4 +1,4 @@
-package com.example.mp_termproject.mycloset;
+package com.example.mp_termproject;
 
 import android.content.Context;
 

@@ -2,6 +2,9 @@ package com.example.mp_termproject.lookbook;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,20 +21,47 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.lookbook.add.LookbookAddActivity;
 import com.example.mp_termproject.lookbook.filter.LookbookFilterActivity;
+import com.example.mp_termproject.mycloset.ImageDTO;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
 
 public class LookbookFragment extends Fragment {
 
+    private static final String TAG = "LookbookFragment";
+
     static final int REQUEST_FILTER = 1;
-    EditText searchText;
-    ImageView searchImage;
+
+    static ArrayList<LookbookDTO> dtoList = new ArrayList<>();
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    final DocumentReference docRefUserInfo = db.collection("users").document(user.getUid());
+
+    final FirebaseStorage storage = FirebaseStorage.getInstance();
+    final StorageReference storageRef = storage.getReference();
+
+    Double[] imgnum = new Double[]{0.0};
+
+    LinearLayout imageContainer;
 
     @Nullable
     @Override
@@ -43,7 +74,7 @@ public class LookbookFragment extends Fragment {
                 false);
         setHasOptionsMenu(true);
 
-
+        imageContainer = rootView.findViewById(R.id.imageContainer);
 
 //        상운구현부
 //        db에 저장된 룩북 읽어와서 뿌려주는거 구현
@@ -52,6 +83,107 @@ public class LookbookFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // 유저 정보접근
+        docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // imgNum 받아옴
+                        Map<String, Object> temp = document.getData();
+                        imgnum[0] = (Double) temp.get("lookNum");
+
+                        // 화면에 이미지 띄우기
+                        floatTotalImages();
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+
+            }
+        });
+
+
+
+        db.collection("lookbook").document(user.getUid()).collection("looks")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            int i = 0;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                Map<String, Object> temp = document.getData();
+
+                                String id = (String) temp.get("userID");
+                                String url = (String) temp.get("imgURL");
+                                String occasion = (String) temp.get("occasion");
+                                String season = (String) temp.get("season");
+                                LookbookDTO dto = new LookbookDTO(id, url, occasion, season);
+                                dtoList.add(dto);
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void floatTotalImages() {
+        LinearLayout linearLayout = null;
+        imageContainer.removeAllViews();
+        final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                180, getResources().getDisplayMetrics());
+
+        int i = 1;
+        while (i <= imgnum[0]) {
+            StorageReference pathReference = storageRef.child("lookbook/" + user.getUid() + "/" + i + ".0.jpg");
+
+            if(i % 3 == 1){
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, height);
+                layoutParams.gravity = Gravity.LEFT;
+
+                linearLayout = new LinearLayout(imageContainer.getContext());
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayout.setLayoutParams(layoutParams);
+
+                imageContainer.addView(linearLayout);
+                Log.d("testi", linearLayout.toString());
+            }
+
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            imageParams.setMargins(5, 5, 5, 5);
+            imageParams.weight = 1;
+
+            ImageView imageView = new ImageView(linearLayout.getContext());
+            imageView.setLayoutParams(imageParams);
+
+            Glide.with(linearLayout)
+                    .load(pathReference)
+                    .into(imageView);
+            linearLayout.addView(imageView);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 수정 & 삭제
+                    Toast.makeText(getContext(), "클릭", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            i++;
+        }
     }
 
     // Action Bar에 메뉴옵션 띄우기
@@ -72,6 +204,10 @@ public class LookbookFragment extends Fragment {
 //              추가 메뉴 옵션 선택
 
                 intent = new Intent(getContext(), LookbookAddActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putDouble("lookNum", imgnum[0]);
+                intent.putExtras(bundle);
+
                 startActivity(intent);
                 break;
 

@@ -78,7 +78,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
         Intent intent = getIntent();
-        imgnum[0]=intent.getDoubleExtra("imgNum", 0.0);
+        imgnum[0] = intent.getDoubleExtra("imgNum", 0.0);
 
         sendTakePhotoIntent();
 
@@ -86,7 +86,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
         // 번들로 받은 배경제거된 이미지 image 변수에 저장
 
 
-        Log.d("activity123 test", ""+imgnum[0]);
+        Log.d("activity123 test", "" + imgnum[0]);
         image = findViewById(R.id.my_closet_add_image);
 
         // itemName text 클릭시 item name 입력 popup 띄우기
