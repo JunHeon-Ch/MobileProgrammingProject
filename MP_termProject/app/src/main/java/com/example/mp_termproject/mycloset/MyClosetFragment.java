@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +50,7 @@ public class MyClosetFragment extends Fragment {
     final static int REQUEST_FILTER = 1;
     final static int REQUEST_ADD = 2;
     static ArrayList<ImageDTO> dtoList = new ArrayList<>();
+
     DocumentReference docRefImageInfo;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -58,6 +62,8 @@ public class MyClosetFragment extends Fragment {
     EditText searchText;
     ImageView searchImage;
 
+    LinearLayout imageContainer;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -68,6 +74,7 @@ public class MyClosetFragment extends Fragment {
                 container, false);
         setHasOptionsMenu(true);
 
+        imageContainer = rootView.findViewById(R.id.imageContainer);
 
         searchText = rootView.findViewById(R.id.search);
         searchImage = rootView.findViewById(R.id.search_image);
@@ -77,6 +84,7 @@ public class MyClosetFragment extends Fragment {
                 if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
 //                  상운 구현부
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
+
                     Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
                     String sText = searchText.getText().toString();
                     int i = 0;
@@ -112,6 +120,9 @@ public class MyClosetFragment extends Fragment {
                         // imgNum 받아옴
                         Map<String, Object> temp = document.getData();
                         imgnum[0] = (Double) temp.get("imgNum");
+
+                        // 화면에 이미지 띄우기
+                        floatTotalImages();
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -151,7 +162,6 @@ public class MyClosetFragment extends Fragment {
                         }
                     }
                 });
-
     }
 
 
@@ -235,13 +245,24 @@ public class MyClosetFragment extends Fragment {
             }
         }
     }
-
+  
     private void myStartActivity(Class c) {
         Intent intent = new Intent(getContext(), c);
 
         startActivity(intent);
     }
 
+    //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
+    private void floatTotalImages(){
+        LinearLayout linearLayout = null;
+        imageContainer.removeAllViews();
+        final int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                180, getResources().getDisplayMetrics());
+
+            if(i % 3 == 1){
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, height);
+                layoutParams.gravity = Gravity.LEFT;
 
     private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
         ArrayList<ImageDTO> temp = new ArrayList<>();
@@ -314,5 +335,4 @@ public class MyClosetFragment extends Fragment {
         return temp;
 
     }
-
 }
