@@ -2,11 +2,9 @@ package com.example.mp_termproject.mycloset;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,17 +21,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.camera.CameraActivity;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +34,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
@@ -56,7 +45,7 @@ public class MyClosetFragment extends Fragment {
     private static final String TAG = "MyClosetFragment";
 
     final static int REQUEST_FILTER = 1;
-
+    final static int REQUEST_ADD = 2;
     static ArrayList<ImageDTO> dtoList = new ArrayList<>();
     DocumentReference docRefImageInfo;
 
@@ -64,16 +53,10 @@ public class MyClosetFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     final DocumentReference docRefUserInfo = db.collection("users").document(user.getUid());
 
-    final FirebaseStorage storage = FirebaseStorage.getInstance();
-    final StorageReference storageRef = storage.getReference();
-
-    Double[] imgnum = new Double[]{0.0};
+    Double[] imgnum = new Double[1];
 
     EditText searchText;
     ImageView searchImage;
-
-    ViewGroup rootView;
-    LayoutInflater inflater;
 
     @Nullable
     @Override
@@ -81,11 +64,9 @@ public class MyClosetFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("MY CLOSET");
-        rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
                 container, false);
-        this.inflater = inflater;
         setHasOptionsMenu(true);
-
 
 
         searchText = rootView.findViewById(R.id.search);
@@ -111,6 +92,10 @@ public class MyClosetFragment extends Fragment {
             }
         });
 
+//        상운 구현부
+//        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
+
+
         return rootView;
     }
 
@@ -127,10 +112,6 @@ public class MyClosetFragment extends Fragment {
                         // imgNum 받아옴
                         Map<String, Object> temp = document.getData();
                         imgnum[0] = (Double) temp.get("imgNum");
-
-                        Log.d("floatImages", imgnum[0] + "");
-                        // 화면에 이미지 띄우기
-                        floatImages();
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -140,9 +121,6 @@ public class MyClosetFragment extends Fragment {
 
             }
         });
-
-
-
         db.collection("images").document(user.getUid()).collection("image")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -166,7 +144,6 @@ public class MyClosetFragment extends Fragment {
                                 String shared = (String) temp.get("shared");
                                 ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared);
                                 dtoList.add(dto);
-
                                 Log.d("snapshot", "" + dtoList.get(i));
                             }
                         } else {
@@ -197,10 +174,6 @@ public class MyClosetFragment extends Fragment {
 //              카메라 권한 얻은 후 사진을 얻어 변수에 저장 -> 저장한 이미지 grabCut으로 배경 제거
 //              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
 //                myStartActivity(CameraActivity.class);
-
-
-                Log.d("gogogogo", "" + imgnum[0]);
-
                 intent = new Intent(getContext(), MyClosetAddActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putDouble("imgNum", imgnum[0]);
@@ -260,55 +233,6 @@ public class MyClosetFragment extends Fragment {
                                 + sharedItem + "\n",
                         Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-    //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
-    private void floatImages(){
-        LinearLayout linearLayout = null;
-        LinearLayout imageContainer = rootView.findViewById(R.id.imageContainer);
-        final int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                180, getResources().getDisplayMetrics());
-
-        int i = 1;
-        while (i <= imgnum[0]) {
-            StorageReference pathReference = storageRef.child("closet/" + user.getUid() + "/" + i + ".0.jpg");
-
-            if(i % 3 == 1){
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, height);
-                layoutParams.weight = 1;
-
-                linearLayout = new LinearLayout(imageContainer.getContext());
-                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-                linearLayout.setLayoutParams(layoutParams);
-
-                imageContainer.addView(linearLayout);
-                Log.d("testi", linearLayout.toString());
-            }
-
-            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            imageParams.setMargins(5, 5, 5, 5);
-            imageParams.weight = 1;
-
-            ImageView imageView = new ImageView(linearLayout.getContext());
-            imageView.setLayoutParams(imageParams);
-
-            Glide.with(linearLayout)
-                    .load(pathReference)
-                    .into(imageView);
-            linearLayout.addView(imageView);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // 수정 & 삭제
-                    Toast.makeText(getContext(), "클릭", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            i++;
         }
     }
 
