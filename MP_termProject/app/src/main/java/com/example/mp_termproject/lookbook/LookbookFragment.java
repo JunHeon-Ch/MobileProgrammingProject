@@ -11,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -23,9 +22,8 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
-import com.example.mp_termproject.lookbook.add.LookbookAddActivity;
+import com.example.mp_termproject.lookbook.add.CoordinatorActivity;
 import com.example.mp_termproject.lookbook.filter.LookbookFilterActivity;
-import com.example.mp_termproject.mycloset.ImageDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -76,12 +74,6 @@ public class LookbookFragment extends Fragment {
 
         imageContainer = rootView.findViewById(R.id.imageContainer);
 
-//        상운구현부
-//        db에 저장된 룩북 읽어와서 뿌려주는거 구현
-
-
-
-
         return rootView;
     }
 
@@ -111,9 +103,9 @@ public class LookbookFragment extends Fragment {
             }
         });
 
-
-
-        db.collection("lookbook").document(user.getUid()).collection("looks")
+        db.collection("lookbook")
+                .document(user.getUid())
+                .collection("looks")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -158,7 +150,6 @@ public class LookbookFragment extends Fragment {
                 linearLayout.setLayoutParams(layoutParams);
 
                 imageContainer.addView(linearLayout);
-                Log.d("testi", linearLayout.toString());
             }
 
             LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
@@ -203,7 +194,7 @@ public class LookbookFragment extends Fragment {
             case R.id.actionbar_add:
 //              추가 메뉴 옵션 선택
 
-                intent = new Intent(getContext(), LookbookAddActivity.class);
+                intent = new Intent(getContext(), CoordinatorActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putDouble("lookNum", imgnum[0]);
                 intent.putExtras(bundle);

@@ -1,11 +1,8 @@
 package com.example.mp_termproject.mycloset;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
-
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,17 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
-import com.example.mp_termproject.mycloset.camera.CameraActivity;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,25 +34,25 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
 
 public class MyClosetFragment extends Fragment {
+
     private static final String TAG = "MyClosetFragment";
 
     final static int REQUEST_FILTER = 1;
-    final static int REQUEST_ADD = 2;
     static ArrayList<ImageDTO> dtoList = new ArrayList<>();
-
-    DocumentReference docRefImageInfo;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     final DocumentReference docRefUserInfo = db.collection("users").document(user.getUid());
+    final FirebaseStorage storage = FirebaseStorage.getInstance();
+    final StorageReference storageRef = storage.getReference();
 
     Double[] imgnum = new Double[1];
 
@@ -87,8 +84,7 @@ public class MyClosetFragment extends Fragment {
 
                     Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
                     String sText = searchText.getText().toString();
-                    int i = 0;
-                    for (i = 0; i < Math.round(imgnum[0]); i++) {
+                    for (int i = 0; i < imgnum[0]; i++) {
                         if (sText.equals(dtoList.get(i).getBrand()) || sText.equals(dtoList.get(i).getItemName())) {
 //                            Toast.makeText(getContext(), dtoList.get(i).getImgURL(), Toast.LENGTH_SHORT).show();
                             Log.d(" url123", dtoList.size() + "");
@@ -132,7 +128,9 @@ public class MyClosetFragment extends Fragment {
 
             }
         });
-        db.collection("images").document(user.getUid()).collection("image")
+        db.collection("images")
+                .document(user.getUid())
+                .collection("image")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -153,7 +151,8 @@ public class MyClosetFragment extends Fragment {
                                 String season = (String) temp.get("season");
                                 String size = (String) temp.get("size");
                                 String shared = (String) temp.get("shared");
-                                ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared);
+                                ImageDTO dto = new ImageDTO(id, url, category, name,
+                                        color, brand, season, size, shared);
                                 dtoList.add(dto);
                                 Log.d("snapshot", "" + dtoList.get(i));
                             }
@@ -259,10 +258,46 @@ public class MyClosetFragment extends Fragment {
         final int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 180, getResources().getDisplayMetrics());
 
+        int i = 1;
+        while (i <= imgnum[0]) {
+            StorageReference pathReference = storageRef.child("closet/" + user.getUid() + "/" + i + ".0.jpg");
+
             if(i % 3 == 1){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
-                layoutParams.gravity = Gravity.LEFT;
+
+                linearLayout = new LinearLayout(imageContainer.getContext());
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayout.setLayoutParams(layoutParams);
+
+                imageContainer.addView(linearLayout);
+            }
+
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            imageParams.setMargins(5, 5, 5, 5);
+            imageParams.weight = 1;
+            imageParams.gravity = Gravity.LEFT;
+
+            ImageView imageView = new ImageView(linearLayout.getContext());
+            imageView.setLayoutParams(imageParams);
+
+            Glide.with(linearLayout)
+                    .load(pathReference)
+                    .into(imageView);
+            linearLayout.addView(imageView);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 수정 & 삭제
+                    Toast.makeText(getContext(), "클릭", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            i++;
+        }
+    }
 
     private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
         ArrayList<ImageDTO> temp = new ArrayList<>();

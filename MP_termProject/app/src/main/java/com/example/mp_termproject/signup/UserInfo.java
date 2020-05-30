@@ -7,59 +7,83 @@ public class UserInfo {
     private String address;
     private Double imgNum;
     private Double lookNum;
-    private Double Latitude;
-    private Double Longitude;
+    private Double latitude;
+    private Double longitude;
 
-    public UserInfo(String name, String phoneNumber, String birthDay, String address, Double imgNum){
+    public UserInfo(String name, String phoneNumber, String birthDay, String address,
+                    Double imgNum, Double lookNum, Double latitude, Double longitude) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDay = birthDay;
         this.address = address;
         this.imgNum = imgNum;
         this.lookNum = lookNum;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
-    public void setName(String name){
+
+    public void setName(String name) {
         this.name = name;
     }
-    public String getPhoneNumber(){
+
+    public String getPhoneNumber() {
         return this.phoneNumber;
     }
-    public void setPhoneNumber(String phoneNumber){
+
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-    public String getBirthDay(){
+
+    public String getBirthDay() {
         return this.birthDay;
     }
-    public void setBirthDay(String birthDay){
+
+    public void setBirthDay(String birthDay) {
         this.birthDay = birthDay;
     }
-    public String getAddress(){
+
+    public String getAddress() {
         return this.address;
     }
-    public void setAddress(String address){
+
+    public void setAddress(String address) {
         this.address = address;
     }
-    public double getImgNum(){
+
+    public double getImgNum() {
         return this.imgNum;
     }
-    public void setImgNum(Double imgNum){
+
+    public void setImgNum(Double imgNum) {
         this.imgNum = imgNum;
     }
-    public double getLatitude(){
-        return this.Latitude;
+
+    public Double getLookNum() {
+        return lookNum;
     }
-    public void setLatitude(Double Latitude){
-        this.Latitude = Latitude;
+
+    public void setLookNum(Double lookNum) {
+        this.lookNum = lookNum;
     }
-    public double getLongitude(){
-        return this.Longitude;
+
+    public double getLatitude() {
+        return this.latitude;
     }
-    public void setLongitude(Double Longitude){
-        this.Longitude = Longitude;
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return this.longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
 
