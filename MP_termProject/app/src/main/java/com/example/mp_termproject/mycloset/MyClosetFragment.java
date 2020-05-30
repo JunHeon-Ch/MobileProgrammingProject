@@ -25,6 +25,12 @@ import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,7 +60,10 @@ public class MyClosetFragment extends Fragment {
     final FirebaseStorage storage = FirebaseStorage.getInstance();
     final StorageReference storageRef = storage.getReference();
 
-    Double[] imgnum = new Double[1];
+    final FirebaseStorage storage = FirebaseStorage.getInstance();
+    final StorageReference storageRef = storage.getReference();
+
+    Double[] imgnum = new Double[]{0.0};
 
     EditText searchText;
     ImageView searchImage;
@@ -86,8 +95,9 @@ public class MyClosetFragment extends Fragment {
                     String sText = searchText.getText().toString();
                     for (int i = 0; i < imgnum[0]; i++) {
                         if (sText.equals(dtoList.get(i).getBrand()) || sText.equals(dtoList.get(i).getItemName())) {
+
 //                            Toast.makeText(getContext(), dtoList.get(i).getImgURL(), Toast.LENGTH_SHORT).show();
-                            Log.d(" url123", dtoList.size() + "");
+                                Log.d(" url123",dtoList.get(i).getImgURL()+"");
                         }
                     }
 
@@ -95,10 +105,6 @@ public class MyClosetFragment extends Fragment {
                 }
             }
         });
-
-//        상운 구현부
-//        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
-
 
         return rootView;
     }
@@ -128,6 +134,7 @@ public class MyClosetFragment extends Fragment {
 
             }
         });
+      
         db.collection("images")
                 .document(user.getUid())
                 .collection("image")
@@ -137,7 +144,6 @@ public class MyClosetFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             int i = 0;
-                            dtoList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
 //                                Log.d(TAG, document.getId() + " => " + document.getData());
                                 Map<String, Object> temp = document.getData();
@@ -154,7 +160,6 @@ public class MyClosetFragment extends Fragment {
                                 ImageDTO dto = new ImageDTO(id, url, category, name,
                                         color, brand, season, size, shared);
                                 dtoList.add(dto);
-                                Log.d("snapshot", "" + dtoList.get(i));
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
@@ -183,6 +188,8 @@ public class MyClosetFragment extends Fragment {
 //              카메라 권한 얻은 후 사진을 얻어 변수에 저장 -> 저장한 이미지 grabCut으로 배경 제거
 //              배경제거 된 image를 번들에 태워 인텐트로 MyClosetAddActivity로 이동
 //                myStartActivity(CameraActivity.class);
+
+                Log.d("gogogogo", "" + imgnum[0]);
                 intent = new Intent(getContext(), MyClosetAddActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putDouble("imgNum", imgnum[0]);
@@ -211,20 +218,13 @@ public class MyClosetFragment extends Fragment {
             if (resultCode == -1) {
                 Bundle bundle = data.getExtras();
 
-                ArrayList<String> categoryItemList = (ArrayList<String>) bundle.getStringArrayList("category");
-                ArrayList<String> colorItemList = (ArrayList<String>) bundle.getStringArrayList("color");
-                ArrayList<String> seasonItemList = (ArrayList<String>) bundle.getStringArrayList("season");
+                ArrayList<String> categoryItemList = bundle.getStringArrayList("category");
+                ArrayList<String> colorItemList = bundle.getStringArrayList("color");
+                ArrayList<String> seasonItemList = bundle.getStringArrayList("season");
                 String sharedItem = bundle.getString("share");
 
-                ArrayList<ImageDTO> temp = new ArrayList<ImageDTO>();
+                Log.d("lalala", categoryItemList.get(0));
 
-                temp.addAll(filterCategory(dtoList, categoryItemList));
-                temp.addAll(filterColor(temp, colorItemList));
-                temp.addAll(filterSeason(temp, seasonItemList));
-                temp.addAll(filterShared(temp, sharedItem));
-                if(temp.size()==0){
-                    Toast.makeText(getContext(),"해당하는 값이 없습니다.",Toast.LENGTH_SHORT).show();
-                }
 //                               상운 구현부
 //                categorySelectedList, colorSelectedList, seasonSelectedList, shareSelected에
 //                저장된 데이터들이 필터 기준임.
@@ -243,12 +243,6 @@ public class MyClosetFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
             }
         }
-    }
-  
-    private void myStartActivity(Class c) {
-        Intent intent = new Intent(getContext(), c);
-
-        startActivity(intent);
     }
 
     //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
@@ -299,75 +293,42 @@ public class MyClosetFragment extends Fragment {
         }
     }
 
-    private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
+                linearLayout = new LinearLayout(imageContainer.getContext());
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayout.setLayoutParams(layoutParams);
 
-        if (arrayList.size() == 0) {
-            return List;
-        } else {
-            for (int i = 0; i < List.size(); i++) {
-                for (int j = 0; j < arrayList.size(); j++) {
-                    if (List.get(i).getCategory().equals(arrayList.get(j))) {
-                        temp.add(List.get((i)));
-                        Log.d("asdsadassa", "asdasda" + List.get(i));
-                    }
-                }
+                imageContainer.addView(linearLayout);
+                Log.d("testi", linearLayout.toString());
             }
+
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            imageParams.setMargins(5, 5, 5, 5);
+            imageParams.weight = 1;
+
+            ImageView imageView = new ImageView(linearLayout.getContext());
+            imageView.setLayoutParams(imageParams);
+
+            Glide.with(linearLayout)
+                    .load(pathReference)
+                    .into(imageView);
+            linearLayout.addView(imageView);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 수정 & 삭제
+                    Toast.makeText(getContext(), "클릭", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            i++;
         }
-        return temp;
     }
 
-    private ArrayList<ImageDTO> filterColor(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
+    private void myStartActivity(Class c) {
+        Intent intent = new Intent(getContext(), c);
 
-        if (arrayList.size() == 0) {
-            return List;
-        } else {
-            for (int i = 0; i < List.size(); i++) {
-                for (int j = 0; j < arrayList.size(); j++) {
-                    if (List.get(i).getColor().equals(arrayList.get(j))) {
-                        temp.add(List.get((i)));
-                    }
-                }
-            }
-        }
-        List.clear();
-        return temp;
-    }
-
-    private ArrayList<ImageDTO> filterSeason(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
-
-        if (arrayList.size() == 0) {
-            return List;
-        } else {
-            for (int i = 0; i < List.size(); i++) {
-                for (int j = 0; j < arrayList.size(); j++) {
-                    if (List.get(i).getSeason().equals(arrayList.get(j))) {
-                        temp.add(List.get((i)));
-                    }
-                }
-            }
-        }
-        List.clear();
-        return temp;
-    }
-
-    private ArrayList<ImageDTO> filterShared(ArrayList<ImageDTO> List, String shared) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
-
-        if (shared == null) {
-            return List;
-        } else {
-            for (int i = 0; i < List.size(); i++) {
-                if (List.get(i).getShared().equals(shared)) {
-                    temp.add(List.get((i)));
-
-                }
-            }
-        }
-        List.clear();
-        return temp;
-
+        startActivity(intent);
     }
 }
