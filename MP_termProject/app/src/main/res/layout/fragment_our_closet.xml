@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <EditText
@@ -15,8 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:hint="@string/search"
             android:layout_weight="1"
+            android:hint="@string/search"
             android:inputType="textPersonName" />
 
         <ImageView
@@ -34,16 +34,11 @@
         android:background="#eeeeee">
 
         <LinearLayout
+            android:id="@+id/closet_image_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ourcloset" />
-        </LinearLayout>
+            android:layout_margin="5dp"
+            android:orientation="vertical"></LinearLayout>
     </ScrollView>
 
 </LinearLayout>

@@ -21,7 +21,6 @@
         <activity android:name=".lookbook.filter.LookbookFilterActivity" />
         <activity android:name=".ourcloset.filter.OurClosetFilterActivity" />
         <activity android:name=".lookbook.add.CoordinatorActivity" />
-        <activity android:name=".lookbook.add.LookbookAddActivity" />
         <activity android:name=".mycloset.filter.MyClosetFilterActivity" />
         <activity android:name=".mycloset.add.MyClosetAddActivity" />
         <activity android:name=".mycloset.camera.CameraActivity" />

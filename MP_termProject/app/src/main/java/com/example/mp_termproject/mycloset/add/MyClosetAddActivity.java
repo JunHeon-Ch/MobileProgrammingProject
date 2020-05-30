@@ -360,7 +360,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
 
-                final StorageReference mountainImagesRef = storageRef.child("closet/" + user.getUid() + "/" + imgnum[0] + ".jpg");
+                final StorageReference mountainImagesRef =
+                        storageRef.child("closet/" + user.getUid() + "/" + imgnum[0] + ".jpg");
 
                 // img url 저장
                 imgURL = "closet/" + user.getUid() + "/" + imgnum[0] + ".jpg";
@@ -395,14 +396,21 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 // 데이터베이스에 저장
 
                 Log.d(TAG, "new2 data: " + imgnum[0]);
-                ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText, imgNameText, colorText, brandText, seasonText, sizeText, sharedText);
+                ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText, imgNameText,
+                        colorText, brandText, seasonText, sizeText, sharedText);
                 //Log.d("test1", imgnum[0].toString());
-                db.collection("images").document(user.getUid()).collection("image").document(imgnum[0].toString()).set(imgDto)
+
+                db.collection("images")
+                        .document(user.getUid())
+                        .collection("image")
+                        .document(imgnum[0].toString()).set(imgDto)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
+                                AlertDialog.Builder alert =
+                                        new AlertDialog.Builder(MyClosetAddActivity.this);
                                 alert.setMessage("저장되었습니다");
+
                                 docRef
                                         .update("imgNum", imgnum[0])
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -417,6 +425,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
                                                 Log.w(TAG, "Error updating document", e);
                                             }
                                         });
+
                                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         Toast.makeText(MyClosetAddActivity.this,
@@ -439,7 +448,9 @@ public class MyClosetAddActivity extends AppCompatActivity {
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MyClosetAddActivity.this, "사진 업로드가 실패했습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MyClosetAddActivity.this,
+                                        "사진 업로드가 실패했습니다.",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
 

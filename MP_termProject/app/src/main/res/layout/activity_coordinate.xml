@@ -17,7 +17,7 @@
             android:id="@+id/coordinator_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/buttonLayout"
+            android:layout_above="@+id/text_layout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:orientation="horizontal">
@@ -31,26 +31,26 @@
 
                 <ImageView
                     android:id="@+id/hat_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     app:srcCompat="@drawable/hat" />
 
                 <ImageView
                     android:id="@+id/top_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     app:srcCompat="@drawable/top" />
 
                 <ImageView
                     android:id="@+id/bottom_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     app:srcCompat="@drawable/bottom" />
 
                 <ImageView
                     android:id="@+id/shoes_image"
-                    android:layout_width="65dp"
-                    android:layout_height="67dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     app:srcCompat="@drawable/shoes" />
             </LinearLayout>
 
@@ -63,49 +63,61 @@
 
                 <ImageView
                     android:id="@+id/outer_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     app:srcCompat="@drawable/outer" />
 
                 <ImageView
                     android:id="@+id/bag_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     app:srcCompat="@drawable/bag" />
 
                 <ImageView
                     android:id="@+id/accessory_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     app:srcCompat="@drawable/accessory" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/buttonLayout"
+            android:id="@+id/text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical"
+            android:layout_above="@+id/reset_button">
 
-            <Button
-                android:id="@+id/reset_button"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/coordinator_occasion"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/coordinator_reset"
-                android:textSize="15sp" />
+                android:layout_margin="20dp"
+                android:text="@string/lookbook_occasion"
+                android:textColor="@color/text_color"
+                android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/apply_button"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/coordinator_season"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/coordinator_apply"
-                android:textSize="15sp" />
-
+                android:layout_margin="20dp"
+                android:text="@string/lookbook_season"
+                android:textColor="@color/text_color"
+                android:textSize="20sp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/reset_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:text="@string/coordinator_reset"
+            android:textSize="15sp" />
     </RelativeLayout>
 
 
@@ -120,8 +132,8 @@
             android:id="@+id/imageLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
             android:layout_margin="5dp"
+            android:gravity="left"
             android:orientation="vertical" />
 
     </ScrollView>
