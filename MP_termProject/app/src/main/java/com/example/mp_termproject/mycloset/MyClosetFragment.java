@@ -45,16 +45,20 @@ public class MyClosetFragment extends Fragment {
 
     private static final String TAG = "MyClosetFragment";
 
-    final static int REQUEST_FILTER = 1;
-    static ArrayList<ImageDTO> dtoList = new ArrayList<>();
+    static final int REQUEST_FILTER = 1;
+    static final int NORMAL = 1;
+    static final int SEARCH = 2;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    final DocumentReference docRefUserInfo = db.collection("users").document(user.getUid());
-    final FirebaseStorage storage = FirebaseStorage.getInstance();
-    final StorageReference storageRef = storage.getReference();
+    static ArrayList<ImageDTO> dtoList;
+    ArrayList<StorageReference> imageList;
 
-    Double[] imgnum = new Double[1];
+    FirebaseUser user;
+    FirebaseFirestore db;
+    DocumentReference docRefUserInfo;
+    FirebaseStorage storage;
+    StorageReference storageRef;
+
+    Double[] imgnum;
 
     EditText searchText;
     ImageView searchImage;
@@ -71,6 +75,18 @@ public class MyClosetFragment extends Fragment {
                 container, false);
         setHasOptionsMenu(true);
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        docRefUserInfo = db.collection("users").document(user.getUid());
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+        dtoList = new ArrayList<>();
+        imageList = new ArrayList<>();
+
+        imgnum = new Double[1];
+
+
         imageContainer = rootView.findViewById(R.id.imageContainer);
 
         searchText = rootView.findViewById(R.id.search);
@@ -79,19 +95,9 @@ public class MyClosetFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
-//                  상운 구현부
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
-
-                    Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
-                    String sText = searchText.getText().toString();
-                    for (int i = 0; i < imgnum[0]; i++) {
-                        if (sText.equals(dtoList.get(i).getBrand()) || sText.equals(dtoList.get(i).getItemName())) {
-//                            Toast.makeText(getContext(), dtoList.get(i).getImgURL(), Toast.LENGTH_SHORT).show();
-                            Log.d(" url123", dtoList.size() + "");
-                        }
-                    }
-
-
+                    int count = addPathReference(SEARCH);
+                    floatTotalImages(count);
                 }
             }
         });
@@ -106,6 +112,11 @@ public class MyClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        accessUserInfo();
+        accessImageInfo();
+    }
+
+    private void accessUserInfo(){
         // 유저 정보접근
         docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -116,18 +127,20 @@ public class MyClosetFragment extends Fragment {
                         // imgNum 받아옴
                         Map<String, Object> temp = document.getData();
                         imgnum[0] = (Double) temp.get("imgNum");
-
+                        int count = addPathReference(NORMAL);
                         // 화면에 이미지 띄우기
-                        floatTotalImages();
+                        floatTotalImages(count);
                     } else {
                         Log.d(TAG, "No such document");
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
                 }
-
             }
         });
+    }
+
+    private void accessImageInfo(){
         db.collection("images")
                 .document(user.getUid())
                 .collection("image")
@@ -162,7 +175,6 @@ public class MyClosetFragment extends Fragment {
                     }
                 });
     }
-
 
     // Action Bar에 메뉴옵션 띄우기
     @Override
@@ -252,17 +264,17 @@ public class MyClosetFragment extends Fragment {
     }
 
     //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
-    private void floatTotalImages(){
+    private void floatTotalImages(int count){
         LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
         final int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 180, getResources().getDisplayMetrics());
 
-        int i = 1;
-        while (i <= imgnum[0]) {
-            StorageReference pathReference = storageRef.child("closet/" + user.getUid() + "/" + i + ".0.jpg");
+        int i = 0;
+        while (i < count) {
+            StorageReference pathReference = imageList.get(i);
 
-            if(i % 3 == 1){
+            if(i % 3 == 0){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
 
@@ -297,6 +309,33 @@ public class MyClosetFragment extends Fragment {
 
             i++;
         }
+    }
+
+    private int addPathReference(int flag){
+        imageList.clear();
+        int count = 0;
+
+        switch (flag){
+            case NORMAL:
+                for (int i = 0; i < imgnum[0]; i++) {
+                        count++;
+                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
+                    }
+
+                break;
+
+            case SEARCH:
+                String sText = searchText.getText().toString();
+                for (int i = 0; i < imgnum[0]; i++) {
+                    if (sText.equals(dtoList.get(i).getBrand()) ||
+                            sText.equals(dtoList.get(i).getItemName())) {
+                        count++;
+                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
+                    }
+                }
+        }
+
+        return count;
     }
 
     private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
