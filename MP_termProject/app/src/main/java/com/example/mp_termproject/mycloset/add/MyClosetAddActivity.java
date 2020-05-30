@@ -50,16 +50,14 @@ import java.util.Map;
 
 public class MyClosetAddActivity extends AppCompatActivity {
 
+    private static final String TAG = "MyClosetAddActivity";
+
     final static int REQUEST_IMAGE_CAPTURE = 1;
 
-    private static final String TAG = "MyClosetAddActivity";
-    static Double[] imgnum = new Double[1];
-    static boolean isWating = true;
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    // img num 확인 & img num user info에 업데이트
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    //imgnum 저장할 temp userInfo
-    final DocumentReference docRef = db.collection("users").document(user.getUid());
+    Double[] imgnum;
+    FirebaseUser user;
+    FirebaseFirestore db;
+    DocumentReference docRef;
 
     ImageView image;
     TextView itemName;
@@ -77,6 +75,12 @@ public class MyClosetAddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
+
+        imgnum = new Double[1];
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        docRef = db.collection("users").document(user.getUid());
+
         Intent intent = getIntent();
         imgnum[0] = intent.getDoubleExtra("imgNum", 0.0);
 

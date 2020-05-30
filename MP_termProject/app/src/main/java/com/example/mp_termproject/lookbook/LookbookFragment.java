@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.lookbook.add.CoordinatorActivity;
 import com.example.mp_termproject.lookbook.filter.LookbookFilterActivity;
+import com.example.mp_termproject.mycloset.ImageDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,17 +48,19 @@ public class LookbookFragment extends Fragment {
     private static final String TAG = "LookbookFragment";
 
     static final int REQUEST_FILTER = 1;
+    static final int NORMAL = 1;
 
     static ArrayList<LookbookDTO> dtoList = new ArrayList<>();
+    ArrayList<StorageReference> imageList;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    final DocumentReference docRefUserInfo = db.collection("users").document(user.getUid());
+    FirebaseUser user;
+    FirebaseFirestore db;
+    DocumentReference docRefUserInfo;
 
-    final FirebaseStorage storage = FirebaseStorage.getInstance();
-    final StorageReference storageRef = storage.getReference();
+    FirebaseStorage storage;
+    StorageReference storageRef;
 
-    Double[] imgnum = new Double[]{0.0};
+    Double[] imgnum;
 
     LinearLayout imageContainer;
 
@@ -72,6 +75,17 @@ public class LookbookFragment extends Fragment {
                 false);
         setHasOptionsMenu(true);
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        docRefUserInfo = db.collection("users").document(user.getUid());
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+        dtoList = new ArrayList<>();
+        imageList = new ArrayList<>();
+
+        imgnum = new Double[1];
+
         imageContainer = rootView.findViewById(R.id.imageContainer);
 
         return rootView;
@@ -80,6 +94,13 @@ public class LookbookFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        accessUserInfo();
+        accessImageInfo();
+
+
+    }
+
+    private void accessUserInfo(){
         // 유저 정보접근
         docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -90,19 +111,37 @@ public class LookbookFragment extends Fragment {
                         // imgNum 받아옴
                         Map<String, Object> temp = document.getData();
                         imgnum[0] = (Double) temp.get("lookNum");
-
+                        int count = addPathReference(NORMAL);
                         // 화면에 이미지 띄우기
-                        floatTotalImages();
+                        floatTotalImages(count);
                     } else {
                         Log.d(TAG, "No such document");
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
                 }
-
             }
         });
+    }
 
+    private int addPathReference(int flag){
+        imageList.clear();
+        int count = 0;
+
+        switch (flag){
+            case NORMAL:
+                for (int i = 0; i < imgnum[0]; i++) {
+                    count++;
+                    imageList.add(storageRef.child("lookbook/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
+                }
+
+                break;
+        }
+
+        return count;
+    }
+
+    private void accessImageInfo(){
         db.collection("lookbook")
                 .document(user.getUid())
                 .collection("looks")
@@ -130,17 +169,17 @@ public class LookbookFragment extends Fragment {
                 });
     }
 
-    private void floatTotalImages() {
+    private void floatTotalImages(int count) {
         LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
         final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 180, getResources().getDisplayMetrics());
 
-        int i = 1;
-        while (i <= imgnum[0]) {
-            StorageReference pathReference = storageRef.child("lookbook/" + user.getUid() + "/" + i + ".0.jpg");
+        int i = 0;
+        while (i < count) {
+            StorageReference pathReference = imageList.get(i);
 
-            if(i % 3 == 1){
+            if(i % 3 == 0){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
                 layoutParams.gravity = Gravity.LEFT;
