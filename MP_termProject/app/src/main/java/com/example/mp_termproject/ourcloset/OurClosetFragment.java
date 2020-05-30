@@ -44,9 +44,11 @@ import java.util.Map;
 
 public class OurClosetFragment extends Fragment {
 
-    private static final String TAG = "MyClosetFragment";
+    private static final String TAG = "OurClosetFragment";
 
     static final int REQUEST_FILTER = 1;
+    static final int NORMAL = 1;
+    static final int SEARCH = 2;
 
     EditText searchText;
     ImageView searchImage;
@@ -59,6 +61,7 @@ public class OurClosetFragment extends Fragment {
     StorageReference storageRef;
 
     ArrayList<ImageDTO> dtoList;
+    ArrayList<StorageReference> imageList;
 
     Double[] imgnum;
 
@@ -80,6 +83,8 @@ public class OurClosetFragment extends Fragment {
         storageRef = storage.getReference();
 
         dtoList = new ArrayList<>();
+        imageList = new ArrayList<>();
+
         imgnum = new Double[1];
 
         imageContainer = rootView.findViewById(R.id.closet_image_container);
@@ -91,8 +96,8 @@ public class OurClosetFragment extends Fragment {
             public void onClick(View v) {
                 if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
-                    Toast.makeText(getContext(), searchText.getText().toString(), Toast.LENGTH_SHORT).show();
-
+                    int count = addPathReference(SEARCH);
+                    floatTotalImages(count);
                 }
             }
         });
@@ -140,23 +145,6 @@ public class OurClosetFragment extends Fragment {
                         Map<String, Object> temp = document.getData();
                         imgnum[0] = (Double) temp.get("imgNum");
 
-                        db.collection("images").get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                Map<String, Object> data = document.getData();
-                                            }
-
-                                            // 화면에 이미지 띄우기
-                                            floatTotalImages();
-                                        } else {
-                                            Log.d(TAG, "Error getting documents: ", task.getException());
-                                        }
-                                    }
-                                });
-
                         db.collection("images")
                                 .document(user.getUid())
                                 .collection("image")
@@ -183,8 +171,9 @@ public class OurClosetFragment extends Fragment {
                                                 dtoList.add(dto);
                                             }
 
+                                            int count = addPathReference(NORMAL);
                                             // 화면에 이미지 띄우기
-                                            floatTotalImages();
+                                            floatTotalImages(count);
                                         } else {
                                             Log.d(TAG, "Error getting documents: ", task.getException());
                                         }
@@ -202,22 +191,41 @@ public class OurClosetFragment extends Fragment {
 
     }
 
-    private void floatTotalImages() {
+    private int addPathReference(int flag){
+        imageList.clear();
+        int count = 0;
+
+        switch (flag){
+            case NORMAL:
+                for (int i = 0; i < imgnum[0]; i++) {
+                    if (dtoList.get(i).getShared().equals("공유")) {
+                        count++;
+                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
+                    }
+                }
+
+                break;
+
+            case SEARCH:
+                String sText = searchText.getText().toString();
+                for (int i = 0; i < imgnum[0]; i++) {
+                    if (sText.equals(dtoList.get(i).getBrand()) ||
+                            sText.equals(dtoList.get(i).getItemName())) {
+                        count++;
+                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
+                    }
+                }
+        }
+
+        return count;
+    }
+
+    private void floatTotalImages(int count) {
         LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
 
         final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 180, getResources().getDisplayMetrics());
-        int count = 0;
-
-        ArrayList<StorageReference> imageList = new ArrayList<>();
-
-        for (int i = 0; i < imgnum[0]; i++) {
-            if (dtoList.get(i).getShared().equals("공유")) {
-                count++;
-                imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
-            }
-        }
 
         int i = 0;
         while (i < count) {
@@ -232,7 +240,6 @@ public class OurClosetFragment extends Fragment {
                 linearLayout.setLayoutParams(layoutParams);
 
                 imageContainer.addView(linearLayout);
-                Log.d("test", i + " " + pathReference.toString());
             }
 
             LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(

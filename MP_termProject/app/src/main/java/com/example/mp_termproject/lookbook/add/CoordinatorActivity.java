@@ -78,17 +78,17 @@ public class CoordinatorActivity extends AppCompatActivity {
     TextView seasonText;
     LinearLayout coordinatorLayout;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser user;
+    FirebaseFirestore db;
     DocumentReference docRefUserInfo;
-    static ArrayList<ImageDTO> dtoList;
 
-    final FirebaseStorage storage = FirebaseStorage.getInstance();
-    final StorageReference storageRef = storage.getReference();
+    FirebaseStorage storage;
+    StorageReference storageRef;
 
-    private ArrayList<String> imageUrlList;
+    ArrayList<ImageDTO> dtoList;
+    ArrayList<String> imageUrlList;
 
-    static Double[] imgnum = new Double[1];
+    Double[] imgnum;
 
     byte[] bytes;
 
@@ -98,13 +98,21 @@ public class CoordinatorActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Coordinator");
         setContentView(R.layout.activity_coordinate);
 
-        docRefUserInfo = db.collection("users").document(user.getUid());
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
-        Intent intent = getIntent();
-        imgnum[0] = intent.getDoubleExtra("lookNum", 0.0);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+         imgnum = new Double[1];
+
+        docRefUserInfo = db.collection("users").document(user.getUid());
 
         dtoList = new ArrayList<>();
         imageUrlList = new ArrayList<>();
+
+        Intent intent = getIntent();
+        imgnum[0] = intent.getDoubleExtra("lookNum", 0.0);
 
         readImageInfo();
 
