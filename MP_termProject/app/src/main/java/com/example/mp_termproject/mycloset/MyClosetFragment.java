@@ -256,7 +256,7 @@ public class MyClosetFragment extends Fragment {
             }
         }
     }
-  
+
     private void myStartActivity(Class c) {
         Intent intent = new Intent(getContext(), c);
 
