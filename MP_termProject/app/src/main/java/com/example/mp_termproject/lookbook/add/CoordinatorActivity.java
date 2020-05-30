@@ -1,48 +1,66 @@
 package com.example.mp_termproject.lookbook.add;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
+import com.example.mp_termproject.lookbook.LookbookDTO;
 import com.example.mp_termproject.mycloset.ImageDTO;
 import com.example.mp_termproject.signup.SignUpActivity;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Map;
 
 public class CoordinatorActivity extends AppCompatActivity {
+
+    private static final String TAG = "CoordinatorActivity";
 
     RelativeLayout mainContainer;
     ScrollView imageContainer;
@@ -56,10 +74,13 @@ public class CoordinatorActivity extends AppCompatActivity {
     ImageView bagImage;
     ImageView accessoryImage;
     Button resetButton;
-    Button applyButton;
+    TextView occasionText;
+    TextView seasonText;
+    LinearLayout coordinatorLayout;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    DocumentReference docRefUserInfo;
     static ArrayList<ImageDTO> dtoList;
 
     final FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -67,11 +88,20 @@ public class CoordinatorActivity extends AppCompatActivity {
 
     private ArrayList<String> imageUrlList;
 
+    static Double[] imgnum = new Double[1];
+
+    byte[] bytes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle("Coordinator");
         setContentView(R.layout.activity_coordinate);
+
+        docRefUserInfo = db.collection("users").document(user.getUid());
+
+        Intent intent = getIntent();
+        imgnum[0] = intent.getDoubleExtra("lookNum", 0.0);
 
         dtoList = new ArrayList<>();
         imageUrlList = new ArrayList<>();
@@ -89,6 +119,8 @@ public class CoordinatorActivity extends AppCompatActivity {
         outerImage = findViewById(R.id.hat_image);
         bagImage = findViewById(R.id.hat_image);
         accessoryImage = findViewById(R.id.hat_image);
+
+        coordinatorLayout = findViewById(R.id.coordinator_layout);
 
         hatImage = findViewById(R.id.hat_image);
         hatImage.setOnClickListener(new View.OnClickListener() {
@@ -200,6 +232,93 @@ public class CoordinatorActivity extends AppCompatActivity {
             }
         });
 
+        occasionText = findViewById(R.id.coordinator_occasion);
+        occasionText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CoordinatorActivity.this);
+                final ArrayList<String> selectedItems = new ArrayList<>();
+                final String[] items = getResources().getStringArray(R.array.occation);
+
+                builder.setMultiChoiceItems(R.array.occation, null,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int pos, boolean isChecked) {
+                                if (isChecked == true) {
+                                    selectedItems.add(items[pos]);
+                                } else {
+                                    selectedItems.remove(pos);
+                                }
+                            }
+                        });
+
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int pos) {
+                        String select = "";
+                        for (String item : selectedItems) {
+                            select += item + " ";
+                        }
+                        occasionText.setText(select);
+                        occasionText.setTextColor(Color.parseColor("#000000"));
+                    }
+                });
+
+                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.setCancelable(false);
+                alertDialog.show();
+            }
+        });
+
+        seasonText = findViewById(R.id.coordinator_season);
+        seasonText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CoordinatorActivity.this);
+                final ArrayList<String> selectedItems = new ArrayList<>();
+                final String[] items = getResources().getStringArray(R.array.season);
+
+                builder.setMultiChoiceItems(R.array.season, null, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int pos, boolean isChecked) {
+                        if (isChecked == true) {
+                            selectedItems.add(items[pos]);
+                        } else {
+                            selectedItems.remove(pos);
+                        }
+                    }
+                });
+
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int pos) {
+                        String select = "";
+                        for (String item : selectedItems) {
+                            select += item + " ";
+                        }
+                        seasonText.setText(select);
+                        seasonText.setTextColor(Color.parseColor("#000000"));
+                    }
+                });
+
+                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.setCancelable(false);
+                alertDialog.show();
+            }
+        });
+
         resetButton = findViewById(R.id.reset_button);
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,28 +332,127 @@ public class CoordinatorActivity extends AppCompatActivity {
                 accessoryImage.setImageResource(R.drawable.accessory);
             }
         });
-
-        applyButton = findViewById(R.id.apply_button);
-        applyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-//                프래그먼트를 사진으로 저장
-
-                LinearLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
-
-                byte[] bytes = viewToBitmap(coordinatorLayout);
-
-                Intent intent = getIntent();
-                Bundle bundle = new Bundle();
-                bundle.putByteArray("bytes", bytes);
-                intent.putExtras(bundle);
-                setResult(RESULT_OK, intent);
-
-                finish();
-            }
-        });
     }
+
+    // 옵션메뉴 생성
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actionbar_edit_info, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // 저장 옵션 메뉴 눌렀을 때 db에 저장하고 팝업메시지 띄운다.
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int curId = item.getItemId();
+
+        switch (curId) {
+            case R.id.actionbar_store:
+//                코디 db에 Bitmap bitmap, TextView occasion, season에 저장된 정보 저장
+                String userID = user.getUid();
+                String imgURL;
+
+                bytes = viewToBitmap(coordinatorLayout);
+
+                // 문서 갖고오기
+                imgnum[0] += 1;
+                // storage에 저장할 값들 저장해두기
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReference();
+
+                final StorageReference mountainImagesRef =
+                        storageRef.child("lookbook/" + user.getUid() + "/" + imgnum[0] + ".jpg");
+
+                // img url 저장
+                imgURL = "lookbook/" + user.getUid() + "/" + imgnum[0] + ".jpg";
+
+                // storage에 upload
+                UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            Log.e("실패1", "실패");
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return mountainImagesRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            Log.e("성공", "성공: " + downloadUri);
+                        } else {
+                            // Handle failures
+                            // ...
+                            Log.e("실패2", "실패");
+                        }
+                    }
+                });
+
+                // 데이터베이스에 저장
+
+                LookbookDTO imgDto = new LookbookDTO(userID, imgURL,
+                        occasionText.getText().toString(), seasonText.getText().toString());
+                db.collection("lookbook")
+                        .document(user.getUid())
+                        .collection("looks")
+                        .document(imgnum[0].toString()).set(imgDto)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                AlertDialog.Builder alert =
+                                        new AlertDialog.Builder(CoordinatorActivity.this);
+                                alert.setMessage("저장되었습니다");
+
+                                docRefUserInfo
+                                        .update("lookNum", imgnum[0])
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error updating document", e);
+                                            }
+                                        });
+
+                                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Toast.makeText(CoordinatorActivity.this,
+                                                occasionText.getText().toString() + "\n"
+                                                        + seasonText.getText().toString() + "\n",
+                                                Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+
+                                alert.show();
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(CoordinatorActivity.this,
+                                        "사진 업로드가 실패했습니다.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -256,7 +474,6 @@ public class CoordinatorActivity extends AppCompatActivity {
             if(i % 3 == 0){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
-                layoutParams.gravity = Gravity.LEFT;
 
                 linearLayout = new LinearLayout(imageLayout.getContext());
                 linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -269,6 +486,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(5, 5, 5, 5);
             layoutParams.weight = 1;
+            layoutParams.gravity = Gravity.TOP;
 
             final ImageView imageView = new ImageView(linearLayout.getContext());
             imageView.setLayoutParams(layoutParams);
