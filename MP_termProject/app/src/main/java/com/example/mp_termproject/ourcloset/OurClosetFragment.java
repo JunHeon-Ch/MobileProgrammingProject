@@ -39,6 +39,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -49,6 +50,9 @@ public class OurClosetFragment extends Fragment {
     static final int REQUEST_FILTER = 1;
     static final int NORMAL = 1;
     static final int SEARCH = 2;
+    static final int FILTER = 3;
+
+    static int check = NORMAL;
 
     EditText searchText;
     ImageView searchImage;
@@ -62,8 +66,8 @@ public class OurClosetFragment extends Fragment {
 
     ArrayList<ImageDTO> dtoList;
     ArrayList<StorageReference> imageList;
-
-    ArrayList<String> imgUrl = new ArrayList<>();
+    HashSet<ImageDTO> filterList;
+    ArrayList<String> imgUrl;
 
     Double[] imgnum;
 
@@ -86,6 +90,8 @@ public class OurClosetFragment extends Fragment {
 
         dtoList = new ArrayList<>();
         imageList = new ArrayList<>();
+        filterList = new HashSet<>();
+        imgUrl = new ArrayList<>();
 
         imgnum = new Double[1];
 
@@ -96,11 +102,11 @@ public class OurClosetFragment extends Fragment {
         searchImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
+                if (!searchText.getText().toString().equals("")) {
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
-                    int count = addPathReference(SEARCH);
-                    floatTotalImages(count);
+                    check = SEARCH;
                 }
+                onStart();
             }
         });
 
@@ -136,11 +142,12 @@ public class OurClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        accessDBInfo();
+    }
+
+    private void accessDBInfo(){
         // 유저 정보접근
-
-//        DocumentReference tmep = db.collection("images").document();
-        Log.d("test", "test");
-
         db.collection("users").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -155,18 +162,31 @@ public class OurClosetFragment extends Fragment {
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     if (task.isSuccessful()) {
-                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                            String temp = document.getString("imgURL");
-                                                            Log.d("image information", document.getId() + " => " + temp);
+                                                        imgUrl.clear();
+                                                        dtoList.clear();
 
-                                                            ImageDTO dto = new ImageDTO();
-                                                            dto.setBrand(document.getString("brand"));
-                                                            dto.setItemName(document.getString("itemName"));
-                                                            dto.setImgURL(temp);
+                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                            String tempUrl = document.getString("imgURL");
+
+                                                            Map<String, Object> temp = document.getData();
+
+                                                            String id = (String) temp.get("userID");
+                                                            String url = (String) temp.get("imgURL");
+                                                            String category = (String) temp.get("category");
+                                                            String name = (String) temp.get("itemName");
+                                                            String color = (String) temp.get("color");
+                                                            String brand = (String) temp.get("brand");
+                                                            String season = (String) temp.get("season");
+                                                            String size = (String) temp.get("size");
+                                                            String shared = (String) temp.get("shared");
+                                                            ImageDTO dto = new ImageDTO(id, url, category, name,
+                                                                    color, brand, season, size, shared);
+
                                                             dtoList.add(dto);
-                                                            imgUrl.add(temp);
+                                                            imgUrl.add(tempUrl);
                                                         }
-                                                        int count = addPathReference(NORMAL);
+
+                                                        int count = addPathReference(check);
                                                         floatTotalImages(count);
                                                     } else {
                                                         Log.d(TAG, "Error getting documents: ", task.getException());
@@ -180,7 +200,6 @@ public class OurClosetFragment extends Fragment {
                         }
                     }
                 });
-
     }
 
     private int addPathReference(int flag) {
@@ -206,6 +225,16 @@ public class OurClosetFragment extends Fragment {
                         imageList.add(storageRef.child(dtoList.get(i).getImgURL()));
                     }
                 }
+
+                break;
+
+            case FILTER:
+                for (ImageDTO dto : filterList) {
+                    count++;
+                    imageList.add(storageRef.child(dto.getImgURL()));
+                }
+
+                break;
         }
 
         return count;
@@ -249,5 +278,113 @@ public class OurClosetFragment extends Fragment {
 
             i++;
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_FILTER) {
+            if (resultCode == -1) {
+                Bundle bundle = data.getExtras();
+
+                ArrayList<String> categoryItemList = bundle.getStringArrayList("category");
+                ArrayList<String> colorItemList = bundle.getStringArrayList("color");
+                ArrayList<String> seasonItemList = bundle.getStringArrayList("season");
+
+                filterList.clear();
+                filterList.addAll(filterCategory(dtoList, categoryItemList));
+                filterList.addAll(filterColor(filterList, colorItemList));
+                filterList.addAll(filterSeason(filterList, seasonItemList));
+
+                if (filterList.size() == 0) {
+                    check = NORMAL;
+                    Toast.makeText(getContext(), "해당하는 값이 없습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    check = FILTER;
+                }
+
+                Toast.makeText(getContext(),
+                        categoryItemList.toString() + "\n"
+                                + colorItemList.toString() + "\n"
+                                + seasonItemList.toString() + "\n",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> list, ArrayList<String> arrayList) {
+        ArrayList<ImageDTO> temp = new ArrayList<>();
+
+        if (arrayList.size() == 0) {
+            return list;
+        } else {
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = 0; j < arrayList.size(); j++) {
+                    if (list.get(i).getCategory().equals(arrayList.get(j))) {
+                        temp.add(list.get((i)));
+                        break;
+                    }
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    private HashSet<ImageDTO> filterColor(HashSet<ImageDTO> list, ArrayList<String> arrayList) {
+        HashSet<ImageDTO> temp = new HashSet<>();
+
+        if (arrayList.size() == 0) {
+            return list;
+        } else {
+            for (ImageDTO dto : list) {
+                String[] tempColor = dto.getColor().split(" ");
+                for (int k = 0; k < tempColor.length; k++) {
+                    int flag = 0;
+                    for (int j = 0; j < arrayList.size(); j++) {
+                        if (tempColor[k].equals(arrayList.get(j))) {
+                            temp.add(dto);
+                            flag = 1;
+                            break;
+                        }
+                    }
+
+                    if (flag == 1) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    private HashSet<ImageDTO> filterSeason(HashSet<ImageDTO> list, ArrayList<String> arrayList) {
+        HashSet<ImageDTO> temp = new HashSet<>();
+
+        if (arrayList.size() == 0) {
+            return list;
+        } else {
+            for (ImageDTO dto : list) {
+                String[] temSeason = dto.getColor().split(" ");
+                for (int k = 0; k < temSeason.length; k++) {
+                    int flag = 0;
+                    for (int j = 0; j < arrayList.size(); j++) {
+                        if (temSeason[k].equals(arrayList.get(j))) {
+                            temp.add(dto);
+                            flag = 1;
+                            break;
+                        }
+                    }
+
+                    if (flag == 1) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return temp;
     }
 }

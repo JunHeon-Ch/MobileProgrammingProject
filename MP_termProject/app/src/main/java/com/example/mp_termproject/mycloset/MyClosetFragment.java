@@ -34,9 +34,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -44,6 +46,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -61,7 +64,7 @@ public class MyClosetFragment extends Fragment {
     ArrayList<ImageDTO> dtoList;
     ArrayList<StorageReference> imageList;
     ArrayList<ImageDTO> imageDTOList;
-    ArrayList<ImageDTO> filterList;
+    HashSet<ImageDTO> filterList;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -95,7 +98,7 @@ public class MyClosetFragment extends Fragment {
         dtoList = new ArrayList<>();
         imageList = new ArrayList<>();
         imageDTOList = new ArrayList<>();
-        filterList = new ArrayList<>();
+        filterList = new HashSet<>();
 
         imgnum = new Double[1];
 
@@ -111,7 +114,6 @@ public class MyClosetFragment extends Fragment {
                 if (!searchText.getText().toString().equals("")) {
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
                     check = SEARCH;
-                    Log.d("test", searchText.getText().toString());
                 }
                 onStart();
             }
@@ -123,8 +125,8 @@ public class MyClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         accessDBInfo();
-        Log.d("test", check +"");
     }
 
     private void accessDBInfo() {
@@ -185,10 +187,6 @@ public class MyClosetFragment extends Fragment {
         });
     }
 
-    private void accessImageInfo() {
-
-    }
-
     // Action Bar에 메뉴옵션 띄우기
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -243,26 +241,16 @@ public class MyClosetFragment extends Fragment {
 
                 filterList.clear();
                 filterList.addAll(filterCategory(dtoList, categoryItemList));
-//                for(int i = 0;  i <filterList.size(); i++){
-//                    Log.d("filterList", filterList.get(i).toString());
-//                }
                 filterList.addAll(filterColor(filterList, colorItemList));
                 filterList.addAll(filterSeason(filterList, seasonItemList));
                 filterList.addAll(filterShared(filterList, sharedItem));
 
                 if (filterList.size() == 0) {
+                    check = NORMAL;
                     Toast.makeText(getContext(), "해당하는 값이 없습니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     check = FILTER;
                 }
-
-
-                Toast.makeText(getContext(),
-                        categoryItemList.toString() + "\n"
-                                + colorItemList.toString() + "\n"
-                                + seasonItemList.toString() + "\n"
-                                + sharedItem + "\n",
-                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -283,6 +271,9 @@ public class MyClosetFragment extends Fragment {
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
+
+            ImageDTO imageDTO = imageDTOList.get(i);
+
 
             if (i % 3 == 0) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -309,6 +300,7 @@ public class MyClosetFragment extends Fragment {
                     .into(imageView);
             linearLayout.addView(imageView);
 
+            final ImageDTO temp = imageDTO;
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -325,8 +317,35 @@ public class MyClosetFragment extends Fragment {
                                     // 수정
                                     break;
                                 case 1:
+                                    // Create a reference to the file to delete
+                                    StorageReference desertRef = storageRef.child(temp.getImgURL());
+                                    desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            // File deleted successfully
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                            // Uh-oh, an error occurred!
+                                        }
+                                    });
 
-                                    Log.d("test","test");
+                                    final CollectionReference itemsRef = db.collection("images").document(user.getUid()).collection("image");
+                                    Query query = itemsRef.whereEqualTo("imgURL", temp.getImgURL());
+                                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    itemsRef.document(document.getId()).delete();
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
+                                    Log.d("test","test "+temp.getImgURL());
                                     // 삭제
                                     break;
                                 case 2:
@@ -375,10 +394,10 @@ public class MyClosetFragment extends Fragment {
                 break;
 
             case FILTER:
-                for (int i = 0; i < filterList.size(); i++) {
+                for (ImageDTO dto : filterList) {
                     count++;
-                    imageList.add(storageRef.child(filterList.get(i).getImgURL()));
-                    imageDTOList.add(filterList.get(i));
+                    imageList.add(storageRef.child(dto.getImgURL()));
+                    imageDTOList.add(dto);
                 }
 
                 break;
@@ -387,38 +406,38 @@ public class MyClosetFragment extends Fragment {
         return count;
     }
 
-    private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
+    private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> list, ArrayList<String> arrayList) {
         ArrayList<ImageDTO> temp = new ArrayList<>();
 
         if (arrayList.size() == 0) {
-            return List;
+            return list;
         } else {
-            for (int i = 0; i < List.size(); i++) {
+            for (int i = 0; i < list.size(); i++) {
                 for (int j = 0; j < arrayList.size(); j++) {
-                    if (List.get(i).getCategory().equals(arrayList.get(j))) {
-                        temp.add(List.get((i)));
-//                        Log.d("asdsadassa", "asdasda" + List.get(i));
+                    if (list.get(i).getCategory().equals(arrayList.get(j))) {
+                        temp.add(list.get((i)));
                         break;
                     }
                 }
             }
         }
+
         return temp;
     }
 
-    private ArrayList<ImageDTO> filterColor(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
+    private HashSet<ImageDTO> filterColor(HashSet<ImageDTO> list, ArrayList<String> arrayList) {
+        HashSet<ImageDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
-            return List;
+            return list;
         } else {
-            for (int i = 0; i < List.size(); i++) {
-                String[] tempColor = List.get(i).getColor().split(" ");
+            for (ImageDTO dto : list) {
+                String[] tempColor = dto.getColor().split(" ");
                 for (int k = 0; k < tempColor.length; k++) {
                     int flag = 0;
                     for (int j = 0; j < arrayList.size(); j++) {
                         if (tempColor[k].equals(arrayList.get(j))) {
-                            temp.add(List.get((i)));
+                            temp.add(dto);
                             flag = 1;
                             break;
                         }
@@ -430,23 +449,23 @@ public class MyClosetFragment extends Fragment {
                 }
             }
         }
-        List.clear();
+
         return temp;
     }
 
-    private ArrayList<ImageDTO> filterSeason(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
+    private HashSet<ImageDTO> filterSeason(HashSet<ImageDTO> list, ArrayList<String> arrayList) {
+        HashSet<ImageDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
-            return List;
+            return list;
         } else {
-            for (int i = 0; i < List.size(); i++) {
-                String[] tempSeason = List.get(i).getSeason().split(" ");
-                for (int k = 0; k < tempSeason.length; k++) {
+            for (ImageDTO dto : list) {
+                String[] temSeason = dto.getColor().split(" ");
+                for (int k = 0; k < temSeason.length; k++) {
                     int flag = 0;
                     for (int j = 0; j < arrayList.size(); j++) {
-                        if (tempSeason[k].equals(arrayList.get(j))) {
-                            temp.add(List.get((i)));
+                        if (temSeason[k].equals(arrayList.get(j))) {
+                            temp.add(dto);
                             flag = 1;
                             break;
                         }
@@ -458,24 +477,23 @@ public class MyClosetFragment extends Fragment {
                 }
             }
         }
-        List.clear();
+
         return temp;
     }
 
-    private ArrayList<ImageDTO> filterShared(ArrayList<ImageDTO> List, String shared) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
+    private HashSet<ImageDTO> filterShared(HashSet<ImageDTO> list, String shared) {
+        HashSet<ImageDTO> temp = new HashSet<>();
 
         if (shared == null) {
-            return List;
+            return list;
         } else {
-            for (int i = 0; i < List.size(); i++) {
-                if (List.get(i).getShared().equals(shared)) {
-                    temp.add(List.get((i)));
+            for (ImageDTO dto : list) {
+                if (dto.getShared().equals(shared)) {
+                    temp.add(dto);
                 }
             }
         }
-        List.clear();
-        return temp;
 
+        return temp;
     }
 }
