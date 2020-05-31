@@ -22,6 +22,9 @@ public class ImageDTO {
     String shared;
     Integer imgNum;
 
+    public ImageDTO(){
+
+    }
     public ImageDTO(String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
         this.userID = userID;
         this.imgURL = imgURL;
