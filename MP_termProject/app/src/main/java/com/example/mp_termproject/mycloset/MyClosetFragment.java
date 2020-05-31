@@ -1,5 +1,6 @@
 package com.example.mp_termproject.mycloset;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -291,7 +293,7 @@ public class MyClosetFragment extends Fragment {
             imageParams.weight = 1;
             imageParams.gravity = Gravity.LEFT;
 
-            ImageView imageView = new ImageView(linearLayout.getContext());
+            final ImageView imageView = new ImageView(linearLayout.getContext());
             imageView.setLayoutParams(imageParams);
 
             Glide.with(linearLayout)
@@ -303,9 +305,32 @@ public class MyClosetFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // 수정 & 삭제
-                    Toast.makeText(getContext(), "클릭", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    String[] option = {"수정", "삭제", "취소"};
+                    builder.setItems(option, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int pos) {
+                            // 수정, 삭제, 취소
+                            switch (pos){
+                                case 0:
+                                    // 수정
+                                    break;
+                                case 1:
+                                    Log.d("test","test");
+                                    // 삭제
+                                    break;
+                                case 2:
+                                    // 취소
+                            }
+                        }
+                    });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.setCancelable(false); //화면 밖에 선택 시 팝업 꺼지는거
+                    alertDialog.show();
                 }
             });
+
 
             i++;
         }

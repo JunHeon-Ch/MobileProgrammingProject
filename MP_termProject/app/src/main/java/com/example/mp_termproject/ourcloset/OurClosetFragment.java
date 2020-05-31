@@ -63,6 +63,8 @@ public class OurClosetFragment extends Fragment {
     ArrayList<ImageDTO> dtoList;
     ArrayList<StorageReference> imageList;
 
+    ArrayList<String> imgUrl = new ArrayList<>();
+
     Double[] imgnum;
 
     @Nullable
@@ -135,84 +137,71 @@ public class OurClosetFragment extends Fragment {
     public void onStart() {
         super.onStart();
         // 유저 정보접근
-        docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // imgNum 받아옴
-                        Map<String, Object> temp = document.getData();
-                        imgnum[0] = (Double) temp.get("imgNum");
+//        DocumentReference tmep = db.collection("images").document();
+        Log.d("test", "test");
 
-                        db.collection("images")
-                                .document(user.getUid())
-                                .collection("image")
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            dtoList.clear();
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                Map<String, Object> temp = document.getData();
+        db.collection("users").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                Log.d(TAG,user.getUid()+"");
+                                if (!user.getUid().equals(document.getId())) {
+                                    db.collection("images").document(document.getId()).collection("image").whereEqualTo("shared", "공유").get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                            String temp = document.getString("imgURL");
+                                                            Log.d("image information", document.getId() + " => " + temp);
 
-                                                String id = (String) temp.get("userID");
-                                                String url = (String) temp.get("imgURL");
-                                                String category = (String) temp.get("category");
-                                                String name = (String) temp.get("itemName");
-                                                String color = (String) temp.get("color");
-                                                String brand = (String) temp.get("brand");
-                                                String season = (String) temp.get("season");
-                                                String size = (String) temp.get("size");
-                                                String shared = (String) temp.get("shared");
-                                                ImageDTO dto = new ImageDTO(id, url, category, name,
-                                                        color, brand, season, size, shared);
-                                                dtoList.add(dto);
-                                            }
-
-                                            int count = addPathReference(NORMAL);
-                                            // 화면에 이미지 띄우기
-                                            floatTotalImages(count);
-                                        } else {
-                                            Log.d(TAG, "Error getting documents: ", task.getException());
-                                        }
-                                    }
-                                });
-                    } else {
-                        Log.d(TAG, "No such document");
+                                                            ImageDTO dto = new ImageDTO();
+                                                            dto.setBrand(document.getString("brand"));
+                                                            dto.setItemName(document.getString("itemName"));
+                                                            dto.setImgURL(temp);
+                                                            dtoList.add(dto);
+                                                            imgUrl.add(temp);
+                                                        }
+                                                        int count = addPathReference(NORMAL);
+                                                        floatTotalImages(count);
+                                                    } else {
+                                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-
-            }
-        });
+                });
 
     }
 
-    private int addPathReference(int flag){
+    private int addPathReference(int flag) {
         imageList.clear();
         int count = 0;
 
-        switch (flag){
+        switch (flag) {
             case NORMAL:
-                for (int i = 0; i < imgnum[0]; i++) {
-                    if (dtoList.get(i).getShared().equals("공유")) {
-                        count++;
-                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
-                    }
+                for (int i = 0; i < imgUrl.size(); i++) {
+                    count++;
+                    imageList.add(storageRef.child(imgUrl.get(i)));
                 }
 
                 break;
 
             case SEARCH:
                 String sText = searchText.getText().toString();
-                for (int i = 0; i < imgnum[0]; i++) {
+                for (int i = 0; i < dtoList.size(); i++) {
                     if (sText.equals(dtoList.get(i).getBrand()) ||
                             sText.equals(dtoList.get(i).getItemName())) {
                         count++;
-                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
+                        imageList.add(storageRef.child(dtoList.get(i).getImgURL()));
                     }
                 }
         }
@@ -231,7 +220,7 @@ public class OurClosetFragment extends Fragment {
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
 
-            if(i % 3 == 0){
+            if (i % 3 == 0) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
 
