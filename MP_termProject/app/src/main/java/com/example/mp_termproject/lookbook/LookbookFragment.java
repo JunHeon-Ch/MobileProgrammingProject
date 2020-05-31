@@ -52,6 +52,8 @@ public class LookbookFragment extends Fragment {
     static final int REQUEST_FILTER = 1;
     static final int NORMAL = 1;
 
+    static int check = NORMAL;
+
     ArrayList<LookbookDTO> dtoList;
     ArrayList<StorageReference> imageList;
     ArrayList<LookbookDTO> imageDTOList;
@@ -98,13 +100,10 @@ public class LookbookFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        accessUserInfo();
-        accessImageInfo();
-
-
+        accessDBInfo();
     }
 
-    private void accessUserInfo(){
+    private void accessDBInfo(){
         // 유저 정보접근
         docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -115,9 +114,36 @@ public class LookbookFragment extends Fragment {
                         // imgNum 받아옴
                         Map<String, Object> temp = document.getData();
                         imgnum[0] = (Double) temp.get("lookNum");
-                        int count = addPathReference(NORMAL);
-                        // 화면에 이미지 띄우기
-                        floatTotalImages(count);
+
+                        db.collection("lookbook")
+                                .document(user.getUid())
+                                .collection("looks")
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            int i = 0;
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                                Map<String, Object> temp = document.getData();
+
+                                                String id = (String) temp.get("userID");
+                                                String url = (String) temp.get("imgURL");
+                                                String occasion = (String) temp.get("occasion");
+                                                String season = (String) temp.get("season");
+                                                LookbookDTO dto = new LookbookDTO(id, url, occasion, season);
+                                                dtoList.add(dto);
+
+                                                int count = addPathReference(check);
+                                                // 화면에 이미지 띄우기
+                                                floatTotalImages(count);
+                                            }
+                                        } else {
+                                            Log.d(TAG, "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -144,34 +170,6 @@ public class LookbookFragment extends Fragment {
         }
 
         return count;
-    }
-
-    private void accessImageInfo(){
-        db.collection("lookbook")
-                .document(user.getUid())
-                .collection("looks")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            int i = 0;
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                Map<String, Object> temp = document.getData();
-
-                                String id = (String) temp.get("userID");
-                                String url = (String) temp.get("imgURL");
-                                String occasion = (String) temp.get("occasion");
-                                String season = (String) temp.get("season");
-                                LookbookDTO dto = new LookbookDTO(id, url, occasion, season);
-                                dtoList.add(dto);
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
     }
 
     private void floatTotalImages(int count) {

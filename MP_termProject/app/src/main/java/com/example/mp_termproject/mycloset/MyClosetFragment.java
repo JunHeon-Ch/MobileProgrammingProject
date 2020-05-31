@@ -111,7 +111,6 @@ public class MyClosetFragment extends Fragment {
                 if (!searchText.getText().toString().equals("")) {
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
                     check = SEARCH;
-                    Log.d("test", searchText.getText().toString());
                 }
                 onStart();
             }
@@ -183,10 +182,6 @@ public class MyClosetFragment extends Fragment {
                 }
             }
         });
-    }
-
-    private void accessImageInfo() {
-
     }
 
     // Action Bar에 메뉴옵션 띄우기
@@ -283,6 +278,7 @@ public class MyClosetFragment extends Fragment {
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
+            ImageDTO imageDTO = imageDTOList.get(i);
 
             if (i % 3 == 0) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
