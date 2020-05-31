@@ -34,9 +34,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -269,7 +271,9 @@ public class MyClosetFragment extends Fragment {
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
+
             ImageDTO imageDTO = imageDTOList.get(i);
+
 
             if (i % 3 == 0) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -296,6 +300,7 @@ public class MyClosetFragment extends Fragment {
                     .into(imageView);
             linearLayout.addView(imageView);
 
+            final ImageDTO temp = imageDTO;
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -312,8 +317,35 @@ public class MyClosetFragment extends Fragment {
                                     // 수정
                                     break;
                                 case 1:
+                                    // Create a reference to the file to delete
+                                    StorageReference desertRef = storageRef.child(temp.getImgURL());
+                                    desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            // File deleted successfully
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                            // Uh-oh, an error occurred!
+                                        }
+                                    });
 
-                                    Log.d("test","test");
+                                    final CollectionReference itemsRef = db.collection("images").document(user.getUid()).collection("image");
+                                    Query query = itemsRef.whereEqualTo("imgURL", temp.getImgURL());
+                                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    itemsRef.document(document.getId()).delete();
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
+                                    Log.d("test","test "+temp.getImgURL());
                                     // 삭제
                                     break;
                                 case 2:
