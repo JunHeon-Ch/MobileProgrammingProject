@@ -50,6 +50,8 @@ public class OurClosetFragment extends Fragment {
     static final int NORMAL = 1;
     static final int SEARCH = 2;
 
+    static int check = NORMAL;
+
     EditText searchText;
     ImageView searchImage;
     LinearLayout imageContainer;
@@ -96,11 +98,11 @@ public class OurClosetFragment extends Fragment {
         searchImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
+                if (!searchText.getText().toString().equals("")) {
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
-                    int count = addPathReference(SEARCH);
-                    floatTotalImages(count);
+                    check = SEARCH;
                 }
+                onStart();
             }
         });
 
@@ -136,11 +138,11 @@ public class OurClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        accessDBInfo();
+    }
+
+    private void accessDBInfo(){
         // 유저 정보접근
-
-//        DocumentReference tmep = db.collection("images").document();
-        Log.d("test", "test");
-
         db.collection("users").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -166,7 +168,8 @@ public class OurClosetFragment extends Fragment {
                                                             dtoList.add(dto);
                                                             imgUrl.add(temp);
                                                         }
-                                                        int count = addPathReference(NORMAL);
+
+                                                        int count = addPathReference(check);
                                                         floatTotalImages(count);
                                                     } else {
                                                         Log.d(TAG, "Error getting documents: ", task.getException());
@@ -180,7 +183,6 @@ public class OurClosetFragment extends Fragment {
                         }
                     }
                 });
-
     }
 
     private int addPathReference(int flag) {
