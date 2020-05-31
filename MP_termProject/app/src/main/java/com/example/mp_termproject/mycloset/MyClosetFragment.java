@@ -2,6 +2,7 @@ package com.example.mp_termproject.mycloset;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -28,6 +29,8 @@ import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,6 +42,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -50,9 +54,14 @@ public class MyClosetFragment extends Fragment {
     static final int REQUEST_FILTER = 1;
     static final int NORMAL = 1;
     static final int SEARCH = 2;
+    static final int FILTER = 3;
 
-    static ArrayList<ImageDTO> dtoList;
+    static int check = NORMAL;
+
+    ArrayList<ImageDTO> dtoList;
     ArrayList<StorageReference> imageList;
+    ArrayList<ImageDTO> imageDTOList;
+    ArrayList<ImageDTO> filterList;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -85,6 +94,8 @@ public class MyClosetFragment extends Fragment {
 
         dtoList = new ArrayList<>();
         imageList = new ArrayList<>();
+        imageDTOList = new ArrayList<>();
+        filterList = new ArrayList<>();
 
         imgnum = new Double[1];
 
@@ -92,21 +103,19 @@ public class MyClosetFragment extends Fragment {
         imageContainer = rootView.findViewById(R.id.imageContainer);
 
         searchText = rootView.findViewById(R.id.search);
+        searchText.setText(null);
         searchImage = rootView.findViewById(R.id.search_image);
         searchImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!searchText.getText().toString().equals(getResources().getString(R.string.search))) {
+                if (!searchText.getText().toString().equals("")) {
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
-                    int count = addPathReference(SEARCH);
-                    floatTotalImages(count);
+                    check = SEARCH;
+                    Log.d("test", searchText.getText().toString());
                 }
+                onStart();
             }
         });
-
-//        상운 구현부
-//        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
-
 
         return rootView;
     }
@@ -114,11 +123,11 @@ public class MyClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        accessUserInfo();
-        accessImageInfo();
+        accessDBInfo();
+        Log.d("test", check +"");
     }
 
-    private void accessUserInfo(){
+    private void accessDBInfo() {
         // 유저 정보접근
         docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -129,9 +138,43 @@ public class MyClosetFragment extends Fragment {
                         // imgNum 받아옴
                         Map<String, Object> temp = document.getData();
                         imgnum[0] = (Double) temp.get("imgNum");
-                        int count = addPathReference(NORMAL);
-                        // 화면에 이미지 띄우기
-                        floatTotalImages(count);
+
+                        db.collection("images")
+                                .document(user.getUid())
+                                .collection("image")
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            int i = 0;
+                                            dtoList.clear();
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                                Map<String, Object> temp = document.getData();
+
+                                                String id = (String) temp.get("userID");
+                                                String url = (String) temp.get("imgURL");
+                                                String category = (String) temp.get("category");
+                                                String name = (String) temp.get("itemName");
+                                                String color = (String) temp.get("color");
+                                                String brand = (String) temp.get("brand");
+                                                String season = (String) temp.get("season");
+                                                String size = (String) temp.get("size");
+                                                String shared = (String) temp.get("shared");
+                                                ImageDTO dto = new ImageDTO(id, url, category, name,
+                                                        color, brand, season, size, shared);
+                                                dtoList.add(dto);
+
+                                                int count = addPathReference(check);
+                                                // 화면에 이미지 띄우기
+                                                floatTotalImages(count);
+                                            }
+                                        } else {
+                                            Log.d(TAG, "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -142,40 +185,8 @@ public class MyClosetFragment extends Fragment {
         });
     }
 
-    private void accessImageInfo(){
-        db.collection("images")
-                .document(user.getUid())
-                .collection("image")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            int i = 0;
-                            dtoList.clear();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                Map<String, Object> temp = document.getData();
+    private void accessImageInfo() {
 
-                                String id = (String) temp.get("userID");
-                                String url = (String) temp.get("imgURL");
-                                String category = (String) temp.get("category");
-                                String name = (String) temp.get("itemName");
-                                String color = (String) temp.get("color");
-                                String brand = (String) temp.get("brand");
-                                String season = (String) temp.get("season");
-                                String size = (String) temp.get("size");
-                                String shared = (String) temp.get("shared");
-                                ImageDTO dto = new ImageDTO(id, url, category, name,
-                                        color, brand, season, size, shared);
-                                dtoList.add(dto);
-                                Log.d("snapshot", "" + dtoList.get(i));
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
     }
 
     // Action Bar에 메뉴옵션 띄우기
@@ -230,23 +241,20 @@ public class MyClosetFragment extends Fragment {
                 ArrayList<String> seasonItemList = (ArrayList<String>) bundle.getStringArrayList("season");
                 String sharedItem = bundle.getString("share");
 
-                ArrayList<ImageDTO> temp = new ArrayList<ImageDTO>();
+                filterList.clear();
+                filterList.addAll(filterCategory(dtoList, categoryItemList));
+//                for(int i = 0;  i <filterList.size(); i++){
+//                    Log.d("filterList", filterList.get(i).toString());
+//                }
+                filterList.addAll(filterColor(filterList, colorItemList));
+                filterList.addAll(filterSeason(filterList, seasonItemList));
+                filterList.addAll(filterShared(filterList, sharedItem));
 
-                temp.addAll(filterCategory(dtoList, categoryItemList));
-                temp.addAll(filterColor(temp, colorItemList));
-                temp.addAll(filterSeason(temp, seasonItemList));
-                temp.addAll(filterShared(temp, sharedItem));
-                if(temp.size()==0){
-                    Toast.makeText(getContext(),"해당하는 값이 없습니다.",Toast.LENGTH_SHORT).show();
+                if (filterList.size() == 0) {
+                    Toast.makeText(getContext(), "해당하는 값이 없습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    check = FILTER;
                 }
-//                               상운 구현부
-//                categorySelectedList, colorSelectedList, seasonSelectedList, shareSelected에
-//                저장된 데이터들이 필터 기준임.
-//                예를들어, categorySelectedList에  상의 Top, 아우터 Outer 이렇게 저장되있으면
-//                "상의, 아우터만 데이터베이스에서 가져와라" 이 뜻
-//                만약 리스트가 null인 경우, 필터 기준없이 다 가져오면 됨.
-//                예를 들어, 카테고리 -> 상의 / 컬러 -> null / 시즌 -> 봄 / 공유 -> 비공유 이면
-//                "카테고리가 상의고, 시즌은 봄이고, 공유는 비공유이고, 컬러는 모든 컬러를 가져와라"
 
 
                 Toast.makeText(getContext(),
@@ -266,17 +274,17 @@ public class MyClosetFragment extends Fragment {
     }
 
     //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
-    private void floatTotalImages(int count){
+    private void floatTotalImages(int count) {
         LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
-        final int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 180, getResources().getDisplayMetrics());
 
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
 
-            if(i % 3 == 0){
+            if (i % 3 == 0) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
 
@@ -311,11 +319,13 @@ public class MyClosetFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int pos) {
                             // 수정, 삭제, 취소
+
                             switch (pos){
                                 case 0:
                                     // 수정
                                     break;
                                 case 1:
+
                                     Log.d("test","test");
                                     // 삭제
                                     break;
@@ -336,28 +346,42 @@ public class MyClosetFragment extends Fragment {
         }
     }
 
-    private int addPathReference(int flag){
+    private int addPathReference(int flag) {
         imageList.clear();
+        imageDTOList.clear();
         int count = 0;
 
-        switch (flag){
+        switch (flag) {
             case NORMAL:
-                for (int i = 0; i < imgnum[0]; i++) {
-                        count++;
-                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
-                    }
+                for (int i = 0; i < dtoList.size(); i++) {
+                    count++;
+                    imageList.add(storageRef.child(dtoList.get(i).imgURL));
+                    imageDTOList.add(dtoList.get(i));
+                }
 
                 break;
 
             case SEARCH:
                 String sText = searchText.getText().toString();
-                for (int i = 0; i < imgnum[0]; i++) {
+                for (int i = 0; i < dtoList.size(); i++) {
                     if (sText.equals(dtoList.get(i).getBrand()) ||
                             sText.equals(dtoList.get(i).getItemName())) {
                         count++;
-                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
+                        imageList.add(storageRef.child(dtoList.get(i).getImgURL()));
+                        imageDTOList.add(dtoList.get(i));
                     }
                 }
+
+                break;
+
+            case FILTER:
+                for (int i = 0; i < filterList.size(); i++) {
+                    count++;
+                    imageList.add(storageRef.child(filterList.get(i).getImgURL()));
+                    imageDTOList.add(filterList.get(i));
+                }
+
+                break;
         }
 
         return count;
@@ -373,7 +397,8 @@ public class MyClosetFragment extends Fragment {
                 for (int j = 0; j < arrayList.size(); j++) {
                     if (List.get(i).getCategory().equals(arrayList.get(j))) {
                         temp.add(List.get((i)));
-                        Log.d("asdsadassa", "asdasda" + List.get(i));
+//                        Log.d("asdsadassa", "asdasda" + List.get(i));
+                        break;
                     }
                 }
             }
@@ -388,9 +413,19 @@ public class MyClosetFragment extends Fragment {
             return List;
         } else {
             for (int i = 0; i < List.size(); i++) {
-                for (int j = 0; j < arrayList.size(); j++) {
-                    if (List.get(i).getColor().equals(arrayList.get(j))) {
-                        temp.add(List.get((i)));
+                String[] tempColor = List.get(i).getColor().split(" ");
+                for (int k = 0; k < tempColor.length; k++) {
+                    int flag = 0;
+                    for (int j = 0; j < arrayList.size(); j++) {
+                        if (tempColor[k].equals(arrayList.get(j))) {
+                            temp.add(List.get((i)));
+                            flag = 1;
+                            break;
+                        }
+                    }
+
+                    if (flag == 1) {
+                        break;
                     }
                 }
             }
@@ -406,9 +441,19 @@ public class MyClosetFragment extends Fragment {
             return List;
         } else {
             for (int i = 0; i < List.size(); i++) {
-                for (int j = 0; j < arrayList.size(); j++) {
-                    if (List.get(i).getSeason().equals(arrayList.get(j))) {
-                        temp.add(List.get((i)));
+                String[] tempSeason = List.get(i).getSeason().split(" ");
+                for (int k = 0; k < tempSeason.length; k++) {
+                    int flag = 0;
+                    for (int j = 0; j < arrayList.size(); j++) {
+                        if (tempSeason[k].equals(arrayList.get(j))) {
+                            temp.add(List.get((i)));
+                            flag = 1;
+                            break;
+                        }
+                    }
+
+                    if (flag == 1) {
+                        break;
                     }
                 }
             }
@@ -426,7 +471,6 @@ public class MyClosetFragment extends Fragment {
             for (int i = 0; i < List.size(); i++) {
                 if (List.get(i).getShared().equals(shared)) {
                     temp.add(List.get((i)));
-
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.example.mp_termproject.lookbook;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -50,8 +52,9 @@ public class LookbookFragment extends Fragment {
     static final int REQUEST_FILTER = 1;
     static final int NORMAL = 1;
 
-    static ArrayList<LookbookDTO> dtoList = new ArrayList<>();
+    ArrayList<LookbookDTO> dtoList;
     ArrayList<StorageReference> imageList;
+    ArrayList<LookbookDTO> imageDTOList;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -83,6 +86,7 @@ public class LookbookFragment extends Fragment {
 
         dtoList = new ArrayList<>();
         imageList = new ArrayList<>();
+        imageDTOList = new ArrayList<>();
 
         imgnum = new Double[1];
 
@@ -130,9 +134,10 @@ public class LookbookFragment extends Fragment {
 
         switch (flag){
             case NORMAL:
-                for (int i = 0; i < imgnum[0]; i++) {
+                for (int i = 0; i < dtoList.size(); i++) {
                     count++;
-                    imageList.add(storageRef.child("lookbook/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
+                    imageList.add(storageRef.child(dtoList.get(i).getImgURL()));
+                    imageDTOList.add(dtoList.get(i));
                 }
 
                 break;
@@ -208,7 +213,29 @@ public class LookbookFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // 수정 & 삭제
-                    Toast.makeText(getContext(), "클릭", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    String[] option = {"수정", "삭제", "취소"};
+                    builder.setItems(option, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int pos) {
+                            // 수정, 삭제, 취소
+
+                            switch (pos){
+                                case 0:
+                                    // 수정
+                                    break;
+                                case 1:
+                                    // 삭제
+                                    break;
+                                case 2:
+                                    // 취소
+                            }
+                        }
+                    });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.setCancelable(false); //화면 밖에 선택 시 팝업 꺼지는거
+                    alertDialog.show();
                 }
             });
 

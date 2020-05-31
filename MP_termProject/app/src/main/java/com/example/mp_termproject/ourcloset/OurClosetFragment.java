@@ -137,6 +137,7 @@ public class OurClosetFragment extends Fragment {
     public void onStart() {
         super.onStart();
         // 유저 정보접근
+
 //        DocumentReference tmep = db.collection("images").document();
         Log.d("test", "test");
 
@@ -188,6 +189,7 @@ public class OurClosetFragment extends Fragment {
 
         switch (flag) {
             case NORMAL:
+
                 for (int i = 0; i < imgUrl.size(); i++) {
                     count++;
                     imageList.add(storageRef.child(imgUrl.get(i)));
@@ -244,14 +246,6 @@ public class OurClosetFragment extends Fragment {
                     .load(pathReference)
                     .into(imageView);
             linearLayout.addView(imageView);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // 수정 & 삭제
-                    Toast.makeText(getContext(), "클릭", Toast.LENGTH_SHORT).show();
-                }
-            });
 
             i++;
         }
