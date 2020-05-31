@@ -136,19 +136,19 @@ public class OurClosetFragment extends Fragment {
         super.onStart();
         // 유저 정보접근
         docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // imgNum 받아옴
-                        Map<String, Object> temp = document.getData();
-                        imgnum[0] = (Double) temp.get("imgNum");
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        // imgNum 받아옴
+                                        Map<String, Object> temp = document.getData();
+                                        imgnum[0] = (Double) temp.get("imgNum");
 
-                        db.collection("images")
-                                .document(user.getUid())
-                                .collection("image")
-                                .get()
+                                        db.collection("images")
+                                                .document(user.getUid())
+                                                .collection("image")
+                                                .get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -198,10 +198,8 @@ public class OurClosetFragment extends Fragment {
         switch (flag){
             case NORMAL:
                 for (int i = 0; i < imgnum[0]; i++) {
-                    if (dtoList.get(i).getShared().equals("공유")) {
                         count++;
-                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
-                    }
+                        imageList.add(storageRef.child(dtoList.get(i).getImgURL()));
                 }
 
                 break;
@@ -212,7 +210,7 @@ public class OurClosetFragment extends Fragment {
                     if (sText.equals(dtoList.get(i).getBrand()) ||
                             sText.equals(dtoList.get(i).getItemName())) {
                         count++;
-                        imageList.add(storageRef.child("closet/" + user.getUid() + "/" + (i + 1) + ".0.jpg"));
+                        imageList.add(storageRef.child(dtoList.get(i).getImgURL()));
                     }
                 }
         }
@@ -255,14 +253,6 @@ public class OurClosetFragment extends Fragment {
                     .load(pathReference)
                     .into(imageView);
             linearLayout.addView(imageView);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // 수정 & 삭제
-                    Toast.makeText(getContext(), "클릭", Toast.LENGTH_SHORT).show();
-                }
-            });
 
             i++;
         }
