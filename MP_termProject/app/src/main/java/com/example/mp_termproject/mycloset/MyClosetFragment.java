@@ -301,7 +301,7 @@ public class MyClosetFragment extends Fragment {
             imageParams.weight = 1;
             imageParams.gravity = Gravity.LEFT;
 
-            ImageView imageView = new ImageView(linearLayout.getContext());
+            final ImageView imageView = new ImageView(linearLayout.getContext());
             imageView.setLayoutParams(imageParams);
 
             Glide.with(linearLayout)
@@ -325,6 +325,8 @@ public class MyClosetFragment extends Fragment {
                                     // 수정
                                     break;
                                 case 1:
+
+                                    Log.d("test","test");
                                     // 삭제
                                     break;
                                 case 2:
@@ -338,6 +340,7 @@ public class MyClosetFragment extends Fragment {
                     alertDialog.show();
                 }
             });
+
 
             i++;
         }
