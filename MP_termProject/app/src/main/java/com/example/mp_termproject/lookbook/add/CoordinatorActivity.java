@@ -63,7 +63,7 @@ public class CoordinatorActivity extends AppCompatActivity {
     private static final String TAG = "CoordinatorActivity";
 
     RelativeLayout mainContainer;
-    ScrollView imageContainer;
+    RelativeLayout imageContainer;
     LinearLayout imageLayout;
 
     ImageView hatImage;
@@ -77,6 +77,7 @@ public class CoordinatorActivity extends AppCompatActivity {
     TextView occasionText;
     TextView seasonText;
     LinearLayout coordinatorLayout;
+    Button emptyImageButton;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -127,6 +128,7 @@ public class CoordinatorActivity extends AppCompatActivity {
         outerImage = findViewById(R.id.hat_image);
         bagImage = findViewById(R.id.hat_image);
         accessoryImage = findViewById(R.id.hat_image);
+        emptyImageButton = findViewById(R.id.empty_image_button);
 
         coordinatorLayout = findViewById(R.id.coordinator_layout);
 
@@ -503,6 +505,16 @@ public class CoordinatorActivity extends AppCompatActivity {
                     .load(pathReference)
                     .into(imageView);
             linearLayout.addView(imageView);
+
+            emptyImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    targetImageView.setImageBitmap(null);
+
+                    mainContainer.setVisibility(View.VISIBLE);
+                    imageContainer.setVisibility(View.INVISIBLE);
+                }
+            });
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
