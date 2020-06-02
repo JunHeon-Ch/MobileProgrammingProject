@@ -195,13 +195,13 @@ public class LookbookFragment extends Fragment {
         LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
         final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                180, getResources().getDisplayMetrics());
+                350, getResources().getDisplayMetrics());
 
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
 
-            if(i % 3 == 0){
+            if(i % 2 == 0){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
                 layoutParams.gravity = Gravity.LEFT;
@@ -330,19 +330,19 @@ public class LookbookFragment extends Fragment {
             for (LookbookDTO dto : list) {
                 String[] tempOccasion = dto.getOccasion().split(" ");
                 for (int k = 0; k < tempOccasion.length; k++) {
-//                    int flag = 0;
+                    int flag = 0;
                     Log.d("test", tempOccasion[k]);
                     for (int j = 0; j < arrayList.size(); j++) {
                         if (tempOccasion[k].equals(arrayList.get(j))) {
                             temp.add(dto);
-//                            flag = 1;
-//                            break;
+                            flag = 1;
+                            break;
                         }
                     }
 
-//                    if (flag == 1) {
-//                        break;
-//                    }
+                    if (flag == 1) {
+                        break;
+                    }
                 }
             }
         }
@@ -359,18 +359,18 @@ public class LookbookFragment extends Fragment {
             for (LookbookDTO dto : list) {
                 String[] tempColor = dto.getSeason().split(" ");
                 for (int k = 0; k < tempColor.length; k++) {
-//                    int flag = 0;
+                    int flag = 0;
                     for (int j = 0; j < arrayList.size(); j++) {
                         if (tempColor[k].equals(arrayList.get(j))) {
                             temp.add(dto);
-//                            flag = 1;
-//                            break;
+                            flag = 1;
+                            break;
                         }
                     }
 
-//                    if (flag == 1) {
-//                        break;
-//                    }
+                    if (flag == 1) {
+                        break;
+                    }
                 }
             }
         }
