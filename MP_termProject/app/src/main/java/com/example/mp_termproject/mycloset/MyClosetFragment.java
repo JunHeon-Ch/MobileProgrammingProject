@@ -2,7 +2,9 @@ package com.example.mp_termproject.mycloset;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -27,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
+import com.example.mp_termproject.mycloset.add.MyClosetEditActivity;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,7 +46,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.protobuf.DoubleValue;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.Map;
@@ -155,7 +160,7 @@ public class MyClosetFragment extends Fragment {
                                             int i = 0;
                                             dtoList.clear();
                                             for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                Log.d(TAG, document.getId() + " => " + document.getData());
                                                 Map<String, Object> temp = document.getData();
 
                                                 String id = (String) temp.get("userID");
@@ -167,8 +172,10 @@ public class MyClosetFragment extends Fragment {
                                                 String season = (String) temp.get("season");
                                                 String size = (String) temp.get("size");
                                                 String shared = (String) temp.get("shared");
+                                                Double imgNum = (Double)temp.get("imgNum");
                                                 ImageDTO dto = new ImageDTO(id, url, category, name,
-                                                        color, brand, season, size, shared);
+                                                        color, brand, season, size, shared,imgNum);
+                                                dto.setImgNum(imgNum);
                                                 dtoList.add(dto);
 
                                                 int count = addPathReference(check);
@@ -214,7 +221,6 @@ public class MyClosetFragment extends Fragment {
                 bundle.putDouble("imgNum", imgnum[0]);
                 intent.putExtras(bundle);
                 startActivity(intent);
-
                 break;
 
             case R.id.actionbar_filter:
@@ -284,7 +290,6 @@ public class MyClosetFragment extends Fragment {
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
-
             ImageDTO imageDTO = imageDTOList.get(i);
 
 
@@ -314,11 +319,12 @@ public class MyClosetFragment extends Fragment {
             linearLayout.addView(imageView);
 
             final ImageDTO temp = imageDTO;
+            Log.d("test","imgNum "+temp.getImgNum());
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // 수정 & 삭제
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     String[] option = {"수정", "삭제", "취소"};
                     builder.setItems(option, new DialogInterface.OnClickListener() {
                         @Override
@@ -327,6 +333,23 @@ public class MyClosetFragment extends Fragment {
 
                             switch (pos){
                                 case 0:
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                                    float scale = (float) (1024/(float)bitmap.getWidth());
+                                    int image_w = (int) (bitmap.getWidth() * scale);
+                                    int image_h = (int) (bitmap.getHeight() * scale);
+                                    Bitmap resize = Bitmap.createScaledBitmap(bitmap, image_w, image_h, true);
+                                    resize.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                                    byte[] byteArray = stream.toByteArray();
+
+                                    Intent intent = new Intent(getContext(), MyClosetEditActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putDouble("imgNum1", temp.getImgNum());
+                                    bundle.putByteArray("image",byteArray);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+
+
                                     // 수정
                                     break;
                                 case 1:
@@ -359,6 +382,8 @@ public class MyClosetFragment extends Fragment {
                                         }
                                     });
                                     Log.d("test","test "+temp.getImgURL());
+                                    onStart();
+                                    Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                                     // 삭제
                                     break;
                                 case 2:

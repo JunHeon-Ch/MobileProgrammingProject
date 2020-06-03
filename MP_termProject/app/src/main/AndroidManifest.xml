@@ -23,6 +23,7 @@
         <activity android:name=".lookbook.add.CoordinatorActivity" />
         <activity android:name=".mycloset.filter.MyClosetFilterActivity" />
         <activity android:name=".mycloset.add.MyClosetAddActivity" />
+        <activity android:name=".mycloset.add.MyClosetEditActivity" />
         <activity android:name=".mycloset.camera.CameraActivity" />
 
         <meta-data

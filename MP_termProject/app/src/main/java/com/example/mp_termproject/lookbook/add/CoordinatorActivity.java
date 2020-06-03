@@ -551,7 +551,8 @@ public class CoordinatorActivity extends AppCompatActivity {
                                 String season = (String) temp.get("season");
                                 String size = (String) temp.get("size");
                                 String shared = (String) temp.get("shared");
-                                ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared);
+                                Double imgNum = (Double) temp.get("imgNum");
+                                ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared,imgNum);
                                 dtoList.add(dto);
 
                                 Log.d("snapshot", "" + dtoList.get(i));

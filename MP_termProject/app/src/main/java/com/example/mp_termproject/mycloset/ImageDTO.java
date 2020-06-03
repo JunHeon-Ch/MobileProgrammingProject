@@ -20,12 +20,13 @@ public class ImageDTO {
     String season;
     String size;
     String shared;
-    Integer imgNum;
+    Double imgNum;
 
-    public ImageDTO(){
+    public ImageDTO() {
 
     }
-    public ImageDTO(String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
+
+    public ImageDTO(String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared, Double imgNum) {
         this.userID = userID;
         this.imgURL = imgURL;
         this.category = category;
@@ -35,41 +36,8 @@ public class ImageDTO {
         this.season = season;
         this.size = size;
         this.shared = shared;
-
+        this.imgNum = imgNum;
     }
-
-    @Exclude
-//    public Map<String, Object> toMap() {
-//        HashMap<String, Object> result = new HashMap<>();
-//        result.put("userID", userID);
-//        result.put("imgURL", imgURL);
-//        result.put("category", category);
-//        result.put("itemName", itemName);
-//        result.put("color", color);
-//        result.put("brand", brand);
-//        result.put("season", season);
-//        result.put("size", size);
-//        result.put("shared", shared);
-//
-//        return result;
-//    }
-
-//    private void writeNewPost(FirebaseFirestore db,String id, String url, String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
-//        // Create new post at /user-posts/$userid/$postid and at
-//        // /posts/$postid simultaneously
-//        DatabaseReference mDatabase;
-//        mDatabase = FirebaseDatabase.getInstance().getReference();
-//        String key = db.child("users").push().getKey();
-//        ImageDTO img = new ImageDTO(id, url, userID, imgURL, category, itemName, color, brand, season, size, shared) {
-//            Map<String, Object> imgValue = img.toMap();
-//
-//            Map<String, Object> childUpdates = new HashMap<>();
-//        childUpdates.put("/posts/"+key, imgValue);
-//        childUpdates.put("/user-posts/"+userId +"/"+key,imgValue);
-//
-//        mDatabase.updateChildren(childUpdates);
-//        };
-//    }
 
     public String getUserID() {
         return userID;
@@ -109,6 +77,14 @@ public class ImageDTO {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    public Double getImgNum() {
+        return imgNum;
+    }
+
+    public void setImgNum(Double imgNum) {
+        this.imgNum = imgNum;
     }
 
     public void setImgURL(String imgURL) {
