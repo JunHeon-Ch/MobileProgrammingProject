@@ -13,11 +13,13 @@ public class ImageDTO {
     String season;
     String size;
     String shared;
+    Double imgNum;
 
-    public ImageDTO(){
+    public ImageDTO() {
 
     }
-    public ImageDTO(String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared) {
+
+    public ImageDTO(String userID, String imgURL, String category, String itemName, String color, String brand, String season, String size, String shared, Double imgNum) {
         this.userID = userID;
         this.imgURL = imgURL;
         this.category = category;
@@ -27,8 +29,8 @@ public class ImageDTO {
         this.season = season;
         this.size = size;
         this.shared = shared;
+        this.imgNum = imgNum;
     }
-
 
     public String getUserID() {
         return userID;
@@ -68,6 +70,14 @@ public class ImageDTO {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    public Double getImgNum() {
+        return imgNum;
+    }
+
+    public void setImgNum(Double imgNum) {
+        this.imgNum = imgNum;
     }
 
     public void setImgURL(String imgURL) {
