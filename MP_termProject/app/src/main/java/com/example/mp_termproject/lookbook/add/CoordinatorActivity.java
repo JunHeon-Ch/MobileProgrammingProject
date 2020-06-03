@@ -444,7 +444,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                                         finish();
                                     }
                                 });
-
+                                alert.setCancelable(false);
                                 alert.show();
 
                             }
