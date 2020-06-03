@@ -4,5 +4,12 @@
     <item
         android:title="@string/actionbar_filter"
         android:id="@+id/actionbar_filter"
+        android:icon="@drawable/filter"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:title="@string/actionbar_sorting"
+        android:id="@+id/actionbar_sorting"
+        android:icon="@drawable/pin"
         app:showAsAction="ifRoom"/>
 </menu>
