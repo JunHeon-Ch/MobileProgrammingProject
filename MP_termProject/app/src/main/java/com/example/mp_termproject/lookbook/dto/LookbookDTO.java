@@ -1,4 +1,4 @@
-package com.example.mp_termproject.lookbook;
+package com.example.mp_termproject.lookbook.dto;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 

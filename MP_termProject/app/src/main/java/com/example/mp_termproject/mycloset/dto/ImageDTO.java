@@ -1,4 +1,4 @@
-package com.example.mp_termproject.mycloset;
+package com.example.mp_termproject.mycloset.dto;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 

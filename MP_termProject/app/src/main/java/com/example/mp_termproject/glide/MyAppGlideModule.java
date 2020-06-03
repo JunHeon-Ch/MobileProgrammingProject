@@ -1,4 +1,4 @@
-package com.example.mp_termproject;
+package com.example.mp_termproject.glide;
 
 import android.content.Context;
 
