@@ -1,6 +1,7 @@
 package com.example.mp_termproject.signup;
 
 public class UserInfo {
+    private String userId;
     private String name;
     private String phoneNumber;
     private String birthDay;
@@ -10,8 +11,9 @@ public class UserInfo {
     private Double latitude;
     private Double longitude;
 
-    public UserInfo(String name, String phoneNumber, String birthDay, String address,
+    public UserInfo(String userId, String name, String phoneNumber, String birthDay, String address,
                     Double imgNum, Double lookNum, Double latitude, Double longitude) {
+        this.userId = userId;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDay = birthDay;
@@ -20,6 +22,23 @@ public class UserInfo {
         this.lookNum = lookNum;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public UserInfo(String userId, String name, String phoneNumber, String address, Double latitude, Double longitude){
+        this.userId = userId;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {

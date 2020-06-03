@@ -5,11 +5,13 @@
     <item
         android:title="@string/actionbar_add"
         android:id="@+id/actionbar_add"
+        android:icon="@drawable/add"
         app:showAsAction="ifRoom"/>
 
     <item
         android:title="@string/actionbar_filter"
         android:id="@+id/actionbar_filter"
+        android:icon="@drawable/filter"
         app:showAsAction="ifRoom"/>
 
 </menu>

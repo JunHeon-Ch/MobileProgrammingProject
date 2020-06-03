@@ -40,6 +40,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
@@ -51,12 +53,14 @@ public class LookbookFragment extends Fragment {
 
     static final int REQUEST_FILTER = 1;
     static final int NORMAL = 1;
+    static final int FILTER = 2;
 
     static int check = NORMAL;
 
     ArrayList<LookbookDTO> dtoList;
     ArrayList<StorageReference> imageList;
     ArrayList<LookbookDTO> imageDTOList;
+    HashSet<LookbookDTO> filterList;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -89,6 +93,7 @@ public class LookbookFragment extends Fragment {
         dtoList = new ArrayList<>();
         imageList = new ArrayList<>();
         imageDTOList = new ArrayList<>();
+        filterList = new HashSet<>();
 
         imgnum = new Double[1];
 
@@ -100,62 +105,73 @@ public class LookbookFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         accessDBInfo();
     }
 
     private void accessDBInfo(){
-        // 유저 정보접근
-        docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // imgNum 받아옴
-                        Map<String, Object> temp = document.getData();
-                        imgnum[0] = (Double) temp.get("lookNum");
+        if(check == NORMAL) {
+            // 유저 정보접근
+            docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // imgNum 받아옴
+                            Map<String, Object> temp = document.getData();
+                            imgnum[0] = (Double) temp.get("lookNum");
 
-                        db.collection("lookbook")
-                                .document(user.getUid())
-                                .collection("looks")
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            int i = 0;
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            db.collection("lookbook")
+                                    .document(user.getUid())
+                                    .collection("looks")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                dtoList.clear();
+                                                int i = 0;
+
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
 //                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                                Map<String, Object> temp = document.getData();
+                                                    Map<String, Object> temp = document.getData();
 
-                                                String id = (String) temp.get("userID");
-                                                String url = (String) temp.get("imgURL");
-                                                String occasion = (String) temp.get("occasion");
-                                                String season = (String) temp.get("season");
-                                                LookbookDTO dto = new LookbookDTO(id, url, occasion, season);
-                                                dtoList.add(dto);
+                                                    String id = (String) temp.get("userID");
+                                                    String url = (String) temp.get("imgURL");
+                                                    String occasion = (String) temp.get("occasion");
+                                                    String season = (String) temp.get("season");
+                                                    LookbookDTO dto = new LookbookDTO(id, url, occasion, season);
+                                                    dtoList.add(dto);
 
-                                                int count = addPathReference(check);
-                                                // 화면에 이미지 띄우기
-                                                floatTotalImages(count);
+                                                    int count = addPathReference(check);
+                                                    // 화면에 이미지 띄우기
+                                                    floatTotalImages(count);
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
                                             }
-                                        } else {
-                                            Log.d(TAG, "Error getting documents: ", task.getException());
                                         }
-                                    }
-                                });
+                                    });
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
                     } else {
-                        Log.d(TAG, "No such document");
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
                 }
-            }
-        });
+            });
+        } else {
+            int count = addPathReference(check);
+            // 화면에 이미지 띄우기
+            floatTotalImages(count);
+        }
     }
 
     private int addPathReference(int flag){
         imageList.clear();
+        imageDTOList.clear();
+
         int count = 0;
 
         switch (flag){
@@ -164,6 +180,15 @@ public class LookbookFragment extends Fragment {
                     count++;
                     imageList.add(storageRef.child(dtoList.get(i).getImgURL()));
                     imageDTOList.add(dtoList.get(i));
+                }
+
+                break;
+
+            case FILTER:
+                for (LookbookDTO dto : filterList) {
+                    count++;
+                    imageList.add(storageRef.child(dto.getImgURL()));
+                    imageDTOList.add(dto);
                 }
 
                 break;
@@ -176,13 +201,13 @@ public class LookbookFragment extends Fragment {
         LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
         final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                180, getResources().getDisplayMetrics());
+                400, getResources().getDisplayMetrics());
 
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
 
-            if(i % 3 == 0){
+            if(i % 2 == 0){
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
                 layoutParams.gravity = Gravity.LEFT;
@@ -288,24 +313,74 @@ public class LookbookFragment extends Fragment {
                 ArrayList<String> occasionItemList = bundle.getStringArrayList("occasion");
                 ArrayList<String> seasonItemList = bundle.getStringArrayList("season");
 
+                filterList.clear();
+                filterList.addAll(filterOccasion(dtoList, occasionItemList));
+                filterList.addAll(filterSeason(filterList, seasonItemList));
 
-
-//                               상운 구현부
-//                categorySelectedList, colorSelectedList, seasonSelectedList, shareSelected에
-//                저장된 데이터들이 필터 기준임.
-//                예를들어, categorySelectedList에  상의 Top, 아우터 Outer 이렇게 저장되있으면
-//                "상의, 아우터만 데이터베이스에서 가져와라" 이 뜻
-//                만약 리스트가 null인 경우, 필터 기준없이 다 가져오면 됨.
-//                예를 들어, 카테고리 -> 상의 / 컬러 -> null / 시즌 -> 봄 / 공유 -> 비공유 이면
-//                "카테고리가 상의고, 시즌은 봄이고, 공유는 비공유이고, 컬러는 모든 컬러를 가져와라"
-
-
-
-                Toast.makeText(getContext(),
-                        occasionItemList.toString() + "\n"
-                                + seasonItemList.toString() + "\n",
-                        Toast.LENGTH_SHORT).show();
+                if (filterList.size() == 0) {
+                    check = NORMAL;
+                    Toast.makeText(getContext(), "해당하는 값이 없습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    check = FILTER;
+                }
             }
         }
+    }
+
+    private ArrayList<LookbookDTO> filterOccasion(ArrayList<LookbookDTO> list, ArrayList<String> arrayList) {
+        ArrayList<LookbookDTO> temp = new ArrayList<>();
+
+        if (arrayList.size() == 0) {
+            return list;
+        } else {
+            for (LookbookDTO dto : list) {
+                String[] tempOccasion = dto.getOccasion().split(" ");
+                for (int k = 0; k < tempOccasion.length; k++) {
+                    int flag = 0;
+                    Log.d("test", tempOccasion[k]);
+                    for (int j = 0; j < arrayList.size(); j++) {
+                        if (tempOccasion[k].equals(arrayList.get(j))) {
+                            temp.add(dto);
+                            flag = 1;
+                            break;
+                        }
+                    }
+
+                    if (flag == 1) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    private HashSet<LookbookDTO> filterSeason(HashSet<LookbookDTO> list, ArrayList<String> arrayList) {
+        HashSet<LookbookDTO> temp = new HashSet<>();
+
+        if (arrayList.size() == 0) {
+            return list;
+        } else {
+            for (LookbookDTO dto : list) {
+                String[] tempColor = dto.getSeason().split(" ");
+                for (int k = 0; k < tempColor.length; k++) {
+                    int flag = 0;
+                    for (int j = 0; j < arrayList.size(); j++) {
+                        if (tempColor[k].equals(arrayList.get(j))) {
+                            temp.add(dto);
+                            flag = 1;
+                            break;
+                        }
+                    }
+
+                    if (flag == 1) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return temp;
     }
 }

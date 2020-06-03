@@ -51,6 +51,7 @@ import com.google.protobuf.DoubleValue;
 import java.io.ByteArrayOutputStream;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -68,7 +69,7 @@ public class MyClosetFragment extends Fragment {
     ArrayList<ImageDTO> dtoList;
     ArrayList<StorageReference> imageList;
     ArrayList<ImageDTO> imageDTOList;
-    ArrayList<ImageDTO> filterList;
+    HashSet<ImageDTO> filterList;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -102,7 +103,7 @@ public class MyClosetFragment extends Fragment {
         dtoList = new ArrayList<>();
         imageList = new ArrayList<>();
         imageDTOList = new ArrayList<>();
-        filterList = new ArrayList<>();
+        filterList = new HashSet<>();
 
         imgnum = new Double[1];
 
@@ -129,72 +130,71 @@ public class MyClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        dtoList.clear();
-        imageList.clear();
-        imageDTOList.clear();
-        filterList.clear();
+
         accessDBInfo();
-        Log.d("test", check +"");
     }
 
     private void accessDBInfo() {
-        // 유저 정보접근
-        docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // imgNum 받아옴
-                        Map<String, Object> temp = document.getData();
-                        imgnum[0] = (Double) temp.get("imgNum");
+        if(check == NORMAL) {
+            // 유저 정보접근
+            docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // imgNum 받아옴
+                            Map<String, Object> temp = document.getData();
+                            imgnum[0] = (Double) temp.get("imgNum");
 
-                        db.collection("images")
-                                .document(user.getUid())
-                                .collection("image")
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            int i = 0;
-                                            dtoList.clear();
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                                Map<String, Object> temp = document.getData();
+                            db.collection("images")
+                                    .document(user.getUid())
+                                    .collection("image")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                dtoList.clear();
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                                    Map<String, Object> temp = document.getData();
 
-                                                String id = (String) temp.get("userID");
-                                                String url = (String) temp.get("imgURL");
-                                                String category = (String) temp.get("category");
-                                                String name = (String) temp.get("itemName");
-                                                String color = (String) temp.get("color");
-                                                String brand = (String) temp.get("brand");
-                                                String season = (String) temp.get("season");
-                                                String size = (String) temp.get("size");
-                                                String shared = (String) temp.get("shared");
-                                                Double imgNum = (Double)temp.get("imgNum");
-                                                ImageDTO dto = new ImageDTO(id, url, category, name,
-                                                        color, brand, season, size, shared,imgNum);
-                                                dto.setImgNum(imgNum);
-                                                dtoList.add(dto);
+                                                    String id = (String) temp.get("userID");
+                                                    String url = (String) temp.get("imgURL");
+                                                    String category = (String) temp.get("category");
+                                                    String name = (String) temp.get("itemName");
+                                                    String color = (String) temp.get("color");
+                                                    String brand = (String) temp.get("brand");
+                                                    String season = (String) temp.get("season");
+                                                    String size = (String) temp.get("size");
+                                                    String shared = (String) temp.get("shared");
+                                                    ImageDTO dto = new ImageDTO(id, url, category, name,
+                                                            color, brand, season, size, shared);
+                                                    dtoList.add(dto);
 
-                                                int count = addPathReference(check);
-                                                // 화면에 이미지 띄우기
-                                                floatTotalImages(count);
+                                                    int count = addPathReference(check);
+                                                    // 화면에 이미지 띄우기
+                                                    floatTotalImages(count);
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
                                             }
-                                        } else {
-                                            Log.d(TAG, "Error getting documents: ", task.getException());
                                         }
-                                    }
-                                });
+                                    });
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
                     } else {
-                        Log.d(TAG, "No such document");
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
                 }
-            }
-        });
+            });
+        } else {
+            int count = addPathReference(check);
+            // 화면에 이미지 띄우기
+            floatTotalImages(count);
+        }
     }
 
     // Action Bar에 메뉴옵션 띄우기
@@ -250,26 +250,16 @@ public class MyClosetFragment extends Fragment {
 
                 filterList.clear();
                 filterList.addAll(filterCategory(dtoList, categoryItemList));
-//                for(int i = 0;  i <filterList.size(); i++){
-//                    Log.d("filterList", filterList.get(i).toString());
-//                }
                 filterList.addAll(filterColor(filterList, colorItemList));
                 filterList.addAll(filterSeason(filterList, seasonItemList));
                 filterList.addAll(filterShared(filterList, sharedItem));
 
                 if (filterList.size() == 0) {
+                    check = NORMAL;
                     Toast.makeText(getContext(), "해당하는 값이 없습니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     check = FILTER;
                 }
-
-
-                Toast.makeText(getContext(),
-                        categoryItemList.toString() + "\n"
-                                + colorItemList.toString() + "\n"
-                                + seasonItemList.toString() + "\n"
-                                + sharedItem + "\n",
-                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -432,10 +422,10 @@ public class MyClosetFragment extends Fragment {
                 break;
 
             case FILTER:
-                for (int i = 0; i < filterList.size(); i++) {
+                for (ImageDTO dto : filterList) {
                     count++;
-                    imageList.add(storageRef.child(filterList.get(i).getImgURL()));
-                    imageDTOList.add(filterList.get(i));
+                    imageList.add(storageRef.child(dto.getImgURL()));
+                    imageDTOList.add(dto);
                 }
 
                 break;
@@ -444,38 +434,38 @@ public class MyClosetFragment extends Fragment {
         return count;
     }
 
-    private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
+    private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> list, ArrayList<String> arrayList) {
         ArrayList<ImageDTO> temp = new ArrayList<>();
 
         if (arrayList.size() == 0) {
-            return List;
+            return list;
         } else {
-            for (int i = 0; i < List.size(); i++) {
+            for (int i = 0; i < list.size(); i++) {
                 for (int j = 0; j < arrayList.size(); j++) {
-                    if (List.get(i).getCategory().equals(arrayList.get(j))) {
-                        temp.add(List.get((i)));
-//                        Log.d("asdsadassa", "asdasda" + List.get(i));
+                    if (list.get(i).getCategory().equals(arrayList.get(j))) {
+                        temp.add(list.get((i)));
                         break;
                     }
                 }
             }
         }
+
         return temp;
     }
 
-    private ArrayList<ImageDTO> filterColor(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
+    private HashSet<ImageDTO> filterColor(HashSet<ImageDTO> list, ArrayList<String> arrayList) {
+        HashSet<ImageDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
-            return List;
+            return list;
         } else {
-            for (int i = 0; i < List.size(); i++) {
-                String[] tempColor = List.get(i).getColor().split(" ");
+            for (ImageDTO dto : list) {
+                String[] tempColor = dto.getColor().split(" ");
                 for (int k = 0; k < tempColor.length; k++) {
                     int flag = 0;
                     for (int j = 0; j < arrayList.size(); j++) {
                         if (tempColor[k].equals(arrayList.get(j))) {
-                            temp.add(List.get((i)));
+                            temp.add(dto);
                             flag = 1;
                             break;
                         }
@@ -487,23 +477,23 @@ public class MyClosetFragment extends Fragment {
                 }
             }
         }
-        List.clear();
+
         return temp;
     }
 
-    private ArrayList<ImageDTO> filterSeason(ArrayList<ImageDTO> List, ArrayList<String> arrayList) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
+    private HashSet<ImageDTO> filterSeason(HashSet<ImageDTO> list, ArrayList<String> arrayList) {
+        HashSet<ImageDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
-            return List;
+            return list;
         } else {
-            for (int i = 0; i < List.size(); i++) {
-                String[] tempSeason = List.get(i).getSeason().split(" ");
-                for (int k = 0; k < tempSeason.length; k++) {
+            for (ImageDTO dto : list) {
+                String[] temSeason = dto.getColor().split(" ");
+                for (int k = 0; k < temSeason.length; k++) {
                     int flag = 0;
                     for (int j = 0; j < arrayList.size(); j++) {
-                        if (tempSeason[k].equals(arrayList.get(j))) {
-                            temp.add(List.get((i)));
+                        if (temSeason[k].equals(arrayList.get(j))) {
+                            temp.add(dto);
                             flag = 1;
                             break;
                         }
@@ -515,24 +505,23 @@ public class MyClosetFragment extends Fragment {
                 }
             }
         }
-        List.clear();
+
         return temp;
     }
 
-    private ArrayList<ImageDTO> filterShared(ArrayList<ImageDTO> List, String shared) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
+    private HashSet<ImageDTO> filterShared(HashSet<ImageDTO> list, String shared) {
+        HashSet<ImageDTO> temp = new HashSet<>();
 
         if (shared == null) {
-            return List;
+            return list;
         } else {
-            for (int i = 0; i < List.size(); i++) {
-                if (List.get(i).getShared().equals(shared)) {
-                    temp.add(List.get((i)));
+            for (ImageDTO dto : list) {
+                if (dto.getShared().equals(shared)) {
+                    temp.add(dto);
                 }
             }
         }
-        List.clear();
-        return temp;
 
+        return temp;
     }
 }

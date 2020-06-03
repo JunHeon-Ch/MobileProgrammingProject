@@ -445,7 +445,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
                                         finish();
                                     }
                                 });
-
+                                alert.setCancelable(false);
                                 alert.show();
 
                             }
