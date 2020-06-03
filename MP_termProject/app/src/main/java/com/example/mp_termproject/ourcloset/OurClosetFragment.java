@@ -1,6 +1,9 @@
 package com.example.mp_termproject.ourcloset;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -18,19 +21,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
-import com.example.mp_termproject.mycloset.ImageDTO;
+import com.example.mp_termproject.mycloset.dto.ImageDTO;
+import com.example.mp_termproject.ourcloset.dto.InfoDTO;
 import com.example.mp_termproject.ourcloset.filter.OurClosetFilterActivity;
+import com.example.mp_termproject.ourcloset.viewinfo.ViewClosetInfoActivity;
 import com.example.mp_termproject.signup.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,8 +44,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -70,11 +75,10 @@ public class OurClosetFragment extends Fragment {
     FirebaseStorage storage;
     StorageReference storageRef;
 
-    ArrayList<ImageDTO> dtoList;
     ArrayList<StorageReference> imageList;
-    HashSet<ImageDTO> filterList;
-    ArrayList<String> imgUrl;
+    HashSet<InfoDTO> filterList;
     ArrayList<UserInfo> userInfoList;
+    ArrayList<InfoDTO> infoDTOList;
 
     Double[] imgnum;
 
@@ -89,19 +93,18 @@ public class OurClosetFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_our_closet,
                 container,
                 false);
-
         setHasOptionsMenu(true);
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
         docRefUserInfo = db.collection("users").document(user.getUid());
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
-        dtoList = new ArrayList<>();
         imageList = new ArrayList<>();
         filterList = new HashSet<>();
-        imgUrl = new ArrayList<>();
         userInfoList = new ArrayList<>();
+        infoDTOList = new ArrayList<>();
 
         imgnum = new Double[1];
         myLoc = new Double[2];
@@ -141,14 +144,14 @@ public class OurClosetFragment extends Fragment {
             case R.id.actionbar_filter:
 //                필터 옵션 메뉴 선택
 //                필터 선택 후 My Closet 화면에 조건에 맞는 아이템을 보여줌
-
                 intent = new Intent(getContext(), OurClosetFilterActivity.class);
                 startActivityForResult(intent, REQUEST_FILTER);
                 break;
 
             case R.id.actionbar_sorting:
-
                 sortByDistance();
+                check = SORTING;
+                onStart();
                 break;
         }
 
@@ -158,11 +161,20 @@ public class OurClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        imgUrl.clear();
-        dtoList.clear();
 
-        totalUser();
+        if (check == NORMAL) {
+            infoDTOList.clear();
+
+            totalUser();
+        }
         accessDBInfo();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        check = NORMAL;
     }
 
     private void totalUser() {
@@ -180,7 +192,6 @@ public class OurClosetFragment extends Fragment {
                         }
                     }
                 });
-
     }
 
     private void accessDBInfo() {
@@ -191,14 +202,9 @@ public class OurClosetFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                userInfoList.clear();
-
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     checkNum++;
                                     accessUserInfoDB(document.getId());
-                                    if (!user.getUid().equals(document.getId())) {
-                                        accessImageInfoDB(document.getId());
-                                    }
                                 }
                             } else {
                                 Log.d(TAG, "Error getting documents: ", task.getException());
@@ -227,23 +233,24 @@ public class OurClosetFragment extends Fragment {
                                 myLoc[0] = (Double) data.get("latitude");
                                 myLoc[1] = (Double) data.get("longitude");
                             } else {
+                                String userId = (String) data.get("userId");
                                 String address = (String) data.get("address");
                                 Double latitude = (Double) data.get("latitude");
                                 Double longitude = (Double) data.get("longitude");
                                 String name = (String) data.get("name");
                                 String phoneNumber = (String) data.get("phoneNumber");
 
-                                UserInfo userInfo = new UserInfo(user.getUid(), name, phoneNumber,
+                                final UserInfo userInfo = new UserInfo(userId, name, phoneNumber,
                                         address, latitude, longitude);
 
-                                userInfoList.add(userInfo);
+                                accessImageInfoDB(userInfo, document_id);
                             }
                         }
                     }
                 });
     }
 
-    private void accessImageInfoDB(String document_id) {
+    private void accessImageInfoDB(final UserInfo userInfo, String document_id) {
         db
                 .collection("images")
                 .document(document_id)
@@ -254,7 +261,6 @@ public class OurClosetFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String tempUrl = document.getString("imgURL");
 
@@ -272,10 +278,9 @@ public class OurClosetFragment extends Fragment {
                                 ImageDTO dto = new ImageDTO(id, url, category, name,
                                         color, brand, season, size, shared);
 
-                                dtoList.add(dto);
-                                imgUrl.add(tempUrl);
-
+                                infoDTOList.add(new InfoDTO(dto, userInfo));
                             }
+
                             if (totalNum == checkNum) {
                                 int count = addPathReference(check);
                                 floatTotalImages(count);
@@ -289,39 +294,29 @@ public class OurClosetFragment extends Fragment {
 
     private void sortByDistance() {
         ArrayList<Double> dist = new ArrayList<>();
-        Log.d("test", "");
-        for (int i = 0; i < userInfoList.size(); i++) {
-            if (!user.getUid().equals(userInfoList.get(i).getUserId())) {
-                dist.add(distance(myLoc[0], myLoc[1],
-                        userInfoList.get(i).getLatitude(), userInfoList.get(i).getLongitude()));
-                Log.d("test", dist.get(i) + "");
-            }
-        }
-        for (int i = 0; i < dist.size(); i++) {
-            Log.d("before test", dist.get(i) + "");
-        }
-        heap(dist);
 
-        for (int i = 0; i < dist.size(); i++) {
-            Toast.makeText(getContext(), dist.get(i) +" ", Toast.LENGTH_SHORT).show();
+        for (int i = 0; i < infoDTOList.size(); i++) {
+            double distance = distance(myLoc[0], myLoc[1],
+                    infoDTOList.get(i).getUserInfo().getLatitude(),
+                    infoDTOList.get(i).getUserInfo().getLongitude());
+            dist.add(distance);
         }
-    }
 
-    public void heap(ArrayList<Double> data) {
-        for (int i = 1; i < data.size(); i++) {
-            int child = i;
-            while (child > 0) {
-                int parent = (child - 1) / 2;
-                if (data.get(child) < data.get(parent)) {
-                    Collections.swap(data, child, parent);
+        for (int i = 0; i < dist.size() - 1; i++) {
+            for (int j = i + 1; j < dist.size(); j++) {
+                if (dist.get(i) > dist.get(j)) {
+                    Collections.swap(dist, i, j);
+                    Collections.swap(infoDTOList, i, j);
                 }
-                child = parent;
             }
+        }
+
+        for(int i = 0; i < dist.size(); i++){
+            Log.d("dist test", dist.get(i)+"");
         }
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
-
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
                 + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
@@ -334,47 +329,50 @@ public class OurClosetFragment extends Fragment {
         return (dist);
     }
 
-
-    // This function converts decimal degrees to radians
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
 
-    // This function converts radians to decimal degrees
     private double rad2deg(double rad) {
         return (rad * 180 / Math.PI);
     }
 
     private int addPathReference(int flag) {
         imageList.clear();
+        userInfoList.clear();
+
         int count = 0;
 
         switch (flag) {
             case NORMAL:
+            case SORTING:
 
-                for (int i = 0; i < imgUrl.size(); i++) {
+                for (int i = 0; i < infoDTOList.size(); i++) {
                     count++;
-                    imageList.add(storageRef.child(imgUrl.get(i)));
+                    imageList.add(storageRef.child(infoDTOList.get(i).getImageDTO().getImgURL()));
+                    userInfoList.add(infoDTOList.get(i).getUserInfo());
                 }
 
                 break;
 
             case SEARCH:
                 String sText = searchText.getText().toString();
-                for (int i = 0; i < dtoList.size(); i++) {
-                    if (sText.equals(dtoList.get(i).getBrand()) ||
-                            sText.equals(dtoList.get(i).getItemName())) {
+                for (int i = 0; i < infoDTOList.size(); i++) {
+                    if (sText.equals(infoDTOList.get(i).getImageDTO().getBrand()) ||
+                            sText.equals(infoDTOList.get(i).getImageDTO().getItemName())) {
                         count++;
-                        imageList.add(storageRef.child(dtoList.get(i).getImgURL()));
+                        imageList.add(storageRef.child(infoDTOList.get(i).getImageDTO().getImgURL()));
+                        userInfoList.add(infoDTOList.get(i).getUserInfo());
                     }
                 }
 
                 break;
 
             case FILTER:
-                for (ImageDTO dto : filterList) {
+                for (InfoDTO dto : filterList) {
                     count++;
-                    imageList.add(storageRef.child(dto.getImgURL()));
+                    imageList.add(storageRef.child(dto.getImageDTO().getImgURL()));
+                    userInfoList.add(dto.getUserInfo());
                 }
 
                 break;
@@ -392,7 +390,8 @@ public class OurClosetFragment extends Fragment {
 
         int i = 0;
         while (i < count) {
-            StorageReference pathReference = imageList.get(i);
+            final int index = i;
+            final StorageReference pathReference = imageList.get(i);
 
             if (i % 3 == 0) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -411,7 +410,7 @@ public class OurClosetFragment extends Fragment {
             imageParams.weight = 1;
             imageParams.gravity = Gravity.LEFT;
 
-            ImageView imageView = new ImageView(linearLayout.getContext());
+            final ImageView imageView = new ImageView(linearLayout.getContext());
             imageView.setLayoutParams(imageParams);
 
             Glide.with(linearLayout)
@@ -420,6 +419,56 @@ public class OurClosetFragment extends Fragment {
             linearLayout.addView(imageView);
 
             i++;
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 수정 & 삭제
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    String[] option = {"정보 보기", "전화 걸기", "길찾기"};
+                    builder.setItems(option, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int pos) {
+                            // "전화 걸기", "길찾기"
+                            Intent intent;
+
+                            switch (pos) {
+                                case 0:
+                                    intent = new Intent(getContext(), ViewClosetInfoActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("name", infoDTOList.get(index).getImageDTO().getItemName());
+                                    bundle.putString("category", infoDTOList.get(index).getImageDTO().getCategory());
+                                    bundle.putString("color", infoDTOList.get(index).getImageDTO().getColor());
+                                    bundle.putString("brand", infoDTOList.get(index).getImageDTO().getBrand());
+                                    bundle.putString("season", infoDTOList.get(index).getImageDTO().getSeason());
+                                    bundle.putString("size", infoDTOList.get(index).getImageDTO().getSize());
+                                    bundle.putString("image", infoDTOList.get(index).getImageDTO().getImgURL());
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+
+                                    break;
+
+                                case 1:
+                                    // 전화 걸기
+                                    intent = new Intent(Intent.ACTION_DIAL,
+                                            Uri.parse("tel:" +
+                                                    userInfoList
+                                                            .get(index)
+                                                            .getPhoneNumber()));
+                                    startActivity(intent);
+
+                                    break;
+                                case 2:
+                                    // 길찾기
+                                    break;
+                            }
+                        }
+                    });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            });
         }
     }
 
@@ -436,7 +485,7 @@ public class OurClosetFragment extends Fragment {
                 ArrayList<String> seasonItemList = bundle.getStringArrayList("season");
 
                 filterList.clear();
-                filterList.addAll(filterCategory(dtoList, categoryItemList));
+                filterList.addAll(filterCategory(infoDTOList, categoryItemList));
                 filterList.addAll(filterColor(filterList, colorItemList));
                 filterList.addAll(filterSeason(filterList, seasonItemList));
 
@@ -456,15 +505,16 @@ public class OurClosetFragment extends Fragment {
         }
     }
 
-    private ArrayList<ImageDTO> filterCategory(ArrayList<ImageDTO> list, ArrayList<String> arrayList) {
-        ArrayList<ImageDTO> temp = new ArrayList<>();
+    private ArrayList<InfoDTO> filterCategory
+            (ArrayList<InfoDTO> list, ArrayList<String> arrayList) {
+        ArrayList<InfoDTO> temp = new ArrayList<>();
 
         if (arrayList.size() == 0) {
             return list;
         } else {
             for (int i = 0; i < list.size(); i++) {
                 for (int j = 0; j < arrayList.size(); j++) {
-                    if (list.get(i).getCategory().equals(arrayList.get(j))) {
+                    if (list.get(i).getImageDTO().getCategory().equals(arrayList.get(j))) {
                         temp.add(list.get((i)));
                         break;
                     }
@@ -475,14 +525,15 @@ public class OurClosetFragment extends Fragment {
         return temp;
     }
 
-    private HashSet<ImageDTO> filterColor(HashSet<ImageDTO> list, ArrayList<String> arrayList) {
-        HashSet<ImageDTO> temp = new HashSet<>();
+    private HashSet<InfoDTO> filterColor
+            (HashSet<InfoDTO> list, ArrayList<String> arrayList) {
+        HashSet<InfoDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
             return list;
         } else {
-            for (ImageDTO dto : list) {
-                String[] tempColor = dto.getColor().split(" ");
+            for (InfoDTO dto : list) {
+                String[] tempColor = dto.getImageDTO().getColor().split(" ");
                 for (int k = 0; k < tempColor.length; k++) {
                     int flag = 0;
                     for (int j = 0; j < arrayList.size(); j++) {
@@ -503,14 +554,15 @@ public class OurClosetFragment extends Fragment {
         return temp;
     }
 
-    private HashSet<ImageDTO> filterSeason(HashSet<ImageDTO> list, ArrayList<String> arrayList) {
-        HashSet<ImageDTO> temp = new HashSet<>();
+    private HashSet<InfoDTO> filterSeason
+            (HashSet<InfoDTO> list, ArrayList<String> arrayList) {
+        HashSet<InfoDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
             return list;
         } else {
-            for (ImageDTO dto : list) {
-                String[] temSeason = dto.getColor().split(" ");
+            for (InfoDTO dto : list) {
+                String[] temSeason = dto.getImageDTO().getSeason().split(" ");
                 for (int k = 0; k < temSeason.length; k++) {
                     int flag = 0;
                     for (int j = 0; j < arrayList.size(); j++) {
@@ -529,5 +581,15 @@ public class OurClosetFragment extends Fragment {
         }
 
         return temp;
+    }
+
+    private void myStartActivity(Class c) {
+        Intent intent = new Intent(getContext(), c);
+        startActivity(intent);
+    }
+
+    private void myStartActivityForResult(Class c, int resultCode) {
+        Intent intent = new Intent(getContext(), c);
+        startActivityForResult(intent, resultCode);
     }
 }

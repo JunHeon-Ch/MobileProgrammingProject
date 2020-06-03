@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.add.MyClosetEditActivity;
+import com.example.mp_termproject.mycloset.dto.ImageDTO;
 import com.example.mp_termproject.mycloset.filter.MyClosetFilterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -130,8 +131,16 @@ public class MyClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
+        Log.d("onStart test", "onStart");
+        Log.d("check test", check +"");
         accessDBInfo();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        check = NORMAL;
     }
 
     private void accessDBInfo() {
@@ -169,8 +178,9 @@ public class MyClosetFragment extends Fragment {
                                                     String season = (String) temp.get("season");
                                                     String size = (String) temp.get("size");
                                                     String shared = (String) temp.get("shared");
+                                                    Double imgNum = (Double) temp.get("imgNum");
                                                     ImageDTO dto = new ImageDTO(id, url, category, name,
-                                                            color, brand, season, size, shared);
+                                                            color, brand, season, size, shared, imgNum);
                                                     dtoList.add(dto);
 
                                                     int count = addPathReference(check);
@@ -308,6 +318,8 @@ public class MyClosetFragment extends Fragment {
                     .into(imageView);
             linearLayout.addView(imageView);
 
+            i++;
+
             final ImageDTO temp = imageDTO;
             Log.d("test","imgNum "+temp.getImgNum());
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -383,13 +395,9 @@ public class MyClosetFragment extends Fragment {
                     });
 
                     AlertDialog alertDialog = builder.create();
-                    alertDialog.setCancelable(false); //화면 밖에 선택 시 팝업 꺼지는거
                     alertDialog.show();
                 }
             });
-
-
-            i++;
         }
     }
 
@@ -402,7 +410,7 @@ public class MyClosetFragment extends Fragment {
             case NORMAL:
                 for (int i = 0; i < dtoList.size(); i++) {
                     count++;
-                    imageList.add(storageRef.child(dtoList.get(i).imgURL));
+                    imageList.add(storageRef.child(dtoList.get(i).getImgURL()));
                     imageDTOList.add(dtoList.get(i));
                 }
 

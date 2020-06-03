@@ -25,8 +25,8 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.lookbook.add.CoordinatorActivity;
+import com.example.mp_termproject.lookbook.dto.LookbookDTO;
 import com.example.mp_termproject.lookbook.filter.LookbookFilterActivity;
-import com.example.mp_termproject.mycloset.ImageDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,7 +40,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -107,6 +106,13 @@ public class LookbookFragment extends Fragment {
         super.onStart();
 
         accessDBInfo();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        check = NORMAL;
     }
 
     private void accessDBInfo(){
@@ -232,6 +238,8 @@ public class LookbookFragment extends Fragment {
                     .into(imageView);
             linearLayout.addView(imageView);
 
+            i++;
+
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -257,12 +265,9 @@ public class LookbookFragment extends Fragment {
                     });
 
                     AlertDialog alertDialog = builder.create();
-                    alertDialog.setCancelable(false); //화면 밖에 선택 시 팝업 꺼지는거
                     alertDialog.show();
                 }
             });
-
-            i++;
         }
     }
 
