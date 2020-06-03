@@ -110,56 +110,62 @@ public class LookbookFragment extends Fragment {
     }
 
     private void accessDBInfo(){
-        // 유저 정보접근
-        docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // imgNum 받아옴
-                        Map<String, Object> temp = document.getData();
-                        imgnum[0] = (Double) temp.get("lookNum");
+        if(check == NORMAL) {
+            // 유저 정보접근
+            docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // imgNum 받아옴
+                            Map<String, Object> temp = document.getData();
+                            imgnum[0] = (Double) temp.get("lookNum");
 
-                        db.collection("lookbook")
-                                .document(user.getUid())
-                                .collection("looks")
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            dtoList.clear();
-                                            int i = 0;
+                            db.collection("lookbook")
+                                    .document(user.getUid())
+                                    .collection("looks")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                dtoList.clear();
+                                                int i = 0;
 
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
 //                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                                Map<String, Object> temp = document.getData();
+                                                    Map<String, Object> temp = document.getData();
 
-                                                String id = (String) temp.get("userID");
-                                                String url = (String) temp.get("imgURL");
-                                                String occasion = (String) temp.get("occasion");
-                                                String season = (String) temp.get("season");
-                                                LookbookDTO dto = new LookbookDTO(id, url, occasion, season);
-                                                dtoList.add(dto);
+                                                    String id = (String) temp.get("userID");
+                                                    String url = (String) temp.get("imgURL");
+                                                    String occasion = (String) temp.get("occasion");
+                                                    String season = (String) temp.get("season");
+                                                    LookbookDTO dto = new LookbookDTO(id, url, occasion, season);
+                                                    dtoList.add(dto);
 
-                                                int count = addPathReference(check);
-                                                // 화면에 이미지 띄우기
-                                                floatTotalImages(count);
+                                                    int count = addPathReference(check);
+                                                    // 화면에 이미지 띄우기
+                                                    floatTotalImages(count);
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
                                             }
-                                        } else {
-                                            Log.d(TAG, "Error getting documents: ", task.getException());
                                         }
-                                    }
-                                });
+                                    });
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
                     } else {
-                        Log.d(TAG, "No such document");
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
                 }
-            }
-        });
+            });
+        } else {
+            int count = addPathReference(check);
+            // 화면에 이미지 띄우기
+            floatTotalImages(count);
+        }
     }
 
     private int addPathReference(int flag){
@@ -195,7 +201,7 @@ public class LookbookFragment extends Fragment {
         LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
         final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                350, getResources().getDisplayMetrics());
+                400, getResources().getDisplayMetrics());
 
         int i = 0;
         while (i < count) {

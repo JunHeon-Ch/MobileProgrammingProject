@@ -41,8 +41,11 @@ public class MemberInitActivity extends AppCompatActivity {
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-    UserInfo userInfo;
+
+    FirebaseUser user;
+
     EditText addressEditText;
+    UserInfo userInfo;
     String address;
     double latitude;
     double longitude;
@@ -51,6 +54,8 @@ public class MemberInitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_init);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         findViewById(R.id.checkButton).setOnClickListener(onClickListener);
         findViewById(R.id.search_image).setOnClickListener(onClickListener);
@@ -112,18 +117,12 @@ public class MemberInitActivity extends AppCompatActivity {
         String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
         String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
         String birthDay = ((EditText)findViewById(R.id.birthDayEditText)).getText().toString();
-//        String address = ((EditText)findViewById(R.id.addressEditText)).getText().toString();
-//        latitude, longitude도 회원정보에 추가
 
-        Log.d("test", name);
-        Log.d("test", phoneNumber);
-        Log.d("test", birthDay);
-        Log.d("test", address);
         if(name.length() > 0 && phoneNumber.length() > 9 && birthDay.length() > 5 && address.length() > 0){
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            userInfo = new UserInfo(name, phoneNumber, birthDay, address, 0.0, 0.0, latitude, longitude);
+            userInfo = new UserInfo(user.getUid(), name, phoneNumber, birthDay, address, 0.0, 0.0, latitude, longitude);
 //            userInfo.setLatitude(latitude);
 //            userInfo.setLongitude(longitude);
 

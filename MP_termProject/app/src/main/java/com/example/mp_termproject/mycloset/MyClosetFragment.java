@@ -130,61 +130,66 @@ public class MyClosetFragment extends Fragment {
     }
 
     private void accessDBInfo() {
-        // 유저 정보접근
-        docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // imgNum 받아옴
-                        Map<String, Object> temp = document.getData();
-                        imgnum[0] = (Double) temp.get("imgNum");
+        if(check == NORMAL) {
+            // 유저 정보접근
+            docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // imgNum 받아옴
+                            Map<String, Object> temp = document.getData();
+                            imgnum[0] = (Double) temp.get("imgNum");
 
-                        db.collection("images")
-                                .document(user.getUid())
-                                .collection("image")
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            int i = 0;
-                                            dtoList.clear();
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            db.collection("images")
+                                    .document(user.getUid())
+                                    .collection("image")
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                dtoList.clear();
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
 //                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                                Map<String, Object> temp = document.getData();
+                                                    Map<String, Object> temp = document.getData();
 
-                                                String id = (String) temp.get("userID");
-                                                String url = (String) temp.get("imgURL");
-                                                String category = (String) temp.get("category");
-                                                String name = (String) temp.get("itemName");
-                                                String color = (String) temp.get("color");
-                                                String brand = (String) temp.get("brand");
-                                                String season = (String) temp.get("season");
-                                                String size = (String) temp.get("size");
-                                                String shared = (String) temp.get("shared");
-                                                ImageDTO dto = new ImageDTO(id, url, category, name,
-                                                        color, brand, season, size, shared);
-                                                dtoList.add(dto);
+                                                    String id = (String) temp.get("userID");
+                                                    String url = (String) temp.get("imgURL");
+                                                    String category = (String) temp.get("category");
+                                                    String name = (String) temp.get("itemName");
+                                                    String color = (String) temp.get("color");
+                                                    String brand = (String) temp.get("brand");
+                                                    String season = (String) temp.get("season");
+                                                    String size = (String) temp.get("size");
+                                                    String shared = (String) temp.get("shared");
+                                                    ImageDTO dto = new ImageDTO(id, url, category, name,
+                                                            color, brand, season, size, shared);
+                                                    dtoList.add(dto);
 
-                                                int count = addPathReference(check);
-                                                // 화면에 이미지 띄우기
-                                                floatTotalImages(count);
+                                                    int count = addPathReference(check);
+                                                    // 화면에 이미지 띄우기
+                                                    floatTotalImages(count);
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
                                             }
-                                        } else {
-                                            Log.d(TAG, "Error getting documents: ", task.getException());
                                         }
-                                    }
-                                });
+                                    });
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
                     } else {
-                        Log.d(TAG, "No such document");
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
                 }
-            }
-        });
+            });
+        } else {
+            int count = addPathReference(check);
+            // 화면에 이미지 띄우기
+            floatTotalImages(count);
+        }
     }
 
     // Action Bar에 메뉴옵션 띄우기
