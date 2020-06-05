@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,7 +31,7 @@ public class ModeActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, myClosetFragment).commit();
 
-        Button myClosetButton = findViewById(R.id.myClosetButton);
+        LinearLayout myClosetButton = findViewById(R.id.myClosetButton);
         myClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,7 +40,7 @@ public class ModeActivity extends AppCompatActivity {
             }
         });
 
-        Button lookBookButton = findViewById(R.id.lookBookButton);
+        LinearLayout lookBookButton = findViewById(R.id.lookbookButton);
         lookBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,7 +48,7 @@ public class ModeActivity extends AppCompatActivity {
             }
         });
 
-        Button ourClosetButton = findViewById(R.id.ourClosetButton);
+        LinearLayout ourClosetButton = findViewById(R.id.ourClosetButton);
         ourClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +56,7 @@ public class ModeActivity extends AppCompatActivity {
             }
         });
 
-        Button logOutButton = findViewById(R.id.logoutButton);
+        LinearLayout logOutButton = findViewById(R.id.logoutButton);
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

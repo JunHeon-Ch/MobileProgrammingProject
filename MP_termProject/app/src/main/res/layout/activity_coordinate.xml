@@ -39,25 +39,25 @@
                     <ImageView
                         android:id="@+id/hat_image"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="120dp"
                         app:srcCompat="@drawable/hat" />
 
                     <ImageView
                         android:id="@+id/top_image"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="120dp"
                         app:srcCompat="@drawable/top" />
 
                     <ImageView
                         android:id="@+id/bottom_image"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="120dp"
                         app:srcCompat="@drawable/bottom" />
 
                     <ImageView
                         android:id="@+id/shoes_image"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="120dp"
                         app:srcCompat="@drawable/shoes" />
                 </LinearLayout>
 
@@ -71,19 +71,19 @@
                     <ImageView
                         android:id="@+id/outer_image"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="150dp"
                         app:srcCompat="@drawable/outer" />
 
                     <ImageView
                         android:id="@+id/bag_image"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="150dp"
                         app:srcCompat="@drawable/bag" />
 
                     <ImageView
                         android:id="@+id/accessory_image"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="150dp"
                         app:srcCompat="@drawable/accessory" />
                 </LinearLayout>
             </LinearLayout>
@@ -117,15 +117,18 @@
                 android:textSize="20sp" />
         </LinearLayout>
 
-        <Button
+        <LinearLayout
             android:id="@+id/reset_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
-            android:text="@string/coordinator_reset"
-            android:textSize="15sp" />
+            android:background="#ffffff"
+            android:gravity="center"
+            android:orientation="vertical">
+
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
