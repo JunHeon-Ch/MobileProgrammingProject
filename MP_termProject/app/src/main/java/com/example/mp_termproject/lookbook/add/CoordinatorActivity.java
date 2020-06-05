@@ -67,7 +67,7 @@ public class CoordinatorActivity extends AppCompatActivity {
     ImageView outerImage;
     ImageView bagImage;
     ImageView accessoryImage;
-    Button resetButton;
+    LinearLayout resetButton;
     TextView occasionText;
     TextView seasonText;
     LinearLayout coordinatorLayout;
@@ -450,6 +450,21 @@ public class CoordinatorActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
+
+                break;
+
+            case R.id.actionbar_reset:
+                hatImage.setImageResource(R.drawable.hat);
+                topImage.setImageResource(R.drawable.top);
+                bottomImage.setImageResource(R.drawable.bottom);
+                shoesImage.setImageResource(R.drawable.shoes);
+                outerImage.setImageResource(R.drawable.outer);
+                bagImage.setImageResource(R.drawable.bag);
+                accessoryImage.setImageResource(R.drawable.accessory);
+                occasionText.setText("Occasion");
+                occasionText.setTextColor(Color.parseColor("#aaaaaa"));
+                seasonText.setText("Season");
+                seasonText.setTextColor(Color.parseColor("#aaaaaa"));
 
                 break;
         }

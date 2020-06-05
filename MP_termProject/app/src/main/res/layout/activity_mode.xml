@@ -8,10 +8,10 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/buttonLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/buttonLayout"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <LinearLayout
         android:id="@+id/buttonLayout"
@@ -23,29 +23,120 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/myClosetButton"
+    <LinearLayout
+        android:id="@+id/myClosetButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:background="#ffffff"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/closet"/>
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/mycloset" />
+            android:text="@string/mycloset"/>
 
-        <Button
-            android:id="@+id/lookBookButton"
-            android:layout_width="wrap_content"
+    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lookbookButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/lookbook" />
+            android:gravity="center"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:orientation="vertical">
 
-        <Button
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/lookbook"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lookbook"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/ourClosetButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ourcloset" />
+            android:gravity="center"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:orientation="vertical">
 
-        <Button
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/closet"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ourcloset"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/logoutButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/logout" />
+            android:gravity="center"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/logout"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/logout"/>
+
+        </LinearLayout>
+<!--        <Button-->
+<!--            android:id="@+id/myClosetButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:background="#ffffff"-->
+<!--            android:drawableTop="@drawable/closet"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="@string/mycloset" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/lookBookButton"-->
+<!--            android:layout_width="20dp"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:background="#ffffff"-->
+<!--            android:drawableTop="@drawable/lookbook"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="@string/lookbook" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/ourClosetButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:background="#ffffff"-->
+<!--            android:drawableTop="@drawable/closet"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="@string/ourcloset" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/logoutButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:background="#ffffff"-->
+<!--            android:layout_weight="1"-->
+<!--            android:drawableTop="@drawable/logout"-->
+<!--            android:text="@string/logout" />-->
     </LinearLayout>
 
 </RelativeLayout>
