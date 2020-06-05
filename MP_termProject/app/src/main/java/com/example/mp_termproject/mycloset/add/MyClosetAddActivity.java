@@ -457,7 +457,23 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                 break;
 
+            case R.id.actionbar_reset:
+                itemName.setText("상품명");
+                itemName.setTextColor(Color.parseColor("#aaaaaa"));
+                category.setText("카테고리");
+                category.setTextColor(Color.parseColor("#aaaaaa"));
+                color.setText("컬러");
+                color.setTextColor(Color.parseColor("#aaaaaa"));
+                brand.setText("브랜드");
+                brand.setTextColor(Color.parseColor("#aaaaaa"));
+                season.setText("시즌");
+                season.setTextColor(Color.parseColor("#aaaaaa"));
+                size.setText("사이즈");
+                size.setTextColor(Color.parseColor("#aaaaaa"));
+                shared.setText("공유");
+                shared.setTextColor(Color.parseColor("#aaaaaa"));
 
+                break;
         }
 
         return super.onOptionsItemSelected(item);
