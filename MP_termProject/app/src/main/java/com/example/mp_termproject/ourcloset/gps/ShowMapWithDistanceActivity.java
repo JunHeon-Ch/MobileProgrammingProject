@@ -375,9 +375,6 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
         markerOptions.draggable(true);
 
         currentMarker = mMap.addMarker(markerOptions);
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLatLng, 15);
-        mMap.moveCamera(cameraUpdate);
     }
 
     public void setDefaultLocation() {
