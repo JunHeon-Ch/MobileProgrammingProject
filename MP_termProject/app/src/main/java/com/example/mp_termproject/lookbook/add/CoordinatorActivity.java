@@ -423,10 +423,6 @@ public class CoordinatorActivity extends AppCompatActivity {
 
                                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        Toast.makeText(CoordinatorActivity.this,
-                                                occasionText.getText().toString() + "\n"
-                                                        + seasonText.getText().toString() + "\n",
-                                                Toast.LENGTH_SHORT).show();
                                         finish();
                                     }
                                 });
