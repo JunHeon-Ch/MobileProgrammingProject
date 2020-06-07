@@ -503,7 +503,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             saveBitmapToJpeg(imageBitmap);
-            image.setImageBitmap(imageBitmap);
             grabcut();
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
