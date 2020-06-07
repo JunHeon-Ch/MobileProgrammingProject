@@ -502,12 +502,6 @@ public class OurClosetFragment extends Fragment {
                 } else {
                     check = FILTER;
                 }
-
-                Toast.makeText(getContext(),
-                        categoryItemList.toString() + "\n"
-                                + colorItemList.toString() + "\n"
-                                + seasonItemList.toString() + "\n",
-                        Toast.LENGTH_SHORT).show();
             }
         }
     }

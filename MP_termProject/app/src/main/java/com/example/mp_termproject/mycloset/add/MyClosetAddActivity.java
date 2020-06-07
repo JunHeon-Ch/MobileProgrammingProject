@@ -445,16 +445,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        Toast.makeText(MyClosetAddActivity.this,
-                                                itemName.getText() + "\n"
-                                                        + category.getText() + "\n"
-                                                        + color.getText() + "\n"
-                                                        + brand.getText() + "\n"
-                                                        + season.getText() + "\n"
-                                                        + size.getText() + "\n"
-                                                        + shared.getText() + "\n",
-                                                Toast.LENGTH_SHORT).show();
-
                                         finish();
                                     }
                                 });
@@ -504,12 +494,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             saveBitmapToJpeg(imageBitmap);
             grabcut();
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            bytes = stream.toByteArray();
-
-
         }
     }
 
@@ -546,40 +530,44 @@ public class MyClosetAddActivity extends AppCompatActivity {
             }
         }
 
-            Bitmap bitmap = BitmapFactory.decodeFile(getCacheDir() + "/" + target);
-            Mat src = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
-            Utils.bitmapToMat(bitmap, src);
+        Bitmap bitmap = BitmapFactory.decodeFile(getCacheDir() + "/" + target);
+        Mat src = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
+        Utils.bitmapToMat(bitmap, src);
 
-            // init new matrices
-            //CV_8U는 8비트 unsigned integer ( 범위 0~255)
-            Mat dst = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
-            Mat tmp = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
-            Mat alpha = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
+        // init new matrices
+        //CV_8U는 8비트 unsigned integer ( 범위 0~255)
+        Mat dst = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
+        Mat tmp = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
+        Mat alpha = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
 
-            // convert image to grayscale
-            Imgproc.cvtColor(src, tmp, Imgproc.COLOR_BGR2GRAY);
+        // convert image to grayscale
+        Imgproc.cvtColor(src, tmp, Imgproc.COLOR_BGR2GRAY);
 
-            // threshold the image to create alpha channel with complete transparency in black background region and zero transparency in foreground object region.
-            //threshold는 기준 thresh 값을 정해주어서 지정된 것보다 값이 작으면 검은색으로 변환 ,높으면 흰색
-            Imgproc.threshold(tmp, alpha, 110, 255, Imgproc.THRESH_BINARY);
+        // threshold the image to create alpha channel with complete transparency in black background region and zero transparency in foreground object region.
+        //threshold는 기준 thresh 값을 정해주어서 지정된 것보다 값이 작으면 검은색으로 변환 ,높으면 흰색
+        Imgproc.threshold(tmp, alpha, 110, 255, Imgproc.THRESH_BINARY);
 
-            // split the original image into three single channel.
-            List<Mat> rgb = new ArrayList<Mat>(3);
-            Core.split(src, rgb);
+        // split the original image into three single channel.
+        List<Mat> rgb = new ArrayList<Mat>(3);
+        Core.split(src, rgb);
 
-            // Create the final result by merging three single channel and alpha(BGR order)
-            List<Mat> rgba = new ArrayList<Mat>(4);
-            rgba.add(rgb.get(0));
-            rgba.add(rgb.get(1));
-            rgba.add(rgb.get(2));
-            rgba.add(alpha);
-            Core.merge(rgba, dst);
+        // Create the final result by merging three single channel and alpha(BGR order)
+        List<Mat> rgba = new ArrayList<Mat>(4);
+        rgba.add(rgb.get(0));
+        rgba.add(rgb.get(1));
+        rgba.add(rgb.get(2));
+        rgba.add(alpha);
+        Core.merge(rgba, dst);
 
-            // convert matrix to output bitmap
-            Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            Utils.matToBitmap(dst, output);
+        // convert matrix to output bitmap
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(dst, output);
 
-            image.setImageBitmap(output);
+        image.setImageBitmap(output);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        output.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bytes = stream.toByteArray();
     }
 
     //그랩컷 - opencv 시작

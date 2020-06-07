@@ -412,16 +412,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
                                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        Toast.makeText(MyClosetEditActivity.this,
-                                                itemName.getText() + "\n"
-                                                        + category.getText() + "\n"
-                                                        + color.getText() + "\n"
-                                                        + brand.getText() + "\n"
-                                                        + season.getText() + "\n"
-                                                        + size.getText() + "\n"
-                                                        + shared.getText() + "\n",
-                                                Toast.LENGTH_SHORT).show();
-
                                         finish();
                                     }
                                 });
