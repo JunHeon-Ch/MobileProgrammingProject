@@ -1,10 +1,14 @@
 package com.example.mp_termproject;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,9 +36,18 @@ public class ModeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.container, myClosetFragment).commit();
 
         LinearLayout myClosetButton = findViewById(R.id.myClosetButton);
+        final TextView myClosetText = findViewById(R.id.mycloset_text);
+        final TextView lookbookText = findViewById(R.id.lookbook_text);
+        final TextView ourClosetText = findViewById(R.id.ourcloset_text);
+        final TextView logoutText = findViewById(R.id.logout_text);
+        myClosetText.setTextColor(Color.parseColor("#CD853F"));
         myClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                myClosetText.setTextColor(Color.parseColor("#CD853F"));
+                lookbookText.setTextColor(Color.parseColor("#000000"));
+                ourClosetText.setTextColor(Color.parseColor("#000000"));
+                logoutText.setTextColor(Color.parseColor("#000000"));
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, myClosetFragment).commit();
 
             }
@@ -44,6 +57,10 @@ public class ModeActivity extends AppCompatActivity {
         lookBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                myClosetText.setTextColor(Color.parseColor("#000000"));
+                lookbookText.setTextColor(Color.parseColor("#CD853F"));
+                ourClosetText.setTextColor(Color.parseColor("#000000"));
+                logoutText.setTextColor(Color.parseColor("#000000"));
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, lookBookFragment).commit();
             }
         });
@@ -52,14 +69,23 @@ public class ModeActivity extends AppCompatActivity {
         ourClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                myClosetText.setTextColor(Color.parseColor("#000000"));
+                lookbookText.setTextColor(Color.parseColor("#000000"));
+                ourClosetText.setTextColor(Color.parseColor("#CD853F"));
+                logoutText.setTextColor(Color.parseColor("#000000"));
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, ourClosetFragment).commit();
             }
         });
 
         LinearLayout logOutButton = findViewById(R.id.logoutButton);
+
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                myClosetText.setTextColor(Color.parseColor("#000000"));
+                lookbookText.setTextColor(Color.parseColor("#000000"));
+                ourClosetText.setTextColor(Color.parseColor("#000000"));
+                logoutText.setTextColor(Color.parseColor("#CD853F"));
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivity(intent);

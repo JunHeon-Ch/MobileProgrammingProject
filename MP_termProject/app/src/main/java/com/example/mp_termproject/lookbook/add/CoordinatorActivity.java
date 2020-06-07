@@ -78,7 +78,7 @@ public class CoordinatorActivity extends AppCompatActivity {
     TextView occasionText;
     TextView seasonText;
     LinearLayout coordinatorLayout;
-    Button emptyImageButton;
+    LinearLayout emptyImageButton;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -514,6 +514,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                     .into(imageView);
             linearLayout.addView(imageView);
 
+            emptyImageButton = findViewById(R.id.empty_image_button);
             emptyImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

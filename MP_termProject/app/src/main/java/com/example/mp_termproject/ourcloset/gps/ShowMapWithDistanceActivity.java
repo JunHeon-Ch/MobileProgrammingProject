@@ -91,7 +91,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getSupportActionBar().setTitle("Map");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -191,6 +191,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
             }
         });
 
+        dialog.setCancelable(false);
         dialog.show();
 
         //런타임 퍼미션 처리
