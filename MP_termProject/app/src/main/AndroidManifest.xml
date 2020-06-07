@@ -21,7 +21,7 @@
         <activity android:name=".mycloset.filter.MyClosetFilterActivity" />
         <activity android:name=".mycloset.add.MyClosetAddActivity" />
         <activity android:name=".mycloset.add.MyClosetEditActivity" />
-
+//asdasd
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAtkZxbRwKwtzOI0vLOEHSORAjKU9UwMOw" />
