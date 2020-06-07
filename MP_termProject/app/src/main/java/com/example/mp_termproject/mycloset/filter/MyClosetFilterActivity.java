@@ -2,7 +2,6 @@ package com.example.mp_termproject.mycloset.filter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -166,7 +165,7 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                     }
                 }
 
-                if(sharedSelectedPosition != -1){
+                if (sharedSelectedPosition != -1) {
                     sharedList.setItemChecked(sharedSelectedPosition, false);
                 }
 
@@ -193,7 +192,7 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                     }
                 }
 
-                if(sharedSelectedPosition != -1){
+                if (sharedSelectedPosition != -1) {
                     shareSelected = share[sharedSelectedPosition];
                 }
 

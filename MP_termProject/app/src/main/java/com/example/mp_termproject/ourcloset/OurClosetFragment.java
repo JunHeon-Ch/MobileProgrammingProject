@@ -2,7 +2,6 @@ package com.example.mp_termproject.ourcloset;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,7 +44,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -311,8 +309,8 @@ public class OurClosetFragment extends Fragment {
             }
         }
 
-        for(int i = 0; i < dist.size(); i++){
-            Log.d("dist test", dist.get(i)+"");
+        for (int i = 0; i < dist.size(); i++) {
+            Log.d("dist test", dist.get(i) + "");
         }
     }
 

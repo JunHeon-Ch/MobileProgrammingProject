@@ -9,7 +9,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mp_termproject.MainActivity;
 import com.example.mp_termproject.ModeActivity;
 import com.example.mp_termproject.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -67,8 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
 
-        }
-        else {
+        } else {
             startToast("이메일 또는 비밀번호를 입력하시오");
         }
     }
@@ -78,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
+
     // 회원가입 성공 혹은 불일치 Toast
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();

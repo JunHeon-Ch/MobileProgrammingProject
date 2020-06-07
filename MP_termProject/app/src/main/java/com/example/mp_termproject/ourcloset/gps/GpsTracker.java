@@ -82,14 +82,14 @@ public class GpsTracker extends Service implements LocationListener {
                 }
             }
         } catch (Exception e) {
-            Log.d("@@@", ""+e.toString());
+            Log.d("@@@", "" + e.toString());
         }
 
         return location;
     }
 
     public double getLatitude() {
-        if(location != null) {
+        if (location != null) {
             latitude = location.getLatitude();
         }
 
@@ -97,7 +97,7 @@ public class GpsTracker extends Service implements LocationListener {
     }
 
     public double getLongitude() {
-        if(location != null) {
+        if (location != null) {
             longitude = location.getLongitude();
         }
 
@@ -127,7 +127,7 @@ public class GpsTracker extends Service implements LocationListener {
 
 
     public void stopUsingGPS() {
-        if(locationManager != null) {
+        if (locationManager != null) {
             locationManager.removeUpdates(GpsTracker.this);
         }
     }
