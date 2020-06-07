@@ -425,7 +425,7 @@ public class OurClosetFragment extends Fragment {
                 public void onClick(View v) {
                     // 수정 & 삭제
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    String[] option = {"정보 보기", "전화 걸기", "길찾기"};
+                    String[] option = {"정보 보기", "전화 걸기", "지도로 보기"};
                     builder.setItems(option, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int pos) {
