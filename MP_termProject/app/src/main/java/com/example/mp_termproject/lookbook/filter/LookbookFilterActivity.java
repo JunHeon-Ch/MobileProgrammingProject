@@ -1,6 +1,7 @@
 package com.example.mp_termproject.lookbook.filter;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -52,6 +53,8 @@ public class LookbookFilterActivity extends AppCompatActivity {
         occasion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                occasion.setTextColor(Color.parseColor("#000000"));
+                season.setTextColor(Color.parseColor("#eeeeee"));
                 occasionList.setVisibility(View.VISIBLE);
                 seasonList.setVisibility(View.INVISIBLE);
             }
@@ -61,6 +64,8 @@ public class LookbookFilterActivity extends AppCompatActivity {
         season.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                occasion.setTextColor(Color.parseColor("#eeeeee"));
+                season.setTextColor(Color.parseColor("#000000"));
                 occasionList.setVisibility(View.INVISIBLE);
                 seasonList.setVisibility(View.VISIBLE);
             }

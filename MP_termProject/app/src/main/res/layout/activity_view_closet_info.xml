@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_item_name"
-                android:textColor="@color/decide_text_color"
+                android:textColor="@color/text_color"
                 android:textSize="20sp" />
 
             <TextView
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_category"
-                android:textColor="@color/decide_text_color"
+                android:textColor="@color/text_color"
                 android:textSize="20sp" />
 
             <TextView
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_color"
-                android:textColor="@color/decide_text_color"
+                android:textColor="@color/text_color"
                 android:textSize="20sp" />
 
             <TextView
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_brand"
-                android:textColor="@color/decide_text_color"
+                android:textColor="@color/text_color"
                 android:textSize="20sp" />
 
             <TextView
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_season"
-                android:textColor="@color/decide_text_color"
+                android:textColor="@color/text_color"
                 android:textSize="20sp" />
 
             <TextView
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_size"
-                android:textColor="@color/decide_text_color"
+                android:textColor="@color/text_color"
                 android:textSize="20sp" />
 
         </LinearLayout>
