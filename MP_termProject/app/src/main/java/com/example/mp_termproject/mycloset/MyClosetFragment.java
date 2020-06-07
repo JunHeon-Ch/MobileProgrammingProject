@@ -3,7 +3,6 @@ package com.example.mp_termproject.mycloset;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,10 +46,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.protobuf.DoubleValue;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
@@ -132,7 +129,7 @@ public class MyClosetFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.d("onStart test", "onStart");
-        Log.d("check test", check +"");
+        Log.d("check test", check + "");
         accessDBInfo();
     }
 
@@ -144,7 +141,7 @@ public class MyClosetFragment extends Fragment {
     }
 
     private void accessDBInfo() {
-        if(check == NORMAL) {
+        if (check == NORMAL) {
             // 유저 정보접근
             docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -321,7 +318,7 @@ public class MyClosetFragment extends Fragment {
             i++;
 
             final ImageDTO temp = imageDTO;
-            Log.d("test","imgNum "+temp.getImgNum());
+            Log.d("test", "imgNum " + temp.getImgNum());
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -333,11 +330,11 @@ public class MyClosetFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int pos) {
                             // 수정, 삭제, 취소
 
-                            switch (pos){
+                            switch (pos) {
                                 case 0:
                                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                    Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-                                    float scale = (float) (1024/(float)bitmap.getWidth());
+                                    Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                                    float scale = (float) (1024 / (float) bitmap.getWidth());
                                     int image_w = (int) (bitmap.getWidth() * scale);
                                     int image_h = (int) (bitmap.getHeight() * scale);
                                     Bitmap resize = Bitmap.createScaledBitmap(bitmap, image_w, image_h, true);
@@ -347,7 +344,7 @@ public class MyClosetFragment extends Fragment {
                                     Intent intent = new Intent(getContext(), MyClosetEditActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putDouble("imgNum1", temp.getImgNum());
-                                    bundle.putByteArray("image",byteArray);
+                                    bundle.putByteArray("image", byteArray);
                                     intent.putExtras(bundle);
                                     startActivity(intent);
 
@@ -383,7 +380,7 @@ public class MyClosetFragment extends Fragment {
                                             }
                                         }
                                     });
-                                    Log.d("test","test "+temp.getImgURL());
+                                    Log.d("test", "test " + temp.getImgURL());
                                     onStart();
                                     Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                                     // 삭제

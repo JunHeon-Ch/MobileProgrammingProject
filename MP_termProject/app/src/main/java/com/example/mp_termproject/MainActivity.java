@@ -3,8 +3,6 @@ package com.example.mp_termproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 //        로그인 정보가 없다면
-        if(user == null){
+        if (user == null) {
             myStartActivity(SignUpActivity.class);
-        }else{
+        } else {
 //            로그인 정보가 있다면
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("users").document(user.getUid());

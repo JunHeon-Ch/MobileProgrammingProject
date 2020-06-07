@@ -77,7 +77,7 @@ public class LookbookFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("LOOKBOOK");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("LOOKBOOK");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_lookbook,
                 container,
                 false);
@@ -115,8 +115,8 @@ public class LookbookFragment extends Fragment {
         check = NORMAL;
     }
 
-    private void accessDBInfo(){
-        if(check == NORMAL) {
+    private void accessDBInfo() {
+        if (check == NORMAL) {
             // 유저 정보접근
             docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -174,13 +174,13 @@ public class LookbookFragment extends Fragment {
         }
     }
 
-    private int addPathReference(int flag){
+    private int addPathReference(int flag) {
         imageList.clear();
         imageDTOList.clear();
 
         int count = 0;
 
-        switch (flag){
+        switch (flag) {
             case NORMAL:
                 for (int i = 0; i < dtoList.size(); i++) {
                     count++;
@@ -213,7 +213,7 @@ public class LookbookFragment extends Fragment {
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
 
-            if(i % 2 == 0){
+            if (i % 2 == 0) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
                 layoutParams.gravity = Gravity.LEFT;
@@ -251,7 +251,7 @@ public class LookbookFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int pos) {
                             // 수정, 삭제, 취소
 
-                            switch (pos){
+                            switch (pos) {
                                 case 0:
                                     // 수정
                                     break;
@@ -284,7 +284,7 @@ public class LookbookFragment extends Fragment {
         int curId = item.getItemId();
         Intent intent;
 
-        switch (curId){
+        switch (curId) {
             case R.id.actionbar_add:
 //              추가 메뉴 옵션 선택
 
@@ -311,8 +311,8 @@ public class LookbookFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_FILTER){
-            if(resultCode == RESULT_OK){
+        if (requestCode == REQUEST_FILTER) {
+            if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
 
                 ArrayList<String> occasionItemList = bundle.getStringArrayList("occasion");

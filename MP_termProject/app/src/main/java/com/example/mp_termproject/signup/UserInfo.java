@@ -24,7 +24,7 @@ public class UserInfo {
         this.longitude = longitude;
     }
 
-    public UserInfo(String userId, String name, String phoneNumber, String address, Double latitude, Double longitude){
+    public UserInfo(String userId, String name, String phoneNumber, String address, Double latitude, Double longitude) {
         this.userId = userId;
         this.name = name;
         this.phoneNumber = phoneNumber;
