@@ -50,6 +50,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.protobuf.DoubleValue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -319,7 +320,7 @@ public class MyClosetFragment extends Fragment {
             linearLayout.addView(imageView);
 
             i++;
-
+            final StorageReference temppath = pathReference;
             final ImageDTO temp = imageDTO;
             Log.d("test","imgNum "+temp.getImgNum());
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -335,19 +336,29 @@ public class MyClosetFragment extends Fragment {
 
                             switch (pos){
                                 case 0:
-                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                    Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-                                    float scale = (float) (1024/(float)bitmap.getWidth());
-                                    int image_w = (int) (bitmap.getWidth() * scale);
-                                    int image_h = (int) (bitmap.getHeight() * scale);
-                                    Bitmap resize = Bitmap.createScaledBitmap(bitmap, image_w, image_h, true);
-                                    resize.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                                    byte[] byteArray = stream.toByteArray();
+//                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                                    Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+//                                    float scale = (float) (1024/(float)bitmap.getWidth());
+//                                    int image_w = (int) (bitmap.getWidth() * scale);
+//                                    int image_h = (int) (bitmap.getHeight() * scale);
+//                                    Bitmap resize = Bitmap.createScaledBitmap(bitmap, image_w, image_h, true);
+//                                    resize.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//                                    byte[] byteArray = stream.toByteArray();
 
                                     Intent intent = new Intent(getContext(), MyClosetEditActivity.class);
                                     Bundle bundle = new Bundle();
+                                    Log.d("brand",temp.getBrand()+"");
                                     bundle.putDouble("imgNum1", temp.getImgNum());
-                                    bundle.putByteArray("image",byteArray);
+                                    bundle.putString("brand",temp.getBrand());
+                                    bundle.putString("category",temp.getCategory());
+                                    bundle.putString("color",temp.getColor());
+                                    bundle.putString("url",temp.getImgURL());
+                                    bundle.putString("name",temp.getItemName());
+                                    bundle.putString("season",temp.getSeason());
+                                    bundle.putString("shared",temp.getShared());
+                                    bundle.putString("size",temp.getSize());
+                                    bundle.putString("userID",temp.getUserID());
+                                    bundle.putString("path", String.valueOf(temppath));
                                     intent.putExtras(bundle);
                                     startActivity(intent);
 
