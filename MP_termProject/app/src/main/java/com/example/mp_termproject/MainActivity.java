@@ -108,13 +108,9 @@ public class MainActivity extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 //        로그인 정보가 없다면
-        if(user ==null)
-
-            {
-                myStartActivity(SignUpActivity.class);
-            }else
-
-            {
+        if (user == null) {
+            myStartActivity(SignUpActivity.class);
+        } else {
 //            로그인 정보가 있다면
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 DocumentReference docRef = db.collection("users").document(user.getUid());

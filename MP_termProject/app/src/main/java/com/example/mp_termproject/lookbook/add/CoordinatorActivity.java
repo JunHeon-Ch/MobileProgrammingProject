@@ -1,7 +1,5 @@
 package com.example.mp_termproject.lookbook.add;
 
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,20 +8,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -78,7 +71,7 @@ public class CoordinatorActivity extends AppCompatActivity {
     TextView occasionText;
     TextView seasonText;
     LinearLayout coordinatorLayout;
-    Button emptyImageButton;
+    LinearLayout emptyImageButton;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -514,6 +507,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                     .into(imageView);
             linearLayout.addView(imageView);
 
+            emptyImageButton = findViewById(R.id.empty_image_button);
             emptyImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -2,7 +2,6 @@ package com.example.mp_termproject.ourcloset;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,7 +44,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -311,8 +309,8 @@ public class OurClosetFragment extends Fragment {
             }
         }
 
-        for(int i = 0; i < dist.size(); i++){
-            Log.d("dist test", dist.get(i)+"");
+        for (int i = 0; i < dist.size(); i++) {
+            Log.d("dist test", dist.get(i) + "");
         }
     }
 
@@ -425,7 +423,7 @@ public class OurClosetFragment extends Fragment {
                 public void onClick(View v) {
                     // 수정 & 삭제
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    String[] option = {"정보 보기", "전화 걸기", "길찾기"};
+                    String[] option = {"정보 보기", "전화 걸기", "지도로 보기"};
                     builder.setItems(option, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int pos) {

@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -27,13 +26,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.dto.ImageDTO;
-
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -398,7 +395,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                 Log.d(TAG, "new2 data: " + imgnum[0]);
                 ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText, imgNameText,
-                        colorText, brandText, seasonText, sizeText, sharedText,imgnum[0]);
+                        colorText, brandText, seasonText, sizeText, sharedText, imgnum[0]);
                 //Log.d("test1", imgnum[0].toString());
 
                 db.collection("images")
