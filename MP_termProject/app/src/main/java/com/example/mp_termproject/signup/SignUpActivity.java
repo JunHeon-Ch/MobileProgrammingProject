@@ -9,8 +9,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mp_termproject.MainActivity;
-import com.example.mp_termproject.ModeActivity;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,8 +52,7 @@ public class SignUpActivity extends AppCompatActivity {
                 case R.id.goToLoginButton:
                     if (mAuth.getCurrentUser() == null) {
                         myStartActivity(LoginActivity.class);
-                    }
-                    else{
+                    } else {
                         myStartActivity(MemberInitActivity.class);
                     }
 

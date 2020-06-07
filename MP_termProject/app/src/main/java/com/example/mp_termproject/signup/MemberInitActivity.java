@@ -76,7 +76,7 @@ public class MemberInitActivity extends AppCompatActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.checkButton:
                     profileUpdate();
                     break;
@@ -113,11 +113,11 @@ public class MemberInitActivity extends AppCompatActivity {
     };
 
     private void profileUpdate() {
-        String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
-        String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
-        String birthDay = ((EditText)findViewById(R.id.birthDayEditText)).getText().toString();
+        String name = ((EditText) findViewById(R.id.nameEditText)).getText().toString();
+        String phoneNumber = ((EditText) findViewById(R.id.phoneNumberEditText)).getText().toString();
+        String birthDay = ((EditText) findViewById(R.id.birthDayEditText)).getText().toString();
 
-        if(name.length() > 0 && phoneNumber.length() > 9 && birthDay.length() > 5 && address.length() > 0){
+        if (name.length() > 0 && phoneNumber.length() > 9 && birthDay.length() > 5 && address.length() > 0) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -125,7 +125,7 @@ public class MemberInitActivity extends AppCompatActivity {
 //            userInfo.setLatitude(latitude);
 //            userInfo.setLongitude(longitude);
 
-            if(user != null){
+            if (user != null) {
                 db.collection("users").document(user.getUid()).set(userInfo)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -142,7 +142,7 @@ public class MemberInitActivity extends AppCompatActivity {
                         });
             }
 
-        }else {
+        } else {
             startToast("회원정보를 입력해주세요.");
         }
 
