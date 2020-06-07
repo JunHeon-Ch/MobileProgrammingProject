@@ -8,12 +8,13 @@ public class LookbookDTO {
     String imgURL;
     String occasion;
     String season;
-
-    public LookbookDTO(String userID, String imgURL, String occasion, String season) {
+    Double lookNum;
+    public LookbookDTO(String userID, String imgURL, String occasion, String season,Double lookNum) {
         this.userID = userID;
         this.imgURL = imgURL;
         this.occasion = occasion;
         this.season = season;
+        this.lookNum = lookNum;
     }
 
     public String getUserID() {
@@ -46,5 +47,13 @@ public class LookbookDTO {
 
     public void setSeason(String season) {
         this.season = season;
+    }
+
+    public Double getLookNum() {
+        return lookNum;
+    }
+
+    public void setLookNum(Double lookNum) {
+        this.lookNum = lookNum;
     }
 }
