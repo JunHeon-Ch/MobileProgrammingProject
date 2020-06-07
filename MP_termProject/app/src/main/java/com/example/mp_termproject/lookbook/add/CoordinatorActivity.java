@@ -1,5 +1,7 @@
 package com.example.mp_termproject.lookbook.add;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,13 +10,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -55,6 +61,7 @@ import java.util.Map;
 public class CoordinatorActivity extends AppCompatActivity {
 
     private static final String TAG = "CoordinatorActivity";
+    private static final String IMAGEVIEW_TAG = "드래그 이미지";
 
     RelativeLayout mainContainer;
     RelativeLayout imageContainer;
@@ -99,7 +106,7 @@ public class CoordinatorActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
-         imgnum = new Double[1];
+        imgnum = new Double[1];
 
         docRefUserInfo = db.collection("users").document(user.getUid());
 
@@ -115,18 +122,10 @@ public class CoordinatorActivity extends AppCompatActivity {
         imageContainer = findViewById(R.id.imageContainer);
         imageLayout = findViewById(R.id.imageLayout);
 
-        hatImage = findViewById(R.id.hat_image);
-        topImage = findViewById(R.id.hat_image);
-        bottomImage = findViewById(R.id.hat_image);
-        shoesImage = findViewById(R.id.hat_image);
-        outerImage = findViewById(R.id.hat_image);
-        bagImage = findViewById(R.id.hat_image);
-        accessoryImage = findViewById(R.id.hat_image);
-        emptyImageButton = findViewById(R.id.empty_image_button);
-
         coordinatorLayout = findViewById(R.id.coordinator_layout);
 
         hatImage = findViewById(R.id.hat_image);
+        hatImage.setTag(IMAGEVIEW_TAG);
         hatImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -490,7 +489,7 @@ public class CoordinatorActivity extends AppCompatActivity {
         while (i < imageUrlList.size()) {
             StorageReference pathReference = storageRef.child(imageUrlList.get(i));
 
-            if(i % 3 == 0){
+            if (i % 3 == 0) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
 
@@ -542,16 +541,16 @@ public class CoordinatorActivity extends AppCompatActivity {
     }
 
     private void findSameCategory(String[] category) {
-        for(int j = 0; j < category.length; j++){
+        for (int j = 0; j < category.length; j++) {
             for (int i = 0; i < dtoList.size(); i++) {
-                if(dtoList.get(i).getCategory().equals(category[j])){
+                if (dtoList.get(i).getCategory().equals(category[j])) {
                     imageUrlList.add(dtoList.get(i).getImgURL());
                 }
             }
         }
     }
 
-    private void readImageInfo(){
+    private void readImageInfo() {
         db.collection("images").document(user.getUid()).collection("image")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -573,7 +572,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                                 String size = (String) temp.get("size");
                                 String shared = (String) temp.get("shared");
                                 Double imgNum = (Double) temp.get("imgNum");
-                                ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared,imgNum);
+                                ImageDTO dto = new ImageDTO(id, url, category, name, color, brand, season, size, shared, imgNum);
                                 dtoList.add(dto);
 
                                 Log.d("snapshot", "" + dtoList.get(i));
@@ -606,8 +605,7 @@ public class CoordinatorActivity extends AppCompatActivity {
     }
 
 
-
-//    고정하고자 하는 width와 height 사이즈가 있다면 그에 맞게 scale을 해주는 함수
+    //    고정하고자 하는 width와 height 사이즈가 있다면 그에 맞게 scale을 해주는 함수
     public Bitmap readImageWithSampling(String imagePath, int targetWidth, int targetHeight) {
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();

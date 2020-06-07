@@ -15,7 +15,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_above="@+id/text_layout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true">
@@ -29,63 +29,141 @@
                 android:background="#ffffff"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <RelativeLayout
+                    android:id="@+id/drag_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/hat_image"
-                        android:layout_width="match_parent"
+                        android:layout_width="150dp"
                         android:layout_height="120dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginTop="50dp"
                         app:srcCompat="@drawable/hat" />
 
                     <ImageView
                         android:id="@+id/top_image"
-                        android:layout_width="match_parent"
+                        android:layout_width="150dp"
                         android:layout_height="120dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginTop="170dp"
                         app:srcCompat="@drawable/top" />
 
                     <ImageView
                         android:id="@+id/bottom_image"
-                        android:layout_width="match_parent"
+                        android:layout_width="150dp"
                         android:layout_height="120dp"
+                        android:layout_marginLeft="50dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="290dp"
                         app:srcCompat="@drawable/bottom" />
 
                     <ImageView
                         android:id="@+id/shoes_image"
-                        android:layout_width="match_parent"
+                        android:layout_width="150dp"
                         android:layout_height="120dp"
+                        android:layout_marginLeft="50dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="410dp"
                         app:srcCompat="@drawable/shoes" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/outer_image"
-                        android:layout_width="match_parent"
+                        android:layout_width="150dp"
                         android:layout_height="150dp"
+                        android:layout_marginRight="50dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="70dp"
                         app:srcCompat="@drawable/outer" />
 
                     <ImageView
                         android:id="@+id/bag_image"
-                        android:layout_width="match_parent"
+                        android:layout_width="150dp"
                         android:layout_height="150dp"
+                        android:layout_marginRight="50dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="220dp"
                         app:srcCompat="@drawable/bag" />
 
                     <ImageView
                         android:id="@+id/accessory_image"
-                        android:layout_width="match_parent"
+                        android:layout_width="150dp"
                         android:layout_height="150dp"
+                        android:layout_marginRight="50dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="370dp"
                         app:srcCompat="@drawable/accessory" />
-                </LinearLayout>
+
+                </RelativeLayout>
+                <!--                <LinearLayout-->
+                <!--                    android:id="@+id/left_layout"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:gravity="center"-->
+                <!--                    android:orientation="vertical">-->
+
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/hat_image"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="120dp"-->
+                <!--                        app:srcCompat="@drawable/hat" />-->
+
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/top_image"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="120dp"-->
+                <!--                        app:srcCompat="@drawable/top" />-->
+
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/bottom_image"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="120dp"-->
+                <!--                        app:srcCompat="@drawable/bottom" />-->
+
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/shoes_image"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="120dp"-->
+                <!--                        app:srcCompat="@drawable/shoes" />-->
+                <!--                </LinearLayout>-->
+
+                <!--                <LinearLayout-->
+                <!--                    android:id="@+id/right_layout"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:gravity="center"-->
+                <!--                    android:orientation="vertical">-->
+
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/outer_image"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="150dp"-->
+                <!--                        app:srcCompat="@drawable/outer" />-->
+
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/bag_image"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="150dp"-->
+                <!--                        app:srcCompat="@drawable/bag" />-->
+
+                <!--                    <ImageView-->
+                <!--                        android:id="@+id/accessory_image"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="150dp"-->
+                <!--                        app:srcCompat="@drawable/accessory" />-->
+                <!--                </LinearLayout>-->
             </LinearLayout>
         </ScrollView>
 

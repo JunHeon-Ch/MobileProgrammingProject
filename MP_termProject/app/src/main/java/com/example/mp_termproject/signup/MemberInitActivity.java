@@ -21,8 +21,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.mp_termproject.ModeActivity;
 import com.example.mp_termproject.R;
-import com.example.mp_termproject.gps.GpsActivity;
-import com.example.mp_termproject.gps.GpsTracker;
+import com.example.mp_termproject.ourcloset.gps.GpsTracker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;

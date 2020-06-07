@@ -14,22 +14,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ourcloset.viewinfo.ViewClosetInfoActivity"></activity>
+        <activity android:name=".ourcloset.viewinfo.ViewClosetInfoActivity" />
         <activity android:name=".lookbook.filter.LookbookFilterActivity" />
         <activity android:name=".ourcloset.filter.OurClosetFilterActivity" />
         <activity android:name=".lookbook.add.CoordinatorActivity" />
         <activity android:name=".mycloset.filter.MyClosetFilterActivity" />
         <activity android:name=".mycloset.add.MyClosetAddActivity" />
         <activity android:name=".mycloset.add.MyClosetEditActivity" />
-        <activity android:name=".mycloset.camera.CameraActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBlKPQFIEDt_eky3dVgUCKItVKIDYJV16U" />
+            android:value="AIzaSyAtkZxbRwKwtzOI0vLOEHSORAjKU9UwMOw" />
 
         <activity android:name=".ModeActivity" />
-        <activity android:name=".gps.GpsActivity" />
-        <activity android:name=".gps.CurrentLocationActivity" />
+        <activity android:name=".ourcloset.gps.ShowMapWithDistanceActivity" />
         <activity android:name=".signup.SignUpActivity" />
         <activity android:name=".signup.MemberInitActivity" />
         <activity android:name=".login.LoginActivity" />
