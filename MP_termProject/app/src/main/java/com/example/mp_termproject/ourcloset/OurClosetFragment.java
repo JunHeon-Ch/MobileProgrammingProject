@@ -30,6 +30,7 @@ import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.dto.ImageDTO;
 import com.example.mp_termproject.ourcloset.dto.InfoDTO;
 import com.example.mp_termproject.ourcloset.filter.OurClosetFilterActivity;
+import com.example.mp_termproject.ourcloset.gps.ShowMapWithDistanceActivity;
 import com.example.mp_termproject.ourcloset.viewinfo.ViewClosetInfoActivity;
 import com.example.mp_termproject.signup.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -161,7 +162,6 @@ public class OurClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         if (check == NORMAL) {
             infoDTOList.clear();
 
@@ -173,7 +173,6 @@ public class OurClosetFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
         check = NORMAL;
     }
 
@@ -432,11 +431,10 @@ public class OurClosetFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int pos) {
                             // "전화 걸기", "길찾기"
                             Intent intent;
-
+                            Bundle bundle = new Bundle();
                             switch (pos) {
                                 case 0:
                                     intent = new Intent(getContext(), ViewClosetInfoActivity.class);
-                                    Bundle bundle = new Bundle();
                                     bundle.putString("name", infoDTOList.get(index).getImageDTO().getItemName());
                                     bundle.putString("category", infoDTOList.get(index).getImageDTO().getCategory());
                                     bundle.putString("color", infoDTOList.get(index).getImageDTO().getColor());
@@ -461,6 +459,16 @@ public class OurClosetFragment extends Fragment {
                                     break;
                                 case 2:
                                     // 길찾기
+                                    double latitude = userInfoList.get(index).getLatitude();
+                                    double longitude = userInfoList.get(index).getLongitude();
+                                    String address = userInfoList.get(index).getAddress();
+
+                                    intent = new Intent(getContext(), ShowMapWithDistanceActivity.class);
+                                    bundle.putDouble("latitude", latitude);
+                                    bundle.putDouble("longitude", longitude);
+                                    bundle.putString("address", address);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
                                     break;
                             }
                         }

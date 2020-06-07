@@ -1,4 +1,4 @@
-package com.example.mp_termproject.gps;
+package com.example.mp_termproject.ourcloset.gps;
 
 import android.Manifest;
 import android.app.Service;
