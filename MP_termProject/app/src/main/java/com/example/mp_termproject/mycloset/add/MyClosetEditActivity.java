@@ -302,7 +302,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
     }
 
 
-
     // 옵션메뉴 생성
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -339,7 +338,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
                 Log.d("CheckTest", "1");
 
 
-
                 Log.d(TAG, "new3 data: " + imgnum[0]);
                 Log.d(TAG, "new1 data: " + imgnum[0]);
                 // storage에 저장할 값들 저장해두기
@@ -356,7 +354,7 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
                 Log.d(TAG, "new2 data: " + imgnum[0]);
                 ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText, imgNameText,
-                        colorText, brandText, seasonText, sizeText, sharedText,imgnum[0]);
+                        colorText, brandText, seasonText, sizeText, sharedText, imgnum[0]);
                 //Log.d("test1", imgnum[0].toString());
 
                 db.collection("images")
@@ -420,7 +418,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     public static byte[] viewToBitmap(View view) {
