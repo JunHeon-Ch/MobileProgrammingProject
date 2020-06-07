@@ -358,7 +358,6 @@ public class MyClosetFragment extends Fragment {
                                     bundle.putString("shared",temp.getShared());
                                     bundle.putString("size",temp.getSize());
                                     bundle.putString("userID",temp.getUserID());
-                                    bundle.putString("path", String.valueOf(temppath));
                                     intent.putExtras(bundle);
                                     startActivity(intent);
 

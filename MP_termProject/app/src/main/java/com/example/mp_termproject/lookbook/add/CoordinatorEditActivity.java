@@ -1,7 +1,5 @@
 package com.example.mp_termproject.lookbook.add;
 
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,16 +8,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -58,7 +52,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class CoordinatorActivity extends AppCompatActivity {
+public class CoordinatorEditActivity extends AppCompatActivity {
 
     private static final String TAG = "CoordinatorActivity";
     private static final String IMAGEVIEW_TAG = "드래그 이미지";
@@ -66,20 +60,14 @@ public class CoordinatorActivity extends AppCompatActivity {
     RelativeLayout mainContainer;
     RelativeLayout imageContainer;
     LinearLayout imageLayout;
-
-    ImageView hatImage;
-    ImageView topImage;
-    ImageView bottomImage;
-    ImageView shoesImage;
-    ImageView outerImage;
-    ImageView bagImage;
-    ImageView accessoryImage;
+    ImageView image;
     LinearLayout resetButton;
     TextView occasionText;
     TextView seasonText;
     LinearLayout coordinatorLayout;
     Button emptyImageButton;
 
+    LookbookDTO lookbookDTO;
     FirebaseUser user;
     FirebaseFirestore db;
     DocumentReference docRefUserInfo;
@@ -91,6 +79,8 @@ public class CoordinatorActivity extends AppCompatActivity {
     ArrayList<String> imageUrlList;
 
     Double[] imgnum;
+    StorageReference path;
+
 
     byte[] bytes;
 
@@ -98,7 +88,7 @@ public class CoordinatorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle("Coordinator");
-        setContentView(R.layout.activity_coordinate);
+        setContentView(R.layout.activity_edit_coordinate);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -115,8 +105,19 @@ public class CoordinatorActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         imgnum[0] = intent.getDoubleExtra("lookNum", 0.0);
+        String occasion = intent.getStringExtra("occasion");
+        String url = intent.getStringExtra("url");
+        String season = intent.getStringExtra("season");
+        String userID = intent.getStringExtra("userID");
 
+        lookbookDTO = new LookbookDTO(userID,url,occasion,season,imgnum[0]);
         readImageInfo();
+        image = findViewById(R.id.edit_closet_image);
+        path =storageRef.child(lookbookDTO.getImgURL());
+        Glide.with(this)
+                .load(path)
+                .into(image);
+
 
         mainContainer = findViewById(R.id.mainContainer);
         imageContainer = findViewById(R.id.imageContainer);
@@ -124,122 +125,13 @@ public class CoordinatorActivity extends AppCompatActivity {
 
         coordinatorLayout = findViewById(R.id.coordinator_layout);
 
-        hatImage = findViewById(R.id.hat_image);
-        hatImage.setTag(IMAGEVIEW_TAG);
-        hatImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 모자인 이미지를 전부 읽어온다.
-//                                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 hatImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"모자 Headwear"});
-                floatSameCategoryImage(hatImage);
-            }
-        });
-
-        topImage = findViewById(R.id.top_image);
-        topImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 상의인 이미지를 전부 읽어온다.
-//                                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 topImage에 set 한다.
-
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"상의 Top"});
-                floatSameCategoryImage(topImage);
-            }
-        });
-
-        bottomImage = findViewById(R.id.bottom_image);
-        bottomImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 스커트, 바지인 이미지를 전부 읽어온다.
-                //                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 bottomImage에 set 한다.
-
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"바지 Pants", "스커트 Skirt"});
-                floatSameCategoryImage(bottomImage);
-            }
-        });
-
-        shoesImage = findViewById(R.id.shoes_image);
-        shoesImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 신발인 이미지를 전부 읽어온다.
-//                                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 shoesImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"신발 Shoes"});
-                floatSameCategoryImage(shoesImage);
-            }
-        });
-
-        outerImage = findViewById(R.id.outer_image);
-        outerImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 아우터인 이미지를 전부 읽어온다.
-//                                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 hatImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"아우터 Outer"});
-                floatSameCategoryImage(outerImage);
-
-            }
-        });
-
-        bagImage = findViewById(R.id.bag_image);
-        bagImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 가방인 이미지를 전부 읽어온다.
-                //                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 bagImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"가방 Bag"});
-                floatSameCategoryImage(bagImage);
-
-            }
-        });
-
-        accessoryImage = findViewById(R.id.accessory_image);
-        accessoryImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 안경, 시계, 악세서리인 이미지를 전부 읽어온다.
-                //                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 accessoryImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"시계 Watch", "안경 Eyewear", "액세서리 Accessory"});
-                floatSameCategoryImage(accessoryImage);
-
-            }
-        });
 
         occasionText = findViewById(R.id.coordinator_occasion);
+        occasionText.setText(occasion);
         occasionText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(CoordinatorActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(CoordinatorEditActivity.this);
                 final ArrayList<String> selectedItems = new ArrayList<>();
                 final String[] items = getResources().getStringArray(R.array.occation);
 
@@ -280,10 +172,11 @@ public class CoordinatorActivity extends AppCompatActivity {
         });
 
         seasonText = findViewById(R.id.coordinator_season);
+        seasonText.setText(season);
         seasonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(CoordinatorActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(CoordinatorEditActivity.this);
                 final ArrayList<String> selectedItems = new ArrayList<>();
                 final String[] items = getResources().getStringArray(R.array.season);
 
@@ -322,19 +215,7 @@ public class CoordinatorActivity extends AppCompatActivity {
             }
         });
 
-        resetButton = findViewById(R.id.reset_button);
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hatImage.setImageResource(R.drawable.hat);
-                topImage.setImageResource(R.drawable.top);
-                bottomImage.setImageResource(R.drawable.bottom);
-                shoesImage.setImageResource(R.drawable.shoes);
-                outerImage.setImageResource(R.drawable.outer);
-                bagImage.setImageResource(R.drawable.bag);
-                accessoryImage.setImageResource(R.drawable.accessory);
-            }
-        });
+
     }
 
     // 옵션메뉴 생성
@@ -360,7 +241,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                 bytes = viewToBitmap(coordinatorLayout);
 
                 // 문서 갖고오기
-                imgnum[0] += 1;
+
                 // storage에 저장할 값들 저장해두기
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
@@ -370,33 +251,6 @@ public class CoordinatorActivity extends AppCompatActivity {
 
                 // img url 저장
                 imgURL = "lookbook/" + user.getUid() + "/" + imgnum[0] + ".jpg";
-
-                // storage에 upload
-                UploadTask uploadTask = mountainImagesRef.putBytes(bytes);
-                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            Log.e("실패1", "실패");
-                            throw task.getException();
-                        }
-
-                        // Continue with the task to get the download URL
-                        return mountainImagesRef.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri downloadUri = task.getResult();
-                            Log.e("성공", "성공: " + downloadUri);
-                        } else {
-                            // Handle failures
-                            // ...
-                            Log.e("실패2", "실패");
-                        }
-                    }
-                });
 
                 // 데이터베이스에 저장
 
@@ -410,7 +264,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 AlertDialog.Builder alert =
-                                        new AlertDialog.Builder(CoordinatorActivity.this);
+                                        new AlertDialog.Builder(CoordinatorEditActivity.this);
                                 alert.setMessage("저장되었습니다");
 
                                 docRefUserInfo
@@ -430,7 +284,7 @@ public class CoordinatorActivity extends AppCompatActivity {
 
                                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        Toast.makeText(CoordinatorActivity.this,
+                                        Toast.makeText(CoordinatorEditActivity.this,
                                                 occasionText.getText().toString() + "\n"
                                                         + seasonText.getText().toString() + "\n",
                                                 Toast.LENGTH_SHORT).show();
@@ -444,7 +298,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(CoordinatorActivity.this,
+                                Toast.makeText(CoordinatorEditActivity.this,
                                         "사진 업로드가 실패했습니다.",
                                         Toast.LENGTH_SHORT).show();
                             }
@@ -453,13 +307,6 @@ public class CoordinatorActivity extends AppCompatActivity {
                 break;
 
             case R.id.actionbar_reset:
-                hatImage.setImageResource(R.drawable.hat);
-                topImage.setImageResource(R.drawable.top);
-                bottomImage.setImageResource(R.drawable.bottom);
-                shoesImage.setImageResource(R.drawable.shoes);
-                outerImage.setImageResource(R.drawable.outer);
-                bagImage.setImageResource(R.drawable.bag);
-                accessoryImage.setImageResource(R.drawable.accessory);
                 occasionText.setText("Occasion");
                 occasionText.setTextColor(Color.parseColor("#aaaaaa"));
                 seasonText.setText("Season");
