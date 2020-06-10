@@ -20,7 +20,7 @@
             <ImageView
                 android:id="@+id/my_closet_add_image"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="300dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="50dp"
                 app:srcCompat="@drawable/closesample" />
