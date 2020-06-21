@@ -35,7 +35,10 @@
         <activity android:name=".signup.SignUpActivity" />
         <activity android:name=".signup.MemberInitActivity" />
         <activity android:name=".login.LoginActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name="MainActivity" />
+        <activity android:name=".LoadingActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/LoadingTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
