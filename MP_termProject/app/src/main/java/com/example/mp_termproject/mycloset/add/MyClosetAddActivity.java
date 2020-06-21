@@ -569,7 +569,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
         Mat source = new Mat(1, 1, CvType.CV_8UC3, new Scalar(Imgproc.GC_PR_FGD));
 
         Core.compare(mask, source, mask, Core.CMP_EQ);
-        Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
+        Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255,255));
         img.copyTo(foreground, mask);
         Imgproc.rectangle(img, p1, p2, color);
 
@@ -578,12 +578,12 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         background = tmp;
 
-        Mat tempMask = new Mat(foreground.size(), CvType.CV_8UC1, new Scalar(255, 255, 255));
+        Mat tempMask = new Mat(foreground.size(), CvType.CV_8UC1, new Scalar(255, 255, 255,255));
         // convert imgae to grayscale
         Imgproc.cvtColor(foreground, tempMask, Imgproc.COLOR_BGR2GRAY);
         // threshold the bitmap to create alpha channel with complete transparency in black background region and zero transparency in foreground object region.
         // threshold는 기준 thresh 값을 정해주어서 지정된 것보다 값이 작으면 검은색으로 변환 ,높으면 흰색
-        Imgproc.threshold(tempMask, tempMask, 240, 255, Imgproc.THRESH_BINARY_INV);
+        Imgproc.threshold(tempMask, tempMask, 254, 255, Imgproc.THRESH_BINARY_INV);
 
         // split the original bitmap into three single channel.
         List<Mat> rgb = new ArrayList<Mat>(3);
@@ -601,12 +601,14 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         // convert matrix to output bitmap
         Log.d(TAG, "Convert to Bitmap");
-        Utils.matToBitmap(foreground, bitmap);
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
 
-        image.setImageBitmap(bitmap);
+        Utils.matToBitmap(foreground, output);
+
+        image.setImageBitmap(output);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        output.compress(Bitmap.CompressFormat.PNG, 100, stream);
         bytes = stream.toByteArray();
     }
 
