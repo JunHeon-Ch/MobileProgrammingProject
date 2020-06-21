@@ -25,15 +25,20 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.lookbook.add.CoordinatorActivity;
+import com.example.mp_termproject.lookbook.add.CoordinatorEditActivity;
 import com.example.mp_termproject.lookbook.dto.LookbookDTO;
 import com.example.mp_termproject.lookbook.filter.LookbookFilterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -77,7 +82,7 @@ public class LookbookFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("LOOKBOOK");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("LOOKBOOK");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_lookbook,
                 container,
                 false);
@@ -115,8 +120,8 @@ public class LookbookFragment extends Fragment {
         check = NORMAL;
     }
 
-    private void accessDBInfo(){
-        if(check == NORMAL) {
+    private void accessDBInfo() {
+        if (check == NORMAL) {
             // 유저 정보접근
             docRefUserInfo.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -147,7 +152,8 @@ public class LookbookFragment extends Fragment {
                                                     String url = (String) temp.get("imgURL");
                                                     String occasion = (String) temp.get("occasion");
                                                     String season = (String) temp.get("season");
-                                                    LookbookDTO dto = new LookbookDTO(id, url, occasion, season);
+                                                    Double imgNum = (Double)temp.get("lookNum");
+                                                    LookbookDTO dto = new LookbookDTO(id, url, occasion, season,imgNum);
                                                     dtoList.add(dto);
 
                                                     int count = addPathReference(check);
@@ -174,13 +180,13 @@ public class LookbookFragment extends Fragment {
         }
     }
 
-    private int addPathReference(int flag){
+    private int addPathReference(int flag) {
         imageList.clear();
         imageDTOList.clear();
 
         int count = 0;
 
-        switch (flag){
+        switch (flag) {
             case NORMAL:
                 for (int i = 0; i < dtoList.size(); i++) {
                     count++;
@@ -212,8 +218,9 @@ public class LookbookFragment extends Fragment {
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
-
+            LookbookDTO lookbookDTO = imageDTOList.get(i);
             if(i % 2 == 0){
+
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, height);
                 layoutParams.gravity = Gravity.LEFT;
@@ -239,7 +246,7 @@ public class LookbookFragment extends Fragment {
             linearLayout.addView(imageView);
 
             i++;
-
+            final LookbookDTO temp = lookbookDTO;
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -251,11 +258,52 @@ public class LookbookFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int pos) {
                             // 수정, 삭제, 취소
 
-                            switch (pos){
+                            switch (pos) {
                                 case 0:
                                     // 수정
+                                    Intent intent = new Intent(getContext(), CoordinatorEditActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    Log.d("look number",temp.getLookNum()+"");
+                                    bundle.putDouble("lookNum", temp.getLookNum());
+                                    bundle.putString("occasion",temp.getOccasion());
+                                    bundle.putString("url",temp.getImgURL());
+                                    bundle.putString("season",temp.getSeason());
+                                    bundle.putString("userID",temp.getUserID());
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
                                     break;
                                 case 1:
+                                    // Create a reference to the file to delete
+                                    StorageReference desertRef = storageRef.child(temp.getImgURL());
+                                    desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            // File deleted successfully
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                            // Uh-oh, an error occurred!
+                                        }
+                                    });
+
+                                    final CollectionReference itemsRef = db.collection("lookbook").document(user.getUid()).collection("looks");
+                                    Query query = itemsRef.whereEqualTo("imgURL", temp.getImgURL());
+                                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    itemsRef.document(document.getId()).delete();
+                                                }
+                                            } else {
+                                                Log.d(TAG, "Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
+                                    Log.d("test","test "+temp.getImgURL());
+                                    onStart();
+                                    Toast.makeText(getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                                     // 삭제
                                     break;
                                 case 2:
@@ -284,7 +332,7 @@ public class LookbookFragment extends Fragment {
         int curId = item.getItemId();
         Intent intent;
 
-        switch (curId){
+        switch (curId) {
             case R.id.actionbar_add:
 //              추가 메뉴 옵션 선택
 
@@ -311,8 +359,8 @@ public class LookbookFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_FILTER){
-            if(resultCode == RESULT_OK){
+        if (requestCode == REQUEST_FILTER) {
+            if (resultCode == RESULT_OK) {
                 Bundle bundle = data.getExtras();
 
                 ArrayList<String> occasionItemList = bundle.getStringArrayList("occasion");

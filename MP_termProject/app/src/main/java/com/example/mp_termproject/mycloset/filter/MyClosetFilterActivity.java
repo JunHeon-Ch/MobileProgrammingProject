@@ -1,8 +1,8 @@
 package com.example.mp_termproject.mycloset.filter;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -79,6 +79,10 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                 colorList.setVisibility(View.INVISIBLE);
                 seasonList.setVisibility(View.INVISIBLE);
                 sharedList.setVisibility(View.INVISIBLE);
+                category.setTextColor(Color.parseColor("#000000"));
+                color.setTextColor(Color.parseColor("#eeeeee"));
+                season.setTextColor(Color.parseColor("#eeeeee"));
+                shared.setTextColor(Color.parseColor("#eeeeee"));
             }
         });
 
@@ -90,6 +94,10 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                 colorList.setVisibility(View.VISIBLE);
                 seasonList.setVisibility(View.INVISIBLE);
                 sharedList.setVisibility(View.INVISIBLE);
+                category.setTextColor(Color.parseColor("#eeeeee"));
+                color.setTextColor(Color.parseColor("#000000"));
+                season.setTextColor(Color.parseColor("#eeeeee"));
+                shared.setTextColor(Color.parseColor("#eeeeee"));
             }
         });
 
@@ -101,6 +109,10 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                 colorList.setVisibility(View.INVISIBLE);
                 seasonList.setVisibility(View.VISIBLE);
                 sharedList.setVisibility(View.INVISIBLE);
+                category.setTextColor(Color.parseColor("#eeeeee"));
+                color.setTextColor(Color.parseColor("#eeeeee"));
+                season.setTextColor(Color.parseColor("#000000"));
+                shared.setTextColor(Color.parseColor("#eeeeee"));
             }
         });
 
@@ -112,6 +124,10 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                 colorList.setVisibility(View.INVISIBLE);
                 seasonList.setVisibility(View.INVISIBLE);
                 sharedList.setVisibility(View.VISIBLE);
+                category.setTextColor(Color.parseColor("#eeeeee"));
+                color.setTextColor(Color.parseColor("#eeeeee"));
+                season.setTextColor(Color.parseColor("#eeeeee"));
+                shared.setTextColor(Color.parseColor("#000000"));
             }
         });
 
@@ -166,7 +182,7 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                     }
                 }
 
-                if(sharedSelectedPosition != -1){
+                if (sharedSelectedPosition != -1) {
                     sharedList.setItemChecked(sharedSelectedPosition, false);
                 }
 
@@ -193,7 +209,7 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                     }
                 }
 
-                if(sharedSelectedPosition != -1){
+                if (sharedSelectedPosition != -1) {
                     shareSelected = share[sharedSelectedPosition];
                 }
 

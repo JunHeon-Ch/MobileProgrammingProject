@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.dto.ImageDTO;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,7 +47,7 @@ public class MyClosetEditActivity extends AppCompatActivity {
     FirebaseUser user;
     FirebaseFirestore db;
     DocumentReference docRef;
-
+    ImageDTO imgDto;
     ImageView image;
     TextView itemName;
     TextView category;
@@ -55,7 +56,9 @@ public class MyClosetEditActivity extends AppCompatActivity {
     TextView season;
     TextView size;
     TextView shared;
-
+    StorageReference storageRef;
+    StorageReference path;
+    FirebaseStorage storage;
     byte[] bytes;
 
     @Override
@@ -70,18 +73,36 @@ public class MyClosetEditActivity extends AppCompatActivity {
         docRef = db.collection("users").document(user.getUid());
 
         Intent intent = getIntent();
-        imgnum[0] = intent.getDoubleExtra("imgNum1", 0.0);
-        bytes = intent.getByteArrayExtra("image");
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        imgnum[0] = intent.getDoubleExtra("imgNum1", 0.0);
+        String brand1 = intent.getStringExtra("brand");
+        String category1 = intent.getStringExtra("category");
+        String color1 = intent.getStringExtra("color");
+        String imgurl1 = intent.getStringExtra("url");
+        String name1 = intent.getStringExtra("name");
+        String season1 = intent.getStringExtra("season");
+        String shared1 = intent.getStringExtra("shared");
+        String size1 = intent.getStringExtra("size");
+        String userid1 = intent.getStringExtra("userID");
+
+        imgDto= new ImageDTO(userid1,imgurl1,category1,name1,color1,brand1,season1,size1,shared1,imgnum[0]);
+
+
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+
 
         // 번들로 받은 배경제거된 이미지 image 변수에 저장
-        Log.d("activity123 test", "" + imgnum[0]);
         image = findViewById(R.id.my_closet_add_image);
-        image.setImageBitmap(bitmap);
+        path =storageRef.child(imgDto.getImgURL());
+        Glide.with(this)
+                .load(path)
+                .into(image);
 
         // itemName text 클릭시 item name 입력 popup 띄우기
         itemName = findViewById(R.id.my_closet_add_name);
+        itemName.setText(imgDto.getItemName());
         itemName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +129,7 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
         // category text 클릭시 category popup menu 띄우기 (단일 선택)
         category = findViewById(R.id.my_closet_add_category);
+        category.setText(imgDto.getCategory());
         category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,6 +153,7 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
         // color text 클릭시 color popup menu 띄우기 (다중 선택)
         color = findViewById(R.id.my_closet_add_color);
+        color.setText(imgDto.getColor());
         color.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,6 +198,7 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
         // brand text 클릭시 brand 입력 popup 띄우기
         brand = findViewById(R.id.my_closet_add_brand);
+        brand.setText(imgDto.getBrand());
         brand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,6 +224,7 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
         // season text 클릭시 season popup menu 띄우기 (다중 선택)
         season = findViewById(R.id.my_closet_add_season);
+        season.setText(imgDto.getSeason());
         season.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -244,6 +269,7 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
         // size text 클릭시 size popup 띄우기
         size = findViewById(R.id.my_closet_add_size);
+        size.setText(imgDto.getSize());
         size.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -269,6 +295,7 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
         // shared text 클릭시 shared popup 띄우기 (양자택일)
         shared = findViewById(R.id.my_closet_add_sheared);
+        shared.setText(imgDto.getShared());
         shared.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -300,7 +327,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
         });
 
     }
-
 
 
     // 옵션메뉴 생성
@@ -339,7 +365,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
                 Log.d("CheckTest", "1");
 
 
-
                 Log.d(TAG, "new3 data: " + imgnum[0]);
                 Log.d(TAG, "new1 data: " + imgnum[0]);
                 // storage에 저장할 값들 저장해두기
@@ -356,7 +381,7 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
                 Log.d(TAG, "new2 data: " + imgnum[0]);
                 ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText, imgNameText,
-                        colorText, brandText, seasonText, sizeText, sharedText,imgnum[0]);
+                        colorText, brandText, seasonText, sizeText, sharedText, imgnum[0]);
                 //Log.d("test1", imgnum[0].toString());
 
                 db.collection("images")
@@ -387,16 +412,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
                                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        Toast.makeText(MyClosetEditActivity.this,
-                                                itemName.getText() + "\n"
-                                                        + category.getText() + "\n"
-                                                        + color.getText() + "\n"
-                                                        + brand.getText() + "\n"
-                                                        + season.getText() + "\n"
-                                                        + size.getText() + "\n"
-                                                        + shared.getText() + "\n",
-                                                Toast.LENGTH_SHORT).show();
-
                                         finish();
                                     }
                                 });
@@ -420,7 +435,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     public static byte[] viewToBitmap(View view) {

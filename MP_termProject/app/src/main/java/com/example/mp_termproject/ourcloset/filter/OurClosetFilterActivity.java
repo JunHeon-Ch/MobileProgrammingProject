@@ -1,6 +1,7 @@
 package com.example.mp_termproject.ourcloset.filter;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -66,6 +67,9 @@ public class OurClosetFilterActivity extends AppCompatActivity {
                 categoryList.setVisibility(View.VISIBLE);
                 colorList.setVisibility(View.INVISIBLE);
                 seasonList.setVisibility(View.INVISIBLE);
+                category.setTextColor(Color.parseColor("#000000"));
+                color.setTextColor(Color.parseColor("#eeeeee"));
+                season.setTextColor(Color.parseColor("#eeeeee"));
             }
         });
 
@@ -76,6 +80,9 @@ public class OurClosetFilterActivity extends AppCompatActivity {
                 categoryList.setVisibility(View.INVISIBLE);
                 colorList.setVisibility(View.VISIBLE);
                 seasonList.setVisibility(View.INVISIBLE);
+                category.setTextColor(Color.parseColor("#eeeeee"));
+                color.setTextColor(Color.parseColor("#000000"));
+                season.setTextColor(Color.parseColor("#eeeeee"));
             }
         });
 
@@ -86,6 +93,9 @@ public class OurClosetFilterActivity extends AppCompatActivity {
                 categoryList.setVisibility(View.INVISIBLE);
                 colorList.setVisibility(View.INVISIBLE);
                 seasonList.setVisibility(View.VISIBLE);
+                category.setTextColor(Color.parseColor("#eeeeee"));
+                color.setTextColor(Color.parseColor("#eeeeee"));
+                season.setTextColor(Color.parseColor("#000000"));
             }
         });
     }

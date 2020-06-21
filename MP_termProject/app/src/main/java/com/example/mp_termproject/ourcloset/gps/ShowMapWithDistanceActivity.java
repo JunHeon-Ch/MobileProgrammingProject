@@ -84,6 +84,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
     int tracking = 0;
 
     TextView textView;
+    Button button;
 
     private View mLayout;  // Snackbar 사용하기 위해서는 View가 필요합니다.
     // (참고로 Toast에서는 Context가 필요했습니다.)
@@ -91,7 +92,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getSupportActionBar().setTitle("Map");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -99,7 +100,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
 
         final LinearLayout textLayout = findViewById(R.id.layout_text);
 
-        final Button button = findViewById(R.id.button);
+        button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,13 +150,15 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
 
         //런타임 퍼미션 요청 대화상자나 GPS 활성 요청 대화상자 보이기전에
         //지도의 초기위치를 서울로 이동
-        setDefaultLocation();
+
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         double latitude = extras.getDouble("latitude");
         double longitude = extras.getDouble("longitude");
         String address = extras.getString("address");
+
+        setDefaultLocation();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ShowMapWithDistanceActivity.this);
         LayoutInflater inflater = getLayoutInflater();
@@ -187,10 +190,14 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
                 if (addedMarker != null) mMap.clear();
                 addedMarker = mMap.addMarker(markerOptions);
 
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                mMap.moveCamera(cameraUpdate);
+
                 dialog.dismiss();
             }
         });
 
+        dialog.setCancelable(false);
         dialog.show();
 
         //런타임 퍼미션 처리
@@ -262,15 +269,16 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
                     textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                 }
 
-
                 String markerTitle = getCurrentAddress(currentPosition);
                 String markerSnippet = "위도:" + String.valueOf(location.getLatitude())
                         + " 경도:" + String.valueOf(location.getLongitude());
 
                 Log.d(TAG, "onLocationResult : " + markerSnippet);
 
-                //현재 위치에 마커 생성하고 이동
-                setCurrentLocation(location, markerTitle, markerSnippet);
+                if(button.getText().equals("Stop")) {
+                    //현재 위치에 마커 생성하고 이동
+                    setCurrentLocation(location, markerTitle, markerSnippet);
+                }
 
                 mCurrentLocation = location;
             }
@@ -381,7 +389,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
 
     public void setDefaultLocation() {
         //디폴트 위치, Seoul
-        LatLng DEFAULT_LOCATION = new LatLng(37.56, 126.97);
+        LatLng DEFAULT_LOCATION = new LatLng(37.33, 126.58);
         String markerTitle = "위치정보 가져올 수 없음";
         String markerSnippet = "위치 퍼미션과 GPS 활성 요부 확인하세요";
 
@@ -394,6 +402,9 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
         markerOptions.draggable(true);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentMarker = mMap.addMarker(markerOptions);
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15);
+        mMap.moveCamera(cameraUpdate);
     }
 
     //여기부터는 런타임 퍼미션 처리을 위한 메소드들

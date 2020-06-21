@@ -3,10 +3,10 @@ package com.example.mp_termproject.mycloset.add;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -27,13 +27,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.dto.ImageDTO;
-
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -42,8 +40,26 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyClosetAddActivity extends AppCompatActivity {
 
@@ -67,6 +83,9 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
     byte[] bytes;
 
+    private boolean isOpenCvLoaded = false;
+    private boolean isTest = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +101,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
         imgnum[0] = intent.getDoubleExtra("imgNum", 0.0);
 
         sendTakePhotoIntent();
-
+        grabcut();
 
         // 번들로 받은 배경제거된 이미지 image 변수에 저장
 
@@ -398,7 +417,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                 Log.d(TAG, "new2 data: " + imgnum[0]);
                 ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText, imgNameText,
-                        colorText, brandText, seasonText, sizeText, sharedText,imgnum[0]);
+                        colorText, brandText, seasonText, sizeText, sharedText, imgnum[0]);
                 //Log.d("test1", imgnum[0].toString());
 
                 db.collection("images")
@@ -429,16 +448,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        Toast.makeText(MyClosetAddActivity.this,
-                                                itemName.getText() + "\n"
-                                                        + category.getText() + "\n"
-                                                        + color.getText() + "\n"
-                                                        + brand.getText() + "\n"
-                                                        + season.getText() + "\n"
-                                                        + size.getText() + "\n"
-                                                        + shared.getText() + "\n",
-                                                Toast.LENGTH_SHORT).show();
-
                                         finish();
                                     }
                                 });
@@ -486,13 +495,146 @@ public class MyClosetAddActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == -1) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            image.setImageBitmap(imageBitmap);
+            saveBitmapToJpeg(imageBitmap);
+            grabcut();
+        }
+    }
 
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            bytes = stream.toByteArray();
+    private void saveBitmapToJpeg(Bitmap bitmap) {
+        File storage = getCacheDir();
+        String fileName = "temp.jpg";
+        File tempFile = new File(storage, fileName);
+
+        try {
+            tempFile.createNewFile();
+            FileOutputStream out = new FileOutputStream(tempFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+
+        } catch (FileNotFoundException e) {
+            Log.e("MyTag", "FileNotFoundException : " + e.getMessage());
+        } catch (IOException e) {
+            Log.e("MyTag", "IOException : " + e.getMessage());
+        }
+    }
+
+    private void grabcut() {
+        if (!isOpenCvLoaded)
+            return;
+
+        File file = new File(getCacheDir().toString());
+        File[] files = file.listFiles();
+
+        String target = null;
+        for (File tempFile : files) {
+            Log.d("test", tempFile.getName());
+            if (tempFile.getName().contains("temp")) {
+                target = tempFile.getName();
+            }
+        }
+
+        Bitmap bitmap = BitmapFactory.decodeFile(getCacheDir() + "/" + target);
+        Scalar color = new Scalar(255, 0, 0, 255);
+
+        //Mat dst = new Mat();
+        //Grabcut part
+        Mat img = new Mat(); //container
+        Utils.bitmapToMat(bitmap, img);
+        Log.d(TAG, "img: " + img);
+
+        //init new Matrices
+        int r = img.rows();
+        int c = img.cols();
+
+        Point p1 = new Point(25, 25);
+        Point p2 = new Point(c - 64, r - 64);
+
+        Rect rect = new Rect(25,25,c-64, r-64);
+        Log.d(TAG, "rect: " + rect);
+
+        Mat background = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
+        Mat mask = new Mat();
+        mask.setTo(new Scalar(125));
+        Mat fgModel = new Mat();
+        fgModel.setTo(new Scalar(0, 0, 0));
+        Mat bgModel = new Mat();
+        bgModel.setTo(new Scalar(0, 0, 0));
+
+        Mat imgC3 = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
+        Imgproc.cvtColor(img, imgC3, Imgproc.COLOR_RGBA2RGB);
+        Log.d(TAG, "imgC3: " + imgC3);
+
+        Log.d(TAG, "Grabcut begins");
+        Imgproc.grabCut(imgC3, mask, rect, bgModel, fgModel, 5, 0);
+        Mat source = new Mat(1, 1, CvType.CV_8UC3, new Scalar(Imgproc.GC_PR_FGD));
+
+        Core.compare(mask, source, mask, Core.CMP_EQ);
+        Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
+        img.copyTo(foreground, mask);
+        Imgproc.rectangle(img, p1, p2, color);
+
+        Mat tmp = new Mat();
+        Imgproc.resize(background, tmp, img.size());
+
+        background = tmp;
+
+        Mat tempMask = new Mat(foreground.size(), CvType.CV_8UC1, new Scalar(255, 255, 255));
+        // convert imgae to grayscale
+        Imgproc.cvtColor(foreground, tempMask, Imgproc.COLOR_BGR2GRAY);
+        // threshold the bitmap to create alpha channel with complete transparency in black background region and zero transparency in foreground object region.
+        // threshold는 기준 thresh 값을 정해주어서 지정된 것보다 값이 작으면 검은색으로 변환 ,높으면 흰색
+        Imgproc.threshold(tempMask, tempMask, 240, 255, Imgproc.THRESH_BINARY_INV);
+
+        // split the original bitmap into three single channel.
+        List<Mat> rgb = new ArrayList<Mat>(3);
+        Core.split(foreground,rgb);
+
+        // Create the final result by merging three single channel and alpha(BGR order)
+        List<Mat> rgba = new ArrayList<Mat>(4);
+        rgba.add(rgb.get(0));
+        rgba.add(rgb.get(1));
+        rgba.add(rgb.get(2));
+        rgba.add(tempMask);
+        Core.merge(rgba,tmp);
 
 
+
+        // convert matrix to output bitmap
+        Log.d(TAG, "Convert to Bitmap");
+        Utils.matToBitmap(foreground, bitmap);
+
+        image.setImageBitmap(bitmap);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bytes = stream.toByteArray();
+    }
+
+    //그랩컷 - opencv 시작
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS:
+                    Log.i(TAG, "OpenCV loaded successfully");
+                    break;
+                default:
+                    super.onManagerConnected(status);
+                    break;
+            }
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!OpenCVLoader.initDebug()) {
+            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
+        } else {
+            Log.d(TAG, "OpenCV library found inside package. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+            isOpenCvLoaded = true;
         }
     }
 

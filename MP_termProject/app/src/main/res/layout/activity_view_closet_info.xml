@@ -25,14 +25,36 @@
                 android:layout_marginBottom="50dp"
                 app:srcCompat="@drawable/closesample" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_centerInParent="true"
+                android:background="@color/colorAccent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="@string/info"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp" />
+
             <TextView
                 android:id="@+id/my_closet_add_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_item_name"
-                android:textColor="@color/decide_text_color"
-                android:textSize="20sp" />
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/text_color" />
 
             <TextView
                 android:id="@+id/my_closet_add_category"
@@ -40,8 +62,16 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_category"
-                android:textColor="@color/decide_text_color"
-                android:textSize="20sp" />
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/text_color" />
 
             <TextView
                 android:id="@+id/my_closet_add_color"
@@ -49,8 +79,16 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_color"
-                android:textColor="@color/decide_text_color"
-                android:textSize="20sp" />
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/text_color" />
 
             <TextView
                 android:id="@+id/my_closet_add_brand"
@@ -58,8 +96,16 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_brand"
-                android:textColor="@color/decide_text_color"
-                android:textSize="20sp" />
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/text_color" />
 
             <TextView
                 android:id="@+id/my_closet_add_season"
@@ -67,8 +113,16 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_season"
-                android:textColor="@color/decide_text_color"
-                android:textSize="20sp" />
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/text_color" />
 
             <TextView
                 android:id="@+id/my_closet_add_size"
@@ -76,8 +130,16 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_size"
-                android:textColor="@color/decide_text_color"
-                android:textSize="20sp" />
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/text_color" />
 
         </LinearLayout>
     </ScrollView>
