@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lookbook_info">룩북 정보</string>
-    <string name="lookbook_occasion">Occasion</string>
-    <string name="lookbook_season">Season</string>
+    <string name="lookbook_occasion">드레스코드</string>
+    <string name="lookbook_season">시즌</string>
 </resources>

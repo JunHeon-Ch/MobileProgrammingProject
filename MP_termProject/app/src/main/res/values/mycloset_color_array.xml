@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="colors">
-        <item>Black</item>
-        <item>White</item>
-        <item>Grey</item>
-        <item>Beige</item>
-        <item>Red</item>
-        <item>Pink</item>
-        <item>Purple</item>
-        <item>Blue</item>
-        <item>Green</item>
-        <item>Yellow</item>
-        <item>Orange</item>
-        <item>Brown</item>
-        <item>Brown</item>
-        <item>Gold</item>
-        <item>Silver</item>
+        <item>블랙</item>
+        <item>화이트</item>
+        <item>그레이</item>
+        <item>베이지</item>
+        <item>레드</item>
+        <item>핑크</item>
+        <item>퍼플</item>
+        <item>블루</item>
+        <item>그린</item>
+        <item>옐로우</item>
+        <item>오렌지</item>
+        <item>브라운</item>
+        <item>골드</item>
+        <item>실버</item>
     </string-array>
 </resources>
