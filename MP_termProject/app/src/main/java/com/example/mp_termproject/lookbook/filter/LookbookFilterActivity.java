@@ -54,7 +54,7 @@ public class LookbookFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 occasion.setTextColor(Color.parseColor("#000000"));
-                season.setTextColor(Color.parseColor("#eeeeee"));
+                season.setTextColor(Color.parseColor("#aaaaaa"));
                 occasionList.setVisibility(View.VISIBLE);
                 seasonList.setVisibility(View.INVISIBLE);
             }
@@ -64,7 +64,7 @@ public class LookbookFilterActivity extends AppCompatActivity {
         season.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                occasion.setTextColor(Color.parseColor("#eeeeee"));
+                occasion.setTextColor(Color.parseColor("#aaaaaa"));
                 season.setTextColor(Color.parseColor("#000000"));
                 occasionList.setVisibility(View.INVISIBLE);
                 seasonList.setVisibility(View.VISIBLE);

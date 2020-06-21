@@ -89,7 +89,7 @@ public class MyClosetFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("MY CLOSET");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Closet");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_my_closet,
                 container, false);
         setHasOptionsMenu(true);

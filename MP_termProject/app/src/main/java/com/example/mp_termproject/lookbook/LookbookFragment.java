@@ -82,7 +82,7 @@ public class LookbookFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("LOOKBOOK");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Look Book");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_lookbook,
                 container,
                 false);

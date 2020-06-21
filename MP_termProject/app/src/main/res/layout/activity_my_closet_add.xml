@@ -20,7 +20,7 @@
             <ImageView
                 android:id="@+id/my_closet_add_image"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="150dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="50dp"
                 app:srcCompat="@drawable/closesample" />
@@ -31,9 +31,19 @@
                 android:layout_centerInParent="true"
                 android:background="@color/colorAccent" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="@string/share_info"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal">
 
                 <Button
@@ -41,7 +51,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
+                    android:background="@color/white"
                     android:text="@string/shared"
                     android:textSize="18sp" />
 
@@ -50,7 +63,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
+                    android:background="@color/main_color"
                     android:text="@string/unShared"
                     android:textSize="18sp" />
 
@@ -60,9 +76,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
                 android:background="@color/colorAccent" />
 
             <TextView
+                android:id="@+id/infoText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
@@ -175,27 +193,33 @@
             <FrameLayout
                 android:id="@+id/shareFrame"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="visible">
 
-                <TextView
-                    android:id="@+id/my_closet_add_price"
+                <LinearLayout
+                    android:id="@+id/layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:text="@string/price"
-                    android:textColor="@color/text_color"
-                    android:textSize="15sp"
-                    android:visibility="visible" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <View
-                    android:id="@+id/line"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:background="@color/text_color"
-                    android:visibility="visible" />
+                    <TextView
+                        android:id="@+id/my_closet_add_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:text="@string/price"
+                        android:textColor="@color/text_color"
+                        android:textSize="15sp" />
+
+                    <View
+                        android:id="@+id/line"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/text_color" />
+                </LinearLayout>
 
             </FrameLayout>
         </LinearLayout>

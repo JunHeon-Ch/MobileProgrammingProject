@@ -92,7 +92,7 @@ public class OurClosetFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("OUR CLOSET");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Our Closet");
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_our_closet,
                 container,
                 false);
@@ -289,8 +289,9 @@ public class OurClosetFragment extends Fragment {
                                 String size = (String) temp.get("size");
                                 String shared = (String) temp.get("shared");
                                 Double imgNum = (Double) temp.get("imgNum");
+                                String price = (String) temp.get("price");
                                 ImageDTO dto = new ImageDTO(id, url, category, name,
-                                        color, brand, season, size, shared,imgNum);
+                                        color, brand, season, size, shared, price, imgNum);
 
                                 infoDTOList.add(new InfoDTO(dto, userInfo));
                             }
@@ -437,7 +438,6 @@ public class OurClosetFragment extends Fragment {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // 수정 & 삭제
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
                     String[] option = {"정보 보기", "전화 걸기", "지도로 보기"};

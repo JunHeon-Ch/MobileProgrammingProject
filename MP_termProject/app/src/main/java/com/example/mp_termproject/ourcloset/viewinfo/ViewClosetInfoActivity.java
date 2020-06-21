@@ -30,7 +30,7 @@ public class ViewClosetInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle("View Closet");
+        getSupportActionBar().setTitle("View Info");
         setContentView(R.layout.activity_view_closet_info);
 
         db = FirebaseFirestore.getInstance();

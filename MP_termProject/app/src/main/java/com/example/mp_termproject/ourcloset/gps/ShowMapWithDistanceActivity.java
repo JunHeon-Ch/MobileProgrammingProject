@@ -275,7 +275,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
 
                 Log.d(TAG, "onLocationResult : " + markerSnippet);
 
-                if(button.getText().equals("Stop")) {
+                if (button.getText().equals("Stop")) {
                     //현재 위치에 마커 생성하고 이동
                     setCurrentLocation(location, markerTitle, markerSnippet);
                 }

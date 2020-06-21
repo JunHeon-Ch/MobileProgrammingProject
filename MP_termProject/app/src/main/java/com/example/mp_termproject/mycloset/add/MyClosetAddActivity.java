@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,14 +94,14 @@ public class MyClosetAddActivity extends AppCompatActivity {
     TextView size;
     String shared="공유";
     TextView price;
-    View line;
+    LinearLayout layout;
     Button sharedButton;
     Button unsharedButton;
+    TextView infoText;
 
     byte[] bytes;
 
     private boolean isOpenCvLoaded = false;
-    private boolean isTest = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,25 +109,29 @@ public class MyClosetAddActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
 
+        layout = findViewById(R.id.layout);
         price = findViewById(R.id.my_closet_add_price);
-        line = findViewById(R.id.line);
         sharedButton = findViewById(R.id.shareBtn);
         unsharedButton = findViewById(R.id.unShareBtn);
-
+        infoText = findViewById(R.id.infoText);
         unsharedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price.setVisibility(View.INVISIBLE);
-                line.setVisibility(View.INVISIBLE);
+                layout.setVisibility(View.INVISIBLE);
                 shared="비공유";
+                unsharedButton.setBackgroundColor(Color.parseColor("#e6ebed"));
+                sharedButton.setBackgroundColor(Color.parseColor("#ffffff"));
+                infoText.setText("비공유 제품 정보");
             }
         });
         sharedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price.setVisibility(View.VISIBLE);
-                line.setVisibility(View.VISIBLE);
+                layout.setVisibility(View.VISIBLE);
                 shared="공유";
+                unsharedButton.setBackgroundColor(Color.parseColor("#ffffff"));
+                sharedButton.setBackgroundColor(Color.parseColor("#e6ebed"));
+                infoText.setText("공유 제품 정보");
             }
         });
 
@@ -145,57 +150,12 @@ public class MyClosetAddActivity extends AppCompatActivity {
         image.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(MyClosetAddActivity.this);
-                String[] option = {"카메라", "갤러리"};
-                builder.setItems(option, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int pos) {
-                        switch (pos) {
-                            case 0:
-                                int permission = ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.CAMERA);
-                                if (permission == PackageManager.PERMISSION_DENIED) {
-                                    ActivityCompat.requestPermissions(MyClosetAddActivity.this, new String[]{Manifest.permission.CAMERA}, 0);
-                                } else {
-                                    sendTakePhotoIntent();
-                                }
-
-                                break;
-                            case 1:
-                                String temp = "";
-                                if (ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    temp += Manifest.permission.READ_EXTERNAL_STORAGE + " ";
-                                }
-                                if (ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    temp += Manifest.permission.WRITE_EXTERNAL_STORAGE + " ";
-                                }
-                                if (TextUtils.isEmpty(temp) == false) {
-                                    ActivityCompat.requestPermissions(MyClosetAddActivity.this, temp.trim().split(" "), 1);
-                                } else {
-//                                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                                    startActivityForResult(intent, REQUEST_GET_GALLERY);
-
-//                                    Intent intent = new Intent();
-//                                    //기기 기본 갤러리 접근
-//                                    intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-//                                    startActivityForResult(intent, 101);
-//                                    Intent intent = new Intent();
-//                                    intent.setType("image/*");
-//                                    intent.setAction(Intent.ACTION_GET_CONTENT);
-//                                    startActivityForResult(intent, REQUEST_GET_GALLERY);
-                                    Intent intent=new Intent(Intent.ACTION_PICK);
-                                    intent.setType("image/*");
-                                    String[] mimeTypes = {"image/jpeg", "image/png"};
-                                    intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
-                                    startActivityForResult(intent,REQUEST_GET_GALLERY);
-                                }
-
-                                break;
-                        }
-                    }
-                });
-
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                int permission = ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.CAMERA);
+                if (permission == PackageManager.PERMISSION_DENIED) {
+                    ActivityCompat.requestPermissions(MyClosetAddActivity.this, new String[]{Manifest.permission.CAMERA}, 0);
+                } else {
+                    sendTakePhotoIntent();
+                }
 
                 return true;
             }

@@ -52,6 +52,7 @@ public class MemberInitActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setTitle("Enter Info");
         setContentView(R.layout.activity_user_init);
 
         user = FirebaseAuth.getInstance().getCurrentUser();

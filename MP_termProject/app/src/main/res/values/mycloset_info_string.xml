@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="info">제품 정보</string>
+    <string name="info">비공유 제품 정보</string>
+    <string name="info1">공유 제품 정보</string>
+    <string name="share_info">공유 여부</string>
     <string name="popup_item_name">상품명</string>
     <string name="popup_category">카테고리</string>
     <string name="popup_color">컬러</string>

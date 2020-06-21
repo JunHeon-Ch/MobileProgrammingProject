@@ -110,10 +110,10 @@ public class CoordinatorEditActivity extends AppCompatActivity {
         String season = intent.getStringExtra("season");
         String userID = intent.getStringExtra("userID");
 
-        lookbookDTO = new LookbookDTO(userID,url,occasion,season,imgnum[0]);
+        lookbookDTO = new LookbookDTO(userID, url, occasion, season, imgnum[0]);
         readImageInfo();
         image = findViewById(R.id.edit_closet_image);
-        path =storageRef.child(lookbookDTO.getImgURL());
+        path = storageRef.child(lookbookDTO.getImgURL());
         Glide.with(this)
                 .load(path)
                 .into(image);
@@ -255,7 +255,7 @@ public class CoordinatorEditActivity extends AppCompatActivity {
                 // 데이터베이스에 저장
 
                 LookbookDTO imgDto = new LookbookDTO(userID, imgURL,
-                        occasionText.getText().toString(), seasonText.getText().toString(),imgnum[0]);
+                        occasionText.getText().toString(), seasonText.getText().toString(), imgnum[0]);
                 db.collection("lookbook")
                         .document(user.getUid())
                         .collection("looks")

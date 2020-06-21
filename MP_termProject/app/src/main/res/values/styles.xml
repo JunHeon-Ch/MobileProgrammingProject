@@ -9,7 +9,7 @@
         <!--custom font-family 적용-->
         <item name="android:textViewStyle">@style/customTextViewFontStyle</item>
         <item name="buttonStyle">@style/customButtonFontStyle</item>
-        <item name="editTextStyle">@style/customEditTextFontStyle</item>
+        <item name="android:editTextStyle">@style/customEditTextFontStyle</item>
         <item name="radioButtonStyle">@style/customRadioButtonFontStyle</item>
         <item name="checkboxStyle">@style/customCheckboxFontStyle</item>
 

@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,13 +59,14 @@ public class MyClosetEditActivity extends AppCompatActivity {
     TextView size;
     String shared;
     TextView price;
-    View line;
     Button sharedButton;
     Button unsharedButton;
     StorageReference storageRef;
     StorageReference path;
     FirebaseStorage storage;
     byte[] bytes;
+    LinearLayout layout;
+    TextView infoText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +74,10 @@ public class MyClosetEditActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
         price = findViewById(R.id.my_closet_add_price);
-        line = findViewById(R.id.line);
         sharedButton = findViewById(R.id.shareBtn);
         unsharedButton = findViewById(R.id.unShareBtn);
-
+        layout = findViewById(R.id.layout);
+        infoText = findViewById(R.id.infoText);
 
         imgnum = new Double[1];
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -108,17 +110,21 @@ public class MyClosetEditActivity extends AppCompatActivity {
         unsharedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price.setVisibility(View.INVISIBLE);
-                line.setVisibility(View.INVISIBLE);
-                shared = "비공유";
+                layout.setVisibility(View.INVISIBLE);
+                shared="비공유";
+                unsharedButton.setBackgroundColor(Color.parseColor("#e6ebed"));
+                sharedButton.setBackgroundColor(Color.parseColor("#ffffff"));
+                infoText.setText("비공유 제품 정보");
             }
         });
         sharedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price.setVisibility(View.VISIBLE);
-                line.setVisibility(View.VISIBLE);
-                shared = "공유";
+                layout.setVisibility(View.VISIBLE);
+                shared="공유";
+                unsharedButton.setBackgroundColor(Color.parseColor("#ffffff"));
+                sharedButton.setBackgroundColor(Color.parseColor("#e6ebed"));
+                infoText.setText("공유 제품 정보");
 
             }
         });
