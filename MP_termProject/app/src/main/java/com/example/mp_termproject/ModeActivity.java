@@ -2,8 +2,10 @@ package com.example.mp_termproject;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,18 +35,30 @@ public class ModeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.container, myClosetFragment).commit();
 
         LinearLayout myClosetButton = findViewById(R.id.myClosetButton);
+
+        final ImageView myClosetImage = findViewById(R.id.mycloset_image);
+        final ImageView lookbookImage = findViewById(R.id.lookbook_image);
+        final ImageView ourClosetImage = findViewById(R.id.ourcloset_image);
+        final ImageView logoutImage = findViewById(R.id.logout_image);
+
         final TextView myClosetText = findViewById(R.id.mycloset_text);
         final TextView lookbookText = findViewById(R.id.lookbook_text);
         final TextView ourClosetText = findViewById(R.id.ourcloset_text);
         final TextView logoutText = findViewById(R.id.logout_text);
-        myClosetText.setTextColor(Color.parseColor("#049edb"));
+
+        myClosetText.setTextColor(Color.parseColor("#073878"));
         myClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myClosetText.setTextColor(Color.parseColor("#049edb"));
-                lookbookText.setTextColor(Color.parseColor("#000000"));
-                ourClosetText.setTextColor(Color.parseColor("#000000"));
-                logoutText.setTextColor(Color.parseColor("#000000"));
+                myClosetImage.setColorFilter(Color.parseColor("#073878"), PorterDuff.Mode.SRC_IN);
+                lookbookImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+                ourClosetImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+                logoutImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+
+                myClosetText.setTextColor(Color.parseColor("#073878"));
+                lookbookText.setTextColor(Color.parseColor("#aaaaaa"));
+                ourClosetText.setTextColor(Color.parseColor("#aaaaaa"));
+                logoutText.setTextColor(Color.parseColor("#aaaaaa"));
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, myClosetFragment).commit();
 
             }
@@ -54,10 +68,15 @@ public class ModeActivity extends AppCompatActivity {
         lookBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myClosetText.setTextColor(Color.parseColor("#000000"));
-                lookbookText.setTextColor(Color.parseColor("#049edb"));
-                ourClosetText.setTextColor(Color.parseColor("#000000"));
-                logoutText.setTextColor(Color.parseColor("#000000"));
+                myClosetImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+                lookbookImage.setColorFilter(Color.parseColor("#073878"), PorterDuff.Mode.SRC_IN);
+                ourClosetImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+                logoutImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+
+                myClosetText.setTextColor(Color.parseColor("#aaaaaa"));
+                lookbookText.setTextColor(Color.parseColor("#073878"));
+                ourClosetText.setTextColor(Color.parseColor("#aaaaaa"));
+                logoutText.setTextColor(Color.parseColor("#aaaaaa"));
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, lookBookFragment).commit();
             }
         });
@@ -66,10 +85,15 @@ public class ModeActivity extends AppCompatActivity {
         ourClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myClosetText.setTextColor(Color.parseColor("#000000"));
-                lookbookText.setTextColor(Color.parseColor("#000000"));
-                ourClosetText.setTextColor(Color.parseColor("#049edb"));
-                logoutText.setTextColor(Color.parseColor("#000000"));
+                myClosetImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+                lookbookImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+                ourClosetImage.setColorFilter(Color.parseColor("#073878"), PorterDuff.Mode.SRC_IN);
+                logoutImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+
+                myClosetText.setTextColor(Color.parseColor("#aaaaaa"));
+                lookbookText.setTextColor(Color.parseColor("#aaaaaa"));
+                ourClosetText.setTextColor(Color.parseColor("#073878"));
+                logoutText.setTextColor(Color.parseColor("#aaaaaa"));
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, ourClosetFragment).commit();
             }
         });
@@ -79,10 +103,15 @@ public class ModeActivity extends AppCompatActivity {
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myClosetText.setTextColor(Color.parseColor("#000000"));
-                lookbookText.setTextColor(Color.parseColor("#000000"));
-                ourClosetText.setTextColor(Color.parseColor("#000000"));
-                logoutText.setTextColor(Color.parseColor("#049edb"));
+                myClosetImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+                lookbookImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+                ourClosetImage.setColorFilter(Color.parseColor("#aaaaaa"), PorterDuff.Mode.SRC_IN);
+                logoutImage.setColorFilter(Color.parseColor("#073878"), PorterDuff.Mode.SRC_IN);
+
+                myClosetText.setTextColor(Color.parseColor("#aaaaaa"));
+                lookbookText.setTextColor(Color.parseColor("#aaaaaa"));
+                ourClosetText.setTextColor(Color.parseColor("#aaaaaa"));
+                logoutText.setTextColor(Color.parseColor("#073878"));
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivity(intent);
