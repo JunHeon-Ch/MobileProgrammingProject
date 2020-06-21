@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.dto.ImageDTO;
+import com.example.mp_termproject.ourcloset.dto.RequestStroeDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +32,8 @@ public class SenderActivity extends AppCompatActivity {
     String receiver;
     String imgNum;
     String reqNum;
+    RequestStroeDTO requestStroeDTO;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,16 @@ public class SenderActivity extends AppCompatActivity {
 
                                 Map<String, Object> temp2 = document.getData();
                                 reqNum = (String) temp2.get("reqNum");
+
+                                if (sender.equals(user.getUid())) {
+
+                                    requestStroeDTO = new RequestStroeDTO(sender, receiver, imgNum, reqNum);
+                                }
+
+                                Log.d("sender", sender);
+                                Log.d("sender", receiver);
+                                Log.d("sender", imgNum);
+                                Log.d("sender", reqNum);
 
 
                             }
