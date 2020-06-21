@@ -1,30 +1,30 @@
 package com.example.mp_termproject.lookbook.add;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -54,24 +55,27 @@ import java.util.Map;
 public class CoordinatorActivity extends AppCompatActivity {
 
     private static final String TAG = "CoordinatorActivity";
-    private static final String IMAGEVIEW_TAG = "드래그 이미지";
+    private static final String IMAGEVIEW_TAG = "drag image";
+    private static final int RESULT_CODE = 1;
 
-    RelativeLayout mainContainer;
-    RelativeLayout imageContainer;
-    LinearLayout imageLayout;
+//    RelativeLayout mainContainer;
+//    RelativeLayout imageContainer;
+//    LinearLayout imageLayout;
 
-    ImageView hatImage;
-    ImageView topImage;
-    ImageView bottomImage;
-    ImageView shoesImage;
-    ImageView outerImage;
-    ImageView bagImage;
-    ImageView accessoryImage;
-    LinearLayout resetButton;
+    //    ImageView hatImage;
+////    ImageView topImage;
+////    ImageView bottomImage;
+////    ImageView shoesImage;
+////    ImageView outerImage;
+////    ImageView bagImage;
+////    ImageView accessoryImage;
+////    LinearLayout resetButton;
     TextView occasionText;
     TextView seasonText;
-    LinearLayout coordinatorLayout;
-    LinearLayout emptyImageButton;
+    RelativeLayout coordinatorLayout;
+//    LinearLayout emptyImageButton;
+
+    ImageView addClosetButton;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -87,6 +91,7 @@ public class CoordinatorActivity extends AppCompatActivity {
 
     byte[] bytes;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +101,7 @@ public class CoordinatorActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
         imgnum = new Double[1];
@@ -106,127 +111,153 @@ public class CoordinatorActivity extends AppCompatActivity {
         dtoList = new ArrayList<>();
         imageUrlList = new ArrayList<>();
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         imgnum[0] = intent.getDoubleExtra("lookNum", 0.0);
 
         readImageInfo();
 
-        mainContainer = findViewById(R.id.mainContainer);
-        imageContainer = findViewById(R.id.imageContainer);
-        imageLayout = findViewById(R.id.imageLayout);
+//        mainContainer = findViewById(R.id.mainContainer);
+//        imageContainer = findViewById(R.id.imageContainer);
+//        imageLayout = findViewById(R.id.imageLayout);
 
         coordinatorLayout = findViewById(R.id.coordinator_layout);
 
-        hatImage = findViewById(R.id.hat_image);
-        hatImage.setTag(IMAGEVIEW_TAG);
-        hatImage.setOnClickListener(new View.OnClickListener() {
+        addClosetButton = findViewById(R.id.addClosetButton);
+        addClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                db에서 카테고리가 모자인 이미지를 전부 읽어온다.
-//                                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 hatImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"모자 Headwear"});
-                floatSameCategoryImage(hatImage);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(CoordinatorActivity.this);
+
+                builder.setItems(R.array.category, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int pos) {
+                        String[] items = getResources().getStringArray(R.array.category);
+                        imageUrlList.clear();
+                        findSameCategory(new String[]{items[pos]});
+
+                        Intent intent1 = new Intent(getApplicationContext(), SelectClosetActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putStringArrayList("urlList", imageUrlList);
+                        intent1.putExtras(bundle);
+                        startActivityForResult(intent1, RESULT_CODE);
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
 
-        topImage = findViewById(R.id.top_image);
-        topImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 상의인 이미지를 전부 읽어온다.
-//                                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 topImage에 set 한다.
-
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"상의 Top"});
-                floatSameCategoryImage(topImage);
-            }
-        });
-
-        bottomImage = findViewById(R.id.bottom_image);
-        bottomImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 스커트, 바지인 이미지를 전부 읽어온다.
-                //                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 bottomImage에 set 한다.
-
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"바지 Pants", "스커트 Skirt"});
-                floatSameCategoryImage(bottomImage);
-            }
-        });
-
-        shoesImage = findViewById(R.id.shoes_image);
-        shoesImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 신발인 이미지를 전부 읽어온다.
-//                                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 shoesImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"신발 Shoes"});
-                floatSameCategoryImage(shoesImage);
-            }
-        });
-
-        outerImage = findViewById(R.id.outer_image);
-        outerImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 아우터인 이미지를 전부 읽어온다.
-//                                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 hatImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"아우터 Outer"});
-                floatSameCategoryImage(outerImage);
-
-            }
-        });
-
-        bagImage = findViewById(R.id.bag_image);
-        bagImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 가방인 이미지를 전부 읽어온다.
-                //                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 bagImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"가방 Bag"});
-                floatSameCategoryImage(bagImage);
-
-            }
-        });
-
-        accessoryImage = findViewById(R.id.accessory_image);
-        accessoryImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                db에서 카테고리가 안경, 시계, 악세서리인 이미지를 전부 읽어온다.
-                //                가져온 이미지를 팝업 메시지로 띄워준다.
-//                한 이미지를 선택하면 그 이미지들 accessoryImage에 set 한다.
-                mainContainer.setVisibility(View.INVISIBLE);
-                imageContainer.setVisibility(View.VISIBLE);
-                imageUrlList.clear();
-                findSameCategory(new String[]{"시계 Watch", "안경 Eyewear", "액세서리 Accessory"});
-                floatSameCategoryImage(accessoryImage);
-
-            }
-        });
+//        hatImage = findViewById(R.id.hat_image);
+//        hatImage.setTag(IMAGEVIEW_TAG);
+//        hatImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                db에서 카테고리가 모자인 이미지를 전부 읽어온다.
+////                                가져온 이미지를 팝업 메시지로 띄워준다.
+////                한 이미지를 선택하면 그 이미지들 hatImage에 set 한다.
+//                mainContainer.setVisibility(View.INVISIBLE);
+//                imageContainer.setVisibility(View.VISIBLE);
+//                imageUrlList.clear();
+//                findSameCategory(new String[]{"모자 Headwear"});
+//                floatSameCategoryImage(hatImage);
+//            }
+//        });
+//
+//        topImage = findViewById(R.id.top_image);
+//        topImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                db에서 카테고리가 상의인 이미지를 전부 읽어온다.
+////                                가져온 이미지를 팝업 메시지로 띄워준다.
+////                한 이미지를 선택하면 그 이미지들 topImage에 set 한다.
+//
+//                mainContainer.setVisibility(View.INVISIBLE);
+//                imageContainer.setVisibility(View.VISIBLE);
+//                imageUrlList.clear();
+//                findSameCategory(new String[]{"상의 Top"});
+//                floatSameCategoryImage(topImage);
+//            }
+//        });
+//
+//        bottomImage = findViewById(R.id.bottom_image);
+//        bottomImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                db에서 카테고리가 스커트, 바지인 이미지를 전부 읽어온다.
+//                //                가져온 이미지를 팝업 메시지로 띄워준다.
+////                한 이미지를 선택하면 그 이미지들 bottomImage에 set 한다.
+//
+//                mainContainer.setVisibility(View.INVISIBLE);
+//                imageContainer.setVisibility(View.VISIBLE);
+//                imageUrlList.clear();
+//                findSameCategory(new String[]{"바지 Pants", "스커트 Skirt"});
+//                floatSameCategoryImage(bottomImage);
+//            }
+//        });
+//
+//        shoesImage = findViewById(R.id.shoes_image);
+//        shoesImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                db에서 카테고리가 신발인 이미지를 전부 읽어온다.
+////                                가져온 이미지를 팝업 메시지로 띄워준다.
+////                한 이미지를 선택하면 그 이미지들 shoesImage에 set 한다.
+//                mainContainer.setVisibility(View.INVISIBLE);
+//                imageContainer.setVisibility(View.VISIBLE);
+//                imageUrlList.clear();
+//                findSameCategory(new String[]{"신발 Shoes"});
+//                floatSameCategoryImage(shoesImage);
+//            }
+//        });
+//
+//        outerImage = findViewById(R.id.outer_image);
+//        outerImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                db에서 카테고리가 아우터인 이미지를 전부 읽어온다.
+////                                가져온 이미지를 팝업 메시지로 띄워준다.
+////                한 이미지를 선택하면 그 이미지들 hatImage에 set 한다.
+//                mainContainer.setVisibility(View.INVISIBLE);
+//                imageContainer.setVisibility(View.VISIBLE);
+//                imageUrlList.clear();
+//                findSameCategory(new String[]{"아우터 Outer"});
+//                floatSameCategoryImage(outerImage);
+//
+//            }
+//        });
+//
+//        bagImage = findViewById(R.id.bag_image);
+//        bagImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                db에서 카테고리가 가방인 이미지를 전부 읽어온다.
+//                //                가져온 이미지를 팝업 메시지로 띄워준다.
+////                한 이미지를 선택하면 그 이미지들 bagImage에 set 한다.
+//                mainContainer.setVisibility(View.INVISIBLE);
+//                imageContainer.setVisibility(View.VISIBLE);
+//                imageUrlList.clear();
+//                findSameCategory(new String[]{"가방 Bag"});
+//                floatSameCategoryImage(bagImage);
+//
+//            }
+//        });
+//
+//        accessoryImage = findViewById(R.id.accessory_image);
+//        accessoryImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                db에서 카테고리가 안경, 시계, 악세서리인 이미지를 전부 읽어온다.
+//                //                가져온 이미지를 팝업 메시지로 띄워준다.
+////                한 이미지를 선택하면 그 이미지들 accessoryImage에 set 한다.
+//                mainContainer.setVisibility(View.INVISIBLE);
+//                imageContainer.setVisibility(View.VISIBLE);
+//                imageUrlList.clear();
+//                findSameCategory(new String[]{"시계 Watch", "안경 Eyewear", "액세서리 Accessory"});
+//                floatSameCategoryImage(accessoryImage);
+//
+//            }
+//        });
 
         occasionText = findViewById(R.id.coordinator_occasion);
         occasionText.setOnClickListener(new View.OnClickListener() {
@@ -315,19 +346,19 @@ public class CoordinatorActivity extends AppCompatActivity {
             }
         });
 
-        resetButton = findViewById(R.id.reset_button);
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hatImage.setImageResource(R.drawable.hat);
-                topImage.setImageResource(R.drawable.top);
-                bottomImage.setImageResource(R.drawable.bottom);
-                shoesImage.setImageResource(R.drawable.shoes);
-                outerImage.setImageResource(R.drawable.outer);
-                bagImage.setImageResource(R.drawable.bag);
-                accessoryImage.setImageResource(R.drawable.accessory);
-            }
-        });
+//        resetButton = findViewById(R.id.reset_button);
+//        resetButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                hatImage.setImageResource(R.drawable.hat);
+//                topImage.setImageResource(R.drawable.top);
+//                bottomImage.setImageResource(R.drawable.bottom);
+//                shoesImage.setImageResource(R.drawable.shoes);
+//                outerImage.setImageResource(R.drawable.outer);
+//                bagImage.setImageResource(R.drawable.bag);
+//                accessoryImage.setImageResource(R.drawable.accessory);
+//            }
+//        });
     }
 
     // 옵션메뉴 생성
@@ -394,7 +425,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                 // 데이터베이스에 저장
 
                 LookbookDTO imgDto = new LookbookDTO(userID, imgURL,
-                        occasionText.getText().toString(), seasonText.getText().toString(),imgnum[0]);
+                        occasionText.getText().toString(), seasonText.getText().toString(), imgnum[0]);
                 db.collection("lookbook")
                         .document(user.getUid())
                         .collection("looks")
@@ -442,17 +473,20 @@ public class CoordinatorActivity extends AppCompatActivity {
                 break;
 
             case R.id.actionbar_reset:
-                hatImage.setImageResource(R.drawable.hat);
-                topImage.setImageResource(R.drawable.top);
-                bottomImage.setImageResource(R.drawable.bottom);
-                shoesImage.setImageResource(R.drawable.shoes);
-                outerImage.setImageResource(R.drawable.outer);
-                bagImage.setImageResource(R.drawable.bag);
-                accessoryImage.setImageResource(R.drawable.accessory);
+//                hatImage.setImageResource(R.drawable.hat);
+//                topImage.setImageResource(R.drawable.top);
+//                bottomImage.setImageResource(R.drawable.bottom);
+//                shoesImage.setImageResource(R.drawable.shoes);
+//                outerImage.setImageResource(R.drawable.outer);
+//                bagImage.setImageResource(R.drawable.bag);
+//                accessoryImage.setImageResource(R.drawable.accessory);
+
+                coordinatorLayout.removeAllViews();
                 occasionText.setText("Occasion");
                 occasionText.setTextColor(Color.parseColor("#aaaaaa"));
                 seasonText.setText("Season");
                 seasonText.setTextColor(Color.parseColor("#aaaaaa"));
+
 
                 break;
         }
@@ -467,68 +501,67 @@ public class CoordinatorActivity extends AppCompatActivity {
         dtoList.clear();
     }
 
-    private void floatSameCategoryImage(final ImageView targetImageView) {
-        LinearLayout linearLayout = null;
-        imageLayout.removeAllViews();
-
-        final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                180, getResources().getDisplayMetrics());
-
-        int i = 0;
-        while (i < imageUrlList.size()) {
-            StorageReference pathReference = storageRef.child(imageUrlList.get(i));
-
-            if (i % 3 == 0) {
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, height);
-
-                linearLayout = new LinearLayout(imageLayout.getContext());
-                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-                linearLayout.setLayoutParams(layoutParams);
-
-                imageLayout.addView(linearLayout);
-            }
-
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(5, 5, 5, 5);
-            layoutParams.weight = 1;
-            layoutParams.gravity = Gravity.TOP;
-
-            final ImageView imageView = new ImageView(linearLayout.getContext());
-            imageView.setLayoutParams(layoutParams);
-
-            Glide.with(linearLayout)
-                    .load(pathReference)
-                    .into(imageView);
-            linearLayout.addView(imageView);
-
-            emptyImageButton = findViewById(R.id.empty_image_button);
-            emptyImageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    targetImageView.setImageBitmap(null);
-
-                    mainContainer.setVisibility(View.VISIBLE);
-                    imageContainer.setVisibility(View.INVISIBLE);
-                }
-            });
-
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // 수정 & 삭제
-                    BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
-                    targetImageView.setImageBitmap(drawable.getBitmap());
-
-                    mainContainer.setVisibility(View.VISIBLE);
-                    imageContainer.setVisibility(View.INVISIBLE);
-                }
-            });
-
-            i++;
-        }
-    }
+//    private void floatSameCategoryImage(final ImageView targetImageView) {
+//        LinearLayout linearLayout = null;
+//        imageLayout.removeAllViews();
+//
+//        final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+//                180, getResources().getDisplayMetrics());
+//
+//        int i = 0;
+//        while (i < imageUrlList.size()) {
+//            StorageReference pathReference = storageRef.child(imageUrlList.get(i));
+//
+//            if (i % 3 == 0) {
+//                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+//                        ViewGroup.LayoutParams.MATCH_PARENT, height);
+//
+//                linearLayout = new LinearLayout(imageLayout.getContext());
+//                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+//                linearLayout.setLayoutParams(layoutParams);
+//
+//                imageLayout.addView(linearLayout);
+//            }
+//
+//            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+//                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//            layoutParams.setMargins(5, 5, 5, 5);
+//            layoutParams.weight = 1;
+//            layoutParams.gravity = Gravity.TOP;
+//
+//            final ImageView imageView = new ImageView(linearLayout.getContext());
+//            imageView.setLayoutParams(layoutParams);
+//
+//            Glide.with(linearLayout)
+//                    .load(pathReference)
+//                    .into(imageView);
+//            linearLayout.addView(imageView);
+//
+//            emptyImageButton = findViewById(R.id.empty_image_button);
+//            emptyImageButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    targetImageView.setImageBitmap(null);
+//
+//                    mainContainer.setVisibility(View.VISIBLE);
+//                    imageContainer.setVisibility(View.INVISIBLE);
+//                }
+//            });
+//
+//            imageView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+//                    targetImageView.setImageBitmap(drawable.getBitmap());
+//
+//                    mainContainer.setVisibility(View.VISIBLE);
+//                    imageContainer.setVisibility(View.INVISIBLE);
+//                }
+//            });
+//
+//            i++;
+//        }
+//    }
 
     private void findSameCategory(String[] category) {
         for (int j = 0; j < category.length; j++) {
@@ -572,6 +605,77 @@ public class CoordinatorActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == RESULT_CODE) {
+                Bundle extras = data.getExtras();
+                String url = extras.getString("url");
+
+                StorageReference pathReference = storageRef.child(url);
+
+                final int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                        150, getResources().getDisplayMetrics());
+                final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                        200, getResources().getDisplayMetrics());
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                        width, height);
+                layoutParams.setMargins(5, 5, 5, 5);
+
+                final ImageView imageView = new ImageView(coordinatorLayout.getContext());
+                imageView.setLayoutParams(layoutParams);
+
+                Glide.with(coordinatorLayout)
+                        .load(pathReference)
+                        .into(imageView);
+                coordinatorLayout.addView(imageView);
+
+                imageView.setTag(IMAGEVIEW_TAG);
+                imageView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        int parentWidth = ((ViewGroup)v.getParent()).getWidth();    // 부모 View 의 Width
+                        int parentHeight = ((ViewGroup)v.getParent()).getHeight();    // 부모 View 의 Height
+
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            // 뷰 누름
+//                            oldXvalue = event.getX();
+//                            oldYvalue = event.getY();
+//                            Log.d("viewTest", "oldXvalue : "+ oldXvalue + " oldYvalue : " + oldYvalue);    // View 내부에서 터치한 지점의 상대 좌표값.
+                            Log.d("viewTest", "v.getX() : "+v.getX());    // View 의 좌측 상단이 되는 지점의 절대 좌표값.
+                            Log.d("viewTest", "RawX : " + event.getRawX() +" RawY : " + event.getRawY());    // View 를 터치한 지점의 절대 좌표값.
+                            Log.d("viewTest", "v.getHeight : " + v.getHeight() + " v.getWidth : " + v.getWidth());    // View 의 Width, Height
+
+                        }else if(event.getAction() == MotionEvent.ACTION_MOVE){
+                            // 뷰 이동 중
+                            v.setX(v.getX() + (event.getX()) - (v.getWidth()/2));
+                            v.setY(v.getY() + (event.getY()) - (v.getHeight()/2));
+
+                        }else if(event.getAction() == MotionEvent.ACTION_UP){
+                            // 뷰에서 손을 뗌
+
+                            if(v.getX() < 0){
+                                v.setX(0);
+                            }else if((v.getX() + v.getWidth()) > parentWidth){
+                                v.setX(parentWidth - v.getWidth());
+                            }
+
+                            if(v.getY() < 0){
+                                v.setY(0);
+                            }else if((v.getY() + v.getHeight()) > parentHeight){
+                                v.setY(parentHeight - v.getHeight());
+                            }
+
+                        }
+                        return true;
+                    }
+                });
+            }
+        }
     }
 
     public static byte[] viewToBitmap(View view) {

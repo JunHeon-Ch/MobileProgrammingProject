@@ -1,7 +1,9 @@
 package com.example.mp_termproject.mycloset.add;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,12 +11,15 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,6 +29,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.mp_termproject.R;
 import com.example.mp_termproject.mycloset.dto.ImageDTO;
@@ -34,8 +41,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -66,6 +77,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
     private static final String TAG = "MyClosetAddActivity";
 
     final static int REQUEST_IMAGE_CAPTURE = 1;
+    final static int REQUEST_GET_GALLERY = 2;
 
     Double[] imgnum;
     FirebaseUser user;
@@ -80,6 +92,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
     TextView season;
     TextView size;
     TextView shared;
+    Button sharedButton;
 
     byte[] bytes;
 
@@ -92,6 +105,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
 
+        sharedButton = findViewById(R.id.shareBtn);
+
         imgnum = new Double[1];
         user = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -100,14 +115,68 @@ public class MyClosetAddActivity extends AppCompatActivity {
         Intent intent = getIntent();
         imgnum[0] = intent.getDoubleExtra("imgNum", 0.0);
 
-        sendTakePhotoIntent();
-        grabcut();
-
         // 번들로 받은 배경제거된 이미지 image 변수에 저장
 
 
-        Log.d("activity123 test", "" + imgnum[0]);
         image = findViewById(R.id.my_closet_add_image);
+        image.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MyClosetAddActivity.this);
+                String[] option = {"카메라", "갤러리"};
+                builder.setItems(option, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int pos) {
+                        switch (pos) {
+                            case 0:
+                                int permission = ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.CAMERA);
+                                if (permission == PackageManager.PERMISSION_DENIED) {
+                                    ActivityCompat.requestPermissions(MyClosetAddActivity.this, new String[]{Manifest.permission.CAMERA}, 0);
+                                } else {
+                                    sendTakePhotoIntent();
+                                }
+
+                                break;
+                            case 1:
+                                String temp = "";
+                                if (ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    temp += Manifest.permission.READ_EXTERNAL_STORAGE + " ";
+                                }
+                                if (ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    temp += Manifest.permission.WRITE_EXTERNAL_STORAGE + " ";
+                                }
+                                if (TextUtils.isEmpty(temp) == false) {
+                                    ActivityCompat.requestPermissions(MyClosetAddActivity.this, temp.trim().split(" "), 1);
+                                } else {
+//                                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                                    startActivityForResult(intent, REQUEST_GET_GALLERY);
+
+//                                    Intent intent = new Intent();
+//                                    //기기 기본 갤러리 접근
+//                                    intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+//                                    startActivityForResult(intent, 101);
+//                                    Intent intent = new Intent();
+//                                    intent.setType("image/*");
+//                                    intent.setAction(Intent.ACTION_GET_CONTENT);
+//                                    startActivityForResult(intent, REQUEST_GET_GALLERY);
+                                    Intent intent=new Intent(Intent.ACTION_PICK);
+                                    intent.setType("image/*");
+                                    String[] mimeTypes = {"image/jpeg", "image/png"};
+                                    intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+                                    startActivityForResult(intent,REQUEST_GET_GALLERY);
+                                }
+
+                                break;
+                        }
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+                return true;
+            }
+        });
 
         // itemName text 클릭시 item name 입력 popup 띄우기
         itemName = findViewById(R.id.my_closet_add_name);
@@ -337,6 +406,27 @@ public class MyClosetAddActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 0) {
+            if (grantResults[0] == 0) {
+                Toast.makeText(this, "카메라 권한 승인완료", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "카메라 권한 승인거절", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (requestCode == 1) {
+            int length = permissions.length;
+            for (int i = 0; i < length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("MainActivity", "권한 허용 : " + permissions[i]);
+                }
+            }
+        }
+    }
+
     // 옵션메뉴 생성
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -489,7 +579,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == -1) {
@@ -497,6 +588,36 @@ public class MyClosetAddActivity extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             saveBitmapToJpeg(imageBitmap);
             grabcut();
+        }
+
+        if (requestCode == REQUEST_GET_GALLERY && resultCode == RESULT_OK) {
+//            try {
+//                InputStream is = getContentResolver().openInputStream(data.getData());
+//                Bitmap imageBitmap = BitmapFactory.decodeStream(is);
+//                saveBitmapToJpeg(imageBitmap);
+//                grabcut();
+//
+//                is.close();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            Uri selectedImage = data.getData();
+            if (data == null) {
+                return;
+            }
+            Uri selectedImage = data.getData();
+            try {
+//                InputStream in = getContentResolver().openInputStream(data.getData());
+//
+//                Bitmap imageBitmap = BitmapFactory.decodeStream(in);
+//                in.close();
+                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                saveBitmapToJpeg(imageBitmap);
+                grabcut();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -549,7 +670,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
         Point p1 = new Point(25, 25);
         Point p2 = new Point(c - 64, r - 64);
 
-        Rect rect = new Rect(25,25,c-64, r-64);
+        Rect rect = new Rect(25, 25, c - 64, r - 64);
         Log.d(TAG, "rect: " + rect);
 
         Mat background = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
@@ -587,7 +708,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         // split the original bitmap into three single channel.
         List<Mat> rgb = new ArrayList<Mat>(3);
-        Core.split(foreground,rgb);
+        Core.split(foreground, rgb);
 
         // Create the final result by merging three single channel and alpha(BGR order)
         List<Mat> rgba = new ArrayList<Mat>(4);
@@ -595,8 +716,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
         rgba.add(rgb.get(1));
         rgba.add(rgb.get(2));
         rgba.add(tempMask);
-        Core.merge(rgba,tmp);
-
+        Core.merge(rgba, tmp);
 
 
         // convert matrix to output bitmap

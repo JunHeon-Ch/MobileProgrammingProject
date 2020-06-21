@@ -210,40 +210,27 @@ public class LookbookFragment extends Fragment {
     }
 
     private void floatTotalImages(int count) {
-        LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
-        final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                400, getResources().getDisplayMetrics());
 
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
             LookbookDTO lookbookDTO = imageDTOList.get(i);
-            if(i % 2 == 0){
 
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, height);
-                layoutParams.gravity = Gravity.LEFT;
-
-                linearLayout = new LinearLayout(imageContainer.getContext());
-                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-                linearLayout.setLayoutParams(layoutParams);
-
-                imageContainer.addView(linearLayout);
-            }
-
+            final int imageHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    900, getResources().getDisplayMetrics());
             LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             imageParams.setMargins(5, 5, 5, 5);
             imageParams.weight = 1;
 
-            ImageView imageView = new ImageView(linearLayout.getContext());
+            ImageView imageView = new ImageView(imageContainer.getContext());
             imageView.setLayoutParams(imageParams);
 
-            Glide.with(linearLayout)
+            Glide.with(imageContainer)
                     .load(pathReference)
                     .into(imageView);
-            linearLayout.addView(imageView);
+            imageContainer.addView(imageView);
 
             i++;
             final LookbookDTO temp = lookbookDTO;
