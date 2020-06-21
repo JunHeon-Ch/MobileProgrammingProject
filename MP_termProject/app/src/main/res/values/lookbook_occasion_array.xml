@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="occation">
-        <item>Work</item>
-        <item>Casual</item>
-        <item>Party</item>
-        <item>Formal</item>
-        <item>Vacation</item>
-        <item>Sports</item>
-        <item>Home</item>
+        <item>워크웨어</item>
+        <item>캐주얼웨어</item>
+        <item>파티웨어</item>
+        <item>포멀웨어</item>
+        <item>비치웨어</item>
+        <item>스포츠웨어</item>
+        <item>홈웨어</item>
     </string-array>
 </resources>

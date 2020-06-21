@@ -37,11 +37,11 @@ public class ModeActivity extends AppCompatActivity {
         final TextView lookbookText = findViewById(R.id.lookbook_text);
         final TextView ourClosetText = findViewById(R.id.ourcloset_text);
         final TextView logoutText = findViewById(R.id.logout_text);
-        myClosetText.setTextColor(Color.parseColor("#CD853F"));
+        myClosetText.setTextColor(Color.parseColor("#049edb"));
         myClosetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myClosetText.setTextColor(Color.parseColor("#CD853F"));
+                myClosetText.setTextColor(Color.parseColor("#049edb"));
                 lookbookText.setTextColor(Color.parseColor("#000000"));
                 ourClosetText.setTextColor(Color.parseColor("#000000"));
                 logoutText.setTextColor(Color.parseColor("#000000"));
@@ -55,7 +55,7 @@ public class ModeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 myClosetText.setTextColor(Color.parseColor("#000000"));
-                lookbookText.setTextColor(Color.parseColor("#CD853F"));
+                lookbookText.setTextColor(Color.parseColor("#049edb"));
                 ourClosetText.setTextColor(Color.parseColor("#000000"));
                 logoutText.setTextColor(Color.parseColor("#000000"));
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, lookBookFragment).commit();
@@ -68,7 +68,7 @@ public class ModeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 myClosetText.setTextColor(Color.parseColor("#000000"));
                 lookbookText.setTextColor(Color.parseColor("#000000"));
-                ourClosetText.setTextColor(Color.parseColor("#CD853F"));
+                ourClosetText.setTextColor(Color.parseColor("#049edb"));
                 logoutText.setTextColor(Color.parseColor("#000000"));
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, ourClosetFragment).commit();
             }
@@ -82,7 +82,7 @@ public class ModeActivity extends AppCompatActivity {
                 myClosetText.setTextColor(Color.parseColor("#000000"));
                 lookbookText.setTextColor(Color.parseColor("#000000"));
                 ourClosetText.setTextColor(Color.parseColor("#000000"));
-                logoutText.setTextColor(Color.parseColor("#CD853F"));
+                logoutText.setTextColor(Color.parseColor("#049edb"));
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                 startActivity(intent);

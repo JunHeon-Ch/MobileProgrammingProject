@@ -16,9 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".ourcloset.viewinfo.SenderActivity"></activity>
-        <activity android:name=".lookbook.add.SelectClosetActivity"></activity>
+        <activity android:name=".lookbook.add.SelectClosetActivity" />
         <activity android:name=".ourcloset.viewinfo.ViewClosetInfoActivity" />
         <activity android:name=".lookbook.filter.LookbookFilterActivity" />
         <activity android:name=".ourcloset.filter.OurClosetFilterActivity" />
