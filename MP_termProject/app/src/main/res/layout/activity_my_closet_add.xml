@@ -40,19 +40,19 @@
                     android:id="@+id/shareBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:layout_margin="5dp"
+                    android:layout_weight="1"
                     android:text="@string/shared"
-                    android:textSize="17sp"/>
+                    android:textSize="18sp" />
 
                 <Button
                     android:id="@+id/unShareBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:layout_margin="5dp"
+                    android:layout_weight="1"
                     android:text="@string/unShared"
-                    android:textSize="17sp"/>
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -172,22 +172,32 @@
                 android:layout_marginRight="20dp"
                 android:background="@color/text_color" />
 
-            <TextView
-                android:id="@+id/my_closet_add_sheared"
+            <FrameLayout
+                android:id="@+id/shareFrame"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:text="@string/popup_shared"
-                android:textColor="@color/text_color"
-                android:textSize="15sp" />
+                android:layout_height="match_parent">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@color/text_color" />
+                <TextView
+                    android:id="@+id/my_closet_add_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:text="@string/price"
+                    android:textColor="@color/text_color"
+                    android:textSize="15sp"
+                    android:visibility="visible" />
+
+                <View
+                    android:id="@+id/line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/text_color"
+                    android:visibility="visible" />
+
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

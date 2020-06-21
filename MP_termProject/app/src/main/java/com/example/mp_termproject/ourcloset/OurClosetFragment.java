@@ -26,13 +26,17 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
+import com.example.mp_termproject.mycloset.add.MyClosetEditActivity;
 import com.example.mp_termproject.mycloset.dto.ImageDTO;
 import com.example.mp_termproject.ourcloset.dto.InfoDTO;
+import com.example.mp_termproject.ourcloset.dto.RequestDTO;
 import com.example.mp_termproject.ourcloset.filter.OurClosetFilterActivity;
 import com.example.mp_termproject.ourcloset.gps.ShowMapWithDistanceActivity;
 import com.example.mp_termproject.ourcloset.viewinfo.ViewClosetInfoActivity;
 import com.example.mp_termproject.signup.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -79,6 +83,7 @@ public class OurClosetFragment extends Fragment {
     ArrayList<UserInfo> userInfoList;
     ArrayList<InfoDTO> infoDTOList;
 
+    UserInfo myDTO;
     Double[] imgnum;
 
     Double[] myLoc;
@@ -227,6 +232,17 @@ public class OurClosetFragment extends Fragment {
                             Map<String, Object> data = result.getData();
 
                             if (user.getUid().equals(document_id)) {
+                                String address = (String) data.get("address");
+                                String birthDay = (String) data.get("birthday");
+                                Double imgNum = (Double) data.get("imgNum");
+                                Double latitude = (Double) data.get("latitude");
+                                Double longitude = (Double) data.get("longitude");
+                                Double lookNum = (Double) data.get("lookNum");
+                                String name = (String) data.get("name");
+                                String phoneNumber = (String) data.get("phoneNumber");
+                                String userId = (String) data.get("userId");
+                                myDTO = new UserInfo(userId, name, phoneNumber, birthDay, address, imgNum, lookNum, latitude, longitude);
+
                                 myLoc[0] = (Double) data.get("latitude");
                                 myLoc[1] = (Double) data.get("longitude");
                             } else {
@@ -423,7 +439,7 @@ public class OurClosetFragment extends Fragment {
                 public void onClick(View v) {
                     // 수정 & 삭제
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    String[] option = {"정보 보기", "전화 걸기", "지도로 보기"};
+                    String[] option = {"정보 보기", "요청 보내기"};
                     builder.setItems(option, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int pos) {
@@ -446,31 +462,88 @@ public class OurClosetFragment extends Fragment {
                                     break;
 
                                 case 1:
-                                    // 전화 걸기
-                                    intent = new Intent(Intent.ACTION_DIAL,
-                                            Uri.parse("tel:" +
-                                                    userInfoList
-                                                            .get(index)
-                                                            .getPhoneNumber()));
-                                    startActivity(intent);
+//                                  요청보내기
+                                    String reqNum = "0";
+                                    UserInfo userInfo = infoDTOList.get(index).getUserInfo();
+                                    ImageDTO imageDTO = infoDTOList.get(index).getImageDTO();
+                                    String imgNum = String.valueOf(imageDTO.getImgNum());
+                                    RequestDTO requestDTO = new RequestDTO(imgNum, reqNum);
 
-                                    break;
-                                case 2:
-                                    // 길찾기
-                                    double latitude = userInfoList.get(index).getLatitude();
-                                    double longitude = userInfoList.get(index).getLongitude();
-                                    String address = userInfoList.get(index).getAddress();
+                                    Log.d("test123", reqNum);
 
-                                    intent = new Intent(getContext(), ShowMapWithDistanceActivity.class);
-                                    bundle.putDouble("latitude", latitude);
-                                    bundle.putDouble("longitude", longitude);
-                                    bundle.putString("address", address);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
+                                    db.collection("request")
+                                            .document(user.getUid() + " " + userInfo.getUserId() + " " + imgNum)
+                                            .set(requestDTO)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    AlertDialog.Builder alert =
+                                                            new AlertDialog.Builder(getContext());
+                                                    alert.setMessage("저장되었습니다");
+
+                                                    alert.show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getContext(),
+                                                            "사진 업로드가 실패했습니다.",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+
                                     break;
                             }
                         }
                     });
+//                    String[] option = {"정보 보기", "전화 걸기", "지도로 보기"};
+//                    builder.setItems(option, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int pos) {
+//                            // "전화 걸기", "길찾기"
+//                            Intent intent;
+//                            Bundle bundle = new Bundle();
+//                            switch (pos) {
+//                                case 0:
+//                                    intent = new Intent(getContext(), ViewClosetInfoActivity.class);
+//                                    bundle.putString("name", infoDTOList.get(index).getImageDTO().getItemName());
+//                                    bundle.putString("category", infoDTOList.get(index).getImageDTO().getCategory());
+//                                    bundle.putString("color", infoDTOList.get(index).getImageDTO().getColor());
+//                                    bundle.putString("brand", infoDTOList.get(index).getImageDTO().getBrand());
+//                                    bundle.putString("season", infoDTOList.get(index).getImageDTO().getSeason());
+//                                    bundle.putString("size", infoDTOList.get(index).getImageDTO().getSize());
+//                                    bundle.putString("image", infoDTOList.get(index).getImageDTO().getImgURL());
+//                                    intent.putExtras(bundle);
+//                                    startActivity(intent);
+//
+//                                    break;
+//
+//                                case 1:
+//                                    // 전화 걸기
+//                                    intent = new Intent(Intent.ACTION_DIAL,
+//                                            Uri.parse("tel:" +
+//                                                    userInfoList
+//                                                            .get(index)
+//                                                            .getPhoneNumber()));
+//                                    startActivity(intent);
+//
+//                                    break;
+//                                case 2:
+//                                    // 길찾기
+//                                    double latitude = userInfoList.get(index).getLatitude();
+//                                    double longitude = userInfoList.get(index).getLongitude();
+//                                    String address = userInfoList.get(index).getAddress();
+//
+//                                    intent = new Intent(getContext(), ShowMapWithDistanceActivity.class);
+//                                    bundle.putDouble("latitude", latitude);
+//                                    bundle.putDouble("longitude", longitude);
+//                                    bundle.putString("address", address);
+//                                    intent.putExtras(bundle);
+//                                    startActivity(intent);
+//                                    break;
+//                            }
+//                        }
+//                    });
 
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();

@@ -91,8 +91,11 @@ public class MyClosetAddActivity extends AppCompatActivity {
     TextView brand;
     TextView season;
     TextView size;
-    TextView shared;
+    String shared="공유";
+    TextView price;
+    View line;
     Button sharedButton;
+    Button unsharedButton;
 
     byte[] bytes;
 
@@ -105,7 +108,27 @@ public class MyClosetAddActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
 
+        price = findViewById(R.id.my_closet_add_price);
+        line = findViewById(R.id.line);
         sharedButton = findViewById(R.id.shareBtn);
+        unsharedButton = findViewById(R.id.unShareBtn);
+
+        unsharedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                price.setVisibility(View.INVISIBLE);
+                line.setVisibility(View.INVISIBLE);
+                shared="비공유";
+            }
+        });
+        sharedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                price.setVisibility(View.VISIBLE);
+                line.setVisibility(View.VISIBLE);
+                shared="공유";
+            }
+        });
 
         imgnum = new Double[1];
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -366,36 +389,30 @@ public class MyClosetAddActivity extends AppCompatActivity {
         });
 
         // shared text 클릭시 shared popup 띄우기 (양자택일)
-        shared = findViewById(R.id.my_closet_add_sheared);
-        shared.setOnClickListener(new View.OnClickListener() {
+        price = findViewById(R.id.my_closet_add_price);
+        price.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MyClosetAddActivity.this);
-                final String[] items = getResources().getStringArray(R.array.shared);
-                final ArrayList<String> selectedItem = new ArrayList<>();
-                selectedItem.add(items[0]);
+                AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
+                alert.setMessage("가격");
 
-                builder.setSingleChoiceItems(R.array.shared, 0, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int pos) {
-                        selectedItem.clear();
-                        selectedItem.add(items[pos]);
+                final EditText priceText = new EditText(MyClosetAddActivity.this);
+                alert.setView(priceText);
+
+                alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        if (priceText.getText() != null) {
+                            price.setText(priceText.getText().toString());
+                            price.setTextColor(Color.parseColor("#000000"));
+                        }
                     }
                 });
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int pos) {
-                        shared.setText(selectedItem.get(0));
-                        shared.setTextColor(Color.parseColor("#000000"));
-                    }
-                });
-
-                AlertDialog alertDialog = builder.create();
-                alertDialog.setCancelable(false);
-                alertDialog.show();
+                alert.setCancelable(false);
+                alert.show();
             }
         });
+
 
     }
 
@@ -456,8 +473,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 String brandText = brand.getText().toString();
                 String seasonText = season.getText().toString();
                 String sizeText = size.getText().toString();
-                String sharedText = shared.getText().toString();
-
+                String sharedText = shared;
+                String priceText = price.getText().toString();
                 // 문서 갖고오기
 
                 Log.d("CheckTest", "1");
@@ -507,7 +524,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                 Log.d(TAG, "new2 data: " + imgnum[0]);
                 ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText, imgNameText,
-                        colorText, brandText, seasonText, sizeText, sharedText, imgnum[0]);
+                        colorText, brandText, seasonText, sizeText, sharedText,priceText, imgnum[0]);
+
                 //Log.d("test1", imgnum[0].toString());
 
                 db.collection("images")
@@ -569,8 +587,9 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 season.setTextColor(Color.parseColor("#aaaaaa"));
                 size.setText("사이즈");
                 size.setTextColor(Color.parseColor("#aaaaaa"));
-                shared.setText("공유");
-                shared.setTextColor(Color.parseColor("#aaaaaa"));
+                price.setText("가격");
+                price.setTextColor(Color.parseColor("#aaaaaa"));
+
 
                 break;
         }

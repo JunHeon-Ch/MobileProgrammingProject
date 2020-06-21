@@ -178,8 +178,9 @@ public class MyClosetFragment extends Fragment {
                                                     String size = (String) temp.get("size");
                                                     String shared = (String) temp.get("shared");
                                                     Double imgNum = (Double) temp.get("imgNum");
+                                                    String price = (String)temp.get("price");
                                                     ImageDTO dto = new ImageDTO(id, url, category, name,
-                                                            color, brand, season, size, shared, imgNum);
+                                                            color, brand, season, size, shared,price, imgNum);
                                                     dtoList.add(dto);
 
                                                     int count = addPathReference(check);
@@ -347,6 +348,9 @@ public class MyClosetFragment extends Fragment {
                                     bundle.putString("shared",temp.getShared());
                                     bundle.putString("size",temp.getSize());
                                     bundle.putString("userID",temp.getUserID());
+                                    if(temp.getShared()!=null){
+                                        bundle.putString("price",temp.getPrice());
+                                    }
                                     intent.putExtras(bundle);
                                     startActivity(intent);
 
