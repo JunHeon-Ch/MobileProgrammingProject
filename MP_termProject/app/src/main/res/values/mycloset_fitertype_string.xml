@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mycloset_filter_type_category">Category</string>
-    <string name="mycloset_filter_type_color">Color</string>
-    <string name="mycloset_filter_type_season">Season</string>
-    <string name="mycloset_filter_type_shared">Shared</string>
+    <string name="mycloset_filter_type_category">카테고리</string>
+    <string name="mycloset_filter_type_color">컬러</string>
+    <string name="mycloset_filter_type_season">시즌</string>
+    <string name="mycloset_filter_type_shared">공유여부</string>
 </resources>
