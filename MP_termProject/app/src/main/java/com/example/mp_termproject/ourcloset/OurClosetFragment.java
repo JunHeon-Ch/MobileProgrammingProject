@@ -290,7 +290,7 @@ public class OurClosetFragment extends Fragment {
                                 String shared = (String) temp.get("shared");
                                 Double imgNum = (Double) temp.get("imgNum");
                                 ImageDTO dto = new ImageDTO(id, url, category, name,
-                                        color, brand, season, size, shared, imgNum);
+                                        color, brand, season, size, shared,imgNum);
 
                                 infoDTOList.add(new InfoDTO(dto, userInfo));
                             }
