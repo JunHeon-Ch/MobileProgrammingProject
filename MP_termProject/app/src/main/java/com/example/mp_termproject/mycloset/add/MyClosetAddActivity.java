@@ -47,6 +47,9 @@ import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.ByteArrayOutputStream;
@@ -531,42 +534,79 @@ public class MyClosetAddActivity extends AppCompatActivity {
         }
 
         Bitmap bitmap = BitmapFactory.decodeFile(getCacheDir() + "/" + target);
-        Mat src = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
-        Utils.bitmapToMat(bitmap, src);
+        Scalar color = new Scalar(255, 0, 0, 255);
 
-        // init new matrices
-        //CV_8U는 8비트 unsigned integer ( 범위 0~255)
-        Mat dst = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
-        Mat tmp = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
-        Mat alpha = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
+        //Mat dst = new Mat();
+        //Grabcut part
+        Mat img = new Mat(); //container
+        Utils.bitmapToMat(bitmap, img);
+        Log.d(TAG, "img: " + img);
 
-        // convert image to grayscale
-        Imgproc.cvtColor(src, tmp, Imgproc.COLOR_BGR2GRAY);
+        //init new Matrices
+        int r = img.rows();
+        int c = img.cols();
 
-        // threshold the image to create alpha channel with complete transparency in black background region and zero transparency in foreground object region.
-        //threshold는 기준 thresh 값을 정해주어서 지정된 것보다 값이 작으면 검은색으로 변환 ,높으면 흰색
-        Imgproc.threshold(tmp, alpha, 110, 255, Imgproc.THRESH_BINARY);
+        Point p1 = new Point(25, 25);
+        Point p2 = new Point(c - 64, r - 64);
 
-        // split the original image into three single channel.
+        Rect rect = new Rect(25,25,c-64, r-64);
+        Log.d(TAG, "rect: " + rect);
+
+        Mat background = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
+        Mat mask = new Mat();
+        mask.setTo(new Scalar(125));
+        Mat fgModel = new Mat();
+        fgModel.setTo(new Scalar(0, 0, 0));
+        Mat bgModel = new Mat();
+        bgModel.setTo(new Scalar(0, 0, 0));
+
+        Mat imgC3 = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
+        Imgproc.cvtColor(img, imgC3, Imgproc.COLOR_RGBA2RGB);
+        Log.d(TAG, "imgC3: " + imgC3);
+
+        Log.d(TAG, "Grabcut begins");
+        Imgproc.grabCut(imgC3, mask, rect, bgModel, fgModel, 5, 0);
+        Mat source = new Mat(1, 1, CvType.CV_8UC3, new Scalar(Imgproc.GC_PR_FGD));
+
+        Core.compare(mask, source, mask, Core.CMP_EQ);
+        Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
+        img.copyTo(foreground, mask);
+        Imgproc.rectangle(img, p1, p2, color);
+
+        Mat tmp = new Mat();
+        Imgproc.resize(background, tmp, img.size());
+
+        background = tmp;
+
+        Mat tempMask = new Mat(foreground.size(), CvType.CV_8UC1, new Scalar(255, 255, 255));
+        // convert imgae to grayscale
+        Imgproc.cvtColor(foreground, tempMask, Imgproc.COLOR_BGR2GRAY);
+        // threshold the bitmap to create alpha channel with complete transparency in black background region and zero transparency in foreground object region.
+        // threshold는 기준 thresh 값을 정해주어서 지정된 것보다 값이 작으면 검은색으로 변환 ,높으면 흰색
+        Imgproc.threshold(tempMask, tempMask, 240, 255, Imgproc.THRESH_BINARY_INV);
+
+        // split the original bitmap into three single channel.
         List<Mat> rgb = new ArrayList<Mat>(3);
-        Core.split(src, rgb);
+        Core.split(foreground,rgb);
 
         // Create the final result by merging three single channel and alpha(BGR order)
         List<Mat> rgba = new ArrayList<Mat>(4);
         rgba.add(rgb.get(0));
         rgba.add(rgb.get(1));
         rgba.add(rgb.get(2));
-        rgba.add(alpha);
-        Core.merge(rgba, dst);
+        rgba.add(tempMask);
+        Core.merge(rgba,tmp);
+
+
 
         // convert matrix to output bitmap
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(dst, output);
+        Log.d(TAG, "Convert to Bitmap");
+        Utils.matToBitmap(foreground, bitmap);
 
-        image.setImageBitmap(output);
+        image.setImageBitmap(bitmap);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        output.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         bytes = stream.toByteArray();
     }
 
