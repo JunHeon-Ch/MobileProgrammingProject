@@ -22,27 +22,45 @@
 
         <EditText
             android:id="@+id/emailEditText"
-            android:layout_width="match_parent"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:ems="10"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress" />
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="#edecec"
+            android:drawableStart="@drawable/ic_person_black_24dp"
+            android:drawableLeft="@drawable/ic_person_black_24dp"
+            android:hint="아이디"
+            android:padding="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#000000" />
 
         <EditText
             android:id="@+id/passwordEditText"
-            android:layout_width="match_parent"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:ems="10"
-            android:hint="@string/password"
-            android:inputType="textPassword" />
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="#edecec"
+            android:drawableLeft="@drawable/ic_https_black_24dp"
+            android:drawableStart="@drawable/ic_https_black_24dp"
+            android:hint="비밀번호"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#000000" />
 
         <Button
             android:id="@+id/loginButton"
-            android:layout_width="match_parent"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:text="@string/login" />
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="#bebebe"
+            android:text="로그인"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
 </LinearLayout>

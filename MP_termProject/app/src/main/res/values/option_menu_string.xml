@@ -7,4 +7,5 @@
     <string name="actionbar_apply">적용</string>
     <string name="actionbar_reset">리셋</string>
     <string name="actionbar_sorting">거리순</string>
+    <string name="actionbar_message">메시지</string>
 </resources>
