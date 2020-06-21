@@ -12,4 +12,5 @@
         android:id="@+id/actionbar_sorting"
         android:icon="@drawable/pin"
         app:showAsAction="ifRoom"/>
+
 </menu>
