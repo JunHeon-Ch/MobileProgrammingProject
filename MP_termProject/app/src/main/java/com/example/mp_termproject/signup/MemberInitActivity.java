@@ -94,9 +94,6 @@ public class MemberInitActivity extends AppCompatActivity {
                     address = getCurrentAddress(latitude, longitude);
                     addressEditText.setText(address);
 
-                    Toast.makeText(getApplicationContext(),
-                            "현재위치 \n위도 " + latitude + "\n경도 " + longitude,
-                            Toast.LENGTH_LONG).show();
                     try {
 
                         Thread.sleep(1000); //1초 대기
@@ -142,12 +139,11 @@ public class MemberInitActivity extends AppCompatActivity {
                             }
                         });
             }
+            myStartActivity(ModeActivity.class);
 
         } else {
             startToast("회원정보를 입력해주세요.");
         }
-
-        myStartActivity(ModeActivity.class);
     }
 
     private void startToast(String msg) {

@@ -217,12 +217,11 @@ public class LookbookFragment extends Fragment {
             StorageReference pathReference = imageList.get(i);
             LookbookDTO lookbookDTO = imageDTOList.get(i);
 
-            final int imageHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    900, getResources().getDisplayMetrics());
             LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             imageParams.setMargins(5, 5, 5, 5);
             imageParams.weight = 1;
+
 
             ImageView imageView = new ImageView(imageContainer.getContext());
             imageView.setLayoutParams(imageParams);
@@ -422,5 +421,12 @@ public class LookbookFragment extends Fragment {
         }
 
         return temp;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("test", "lookbook onStop");
+        imageContainer.removeAllViews();
     }
 }

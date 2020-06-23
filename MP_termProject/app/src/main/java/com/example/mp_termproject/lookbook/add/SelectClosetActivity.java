@@ -31,6 +31,7 @@ public class SelectClosetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setTitle("Coordinator");
         setContentView(R.layout.activity_select_closet);
 
         storage = FirebaseStorage.getInstance();

@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_centerInParent="true"
-                android:background="@color/colorAccent" />
+                android:background="@color/main_color" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -77,7 +77,7 @@
                 android:layout_height="2dp"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorAccent" />
+                android:background="@color/main_color" />
 
             <TextView
                 android:id="@+id/infoText"
@@ -218,6 +218,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
+                        android:layout_marginBottom="30dp"
                         android:background="@color/text_color" />
                 </LinearLayout>
 

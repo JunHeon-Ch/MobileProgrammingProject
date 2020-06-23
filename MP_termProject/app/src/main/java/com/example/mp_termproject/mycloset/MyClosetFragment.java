@@ -83,6 +83,7 @@ public class MyClosetFragment extends Fragment {
     ImageView searchImage;
 
     LinearLayout imageContainer;
+    LinearLayout first;
 
     @Nullable
     @Override
@@ -107,8 +108,8 @@ public class MyClosetFragment extends Fragment {
 
         imgnum = new Double[1];
 
-
         imageContainer = rootView.findViewById(R.id.imageContainer);
+        first = rootView.findViewById(R.id.firstLinearLayout);
 
         searchText = rootView.findViewById(R.id.search);
         searchText.setText(null);
@@ -130,8 +131,6 @@ public class MyClosetFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.d("onStart test", "onStart");
-        Log.d("check test", check + "");
         accessDBInfo();
     }
 
@@ -274,24 +273,17 @@ public class MyClosetFragment extends Fragment {
         }
     }
 
-    private void myStartActivity(Class c) {
-        Intent intent = new Intent(getContext(), c);
-
-        startActivity(intent);
-    }
-
     //        데이터베이스에서 내 옷장에 있는 옷 읽어와서 뿌려주는거 구현
     private void floatTotalImages(int count) {
         LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
-        final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                180, getResources().getDisplayMetrics());
+
+        int height = first.getHeight();
 
         int i = 0;
         while (i < count) {
             StorageReference pathReference = imageList.get(i);
             ImageDTO imageDTO = imageDTOList.get(i);
-
 
             if (i % 3 == 0) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -319,9 +311,7 @@ public class MyClosetFragment extends Fragment {
             linearLayout.addView(imageView);
 
             i++;
-            final StorageReference temppath = pathReference;
             final ImageDTO temp = imageDTO;
-            Log.d("test", "imgNum " + temp.getImgNum());
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -534,5 +524,12 @@ public class MyClosetFragment extends Fragment {
         }
 
         return temp;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("test", "my closet onStop");
+        imageContainer.removeAllViews();
     }
 }

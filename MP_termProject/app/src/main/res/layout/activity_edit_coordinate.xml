@@ -56,16 +56,16 @@
             android:layout_marginRight="20dp"
             android:layout_above="@+id/text_layout"
             android:text="@string/lookbook_info"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/main_color"
             android:textSize="20sp" />
 
         <LinearLayout
             android:id="@+id/text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/reset_button"
             android:layout_alignParentLeft="true"
             android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
             <TextView
@@ -104,57 +104,10 @@
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginBottom="30dp"
                 android:background="@color/text_color" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/reset_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:background="#ffffff"
-            android:gravity="center"
-            android:orientation="vertical">
-
-        </LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/imageContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/empty_image_button"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:background="#eeeeee">
-
-            <LinearLayout
-                android:id="@+id/imageLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:gravity="left"
-                android:orientation="vertical">
-
-            </LinearLayout>
-        </ScrollView>
-
-        <Button
-            android:id="@+id/empty_image_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="@string/coordinator_empty"
-            android:textSize="15sp" />
-
-    </RelativeLayout>
 </FrameLayout>

@@ -20,7 +20,7 @@ public class LoadingActivity extends AppCompatActivity {
         {
             e.printStackTrace();
         }
-        startActivity(new Intent(this, SignUpActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
         finish();
 
     }

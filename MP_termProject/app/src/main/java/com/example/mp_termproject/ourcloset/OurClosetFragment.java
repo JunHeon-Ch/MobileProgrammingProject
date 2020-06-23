@@ -70,6 +70,7 @@ public class OurClosetFragment extends Fragment {
     EditText searchText;
     ImageView searchImage;
     LinearLayout imageContainer;
+    LinearLayout first;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -113,6 +114,7 @@ public class OurClosetFragment extends Fragment {
         myLoc = new Double[2];
 
         imageContainer = rootView.findViewById(R.id.closet_image_container);
+        first = rootView.findViewById(R.id.firstLinearLayout);
 
         searchText = rootView.findViewById(R.id.search);
         searchImage = rootView.findViewById(R.id.search_image);
@@ -325,10 +327,6 @@ public class OurClosetFragment extends Fragment {
                 }
             }
         }
-
-        for (int i = 0; i < dist.size(); i++) {
-            Log.d("dist test", dist.get(i) + "");
-        }
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -400,8 +398,7 @@ public class OurClosetFragment extends Fragment {
         LinearLayout linearLayout = null;
         imageContainer.removeAllViews();
 
-        final int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                180, getResources().getDisplayMetrics());
+        int height = first.getHeight();
 
         int i = 0;
         while (i < count) {
@@ -425,7 +422,7 @@ public class OurClosetFragment extends Fragment {
             imageParams.weight = 1;
             imageParams.gravity = Gravity.LEFT;
 
-            final ImageView imageView = new ImageView(linearLayout.getContext());
+            ImageView imageView = new ImageView(linearLayout.getContext());
             imageView.setLayoutParams(imageParams);
 
             Glide.with(linearLayout)
@@ -474,13 +471,15 @@ public class OurClosetFragment extends Fragment {
                                     break;
                                 case 2:
                                     // 길찾기
-                                    double latitude = userInfoList.get(index).getLatitude();
-                                    double longitude = userInfoList.get(index).getLongitude();
+                                    double latitude = infoDTOList.get(index).getUserInfo().getLatitude();
+                                    double longitude = infoDTOList.get(index).getUserInfo().getLongitude();
+                                    String itemName = infoDTOList.get(index).getImageDTO().getItemName();
                                     String address = userInfoList.get(index).getAddress();
 
                                     intent = new Intent(getContext(), ShowMapWithDistanceActivity.class);
                                     bundle.putDouble("latitude", latitude);
                                     bundle.putDouble("longitude", longitude);
+                                    bundle.putString("itemName", itemName);
                                     bundle.putString("address", address);
                                     intent.putExtras(bundle);
                                     startActivity(intent);
@@ -601,13 +600,10 @@ public class OurClosetFragment extends Fragment {
         return temp;
     }
 
-    private void myStartActivity(Class c) {
-        Intent intent = new Intent(getContext(), c);
-        startActivity(intent);
-    }
-
-    private void myStartActivityForResult(Class c, int resultCode) {
-        Intent intent = new Intent(getContext(), c);
-        startActivityForResult(intent, resultCode);
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("test", "our closet onStop");
+        imageContainer.removeAllViews();
     }
 }

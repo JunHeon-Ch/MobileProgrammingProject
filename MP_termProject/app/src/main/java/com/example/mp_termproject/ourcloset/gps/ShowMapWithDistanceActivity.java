@@ -86,8 +86,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
     TextView textView;
     Button button;
 
-    private View mLayout;  // Snackbar 사용하기 위해서는 View가 필요합니다.
-    // (참고로 Toast에서는 Context가 필요했습니다.)
+    private View mLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,28 +97,29 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_show_map);
 
-        final LinearLayout textLayout = findViewById(R.id.layout_text);
-
+        textView = findViewById(R.id.kmText);
         button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 tracking = 1 - tracking;
+                LinearLayout.LayoutParams textParams;
 
                 if (tracking == 1) {
-                    textView = new TextView(textLayout.getContext());
-                    LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    textParams.setMargins(5, 0, 5, 0);
+                    textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    textParams.setMargins(20, 0, 20, 0);
                     textParams.weight = 1;
                     textParams.gravity = Gravity.CENTER;
                     textView.setLayoutParams(textParams);
-                    textLayout.addView(textView);
 
                     button.setText("Stop");
                 } else {
-                    textLayout.removeAllViews();
-
+                    textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    textParams.setMargins(0, 0, 0, 0);
+                    textView.setLayoutParams(textParams);
+                    textView.setText("");
                     button.setText("Start");
                 }
             }
@@ -157,6 +157,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
         double latitude = extras.getDouble("latitude");
         double longitude = extras.getDouble("longitude");
         String address = extras.getString("address");
+        String itemName = extras.getString("itemName");
 
         setDefaultLocation();
 
@@ -167,7 +168,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
 
         final Button button_submit = view.findViewById(R.id.button_dialog_placeInfo);
         final EditText editText_placeTitle = view.findViewById(R.id.editText_dialog_placeTitle);
-        editText_placeTitle.setText("목적지");
+        editText_placeTitle.setText(itemName);
         final EditText editText_placeDesc = view.findViewById(R.id.editText_dialog_placeDesc);
         editText_placeDesc.setText(address);
 

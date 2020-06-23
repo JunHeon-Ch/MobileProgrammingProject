@@ -145,6 +145,7 @@ android {
     externalNativeBuild {
         cmake {
             path (project.projectDir.toString() + '/libcxx_helper/CMakeLists.txt')
+
         }
     }
     ndkVersion = '20.0.5594570'

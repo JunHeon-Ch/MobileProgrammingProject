@@ -166,7 +166,6 @@ public class CoordinatorEditActivity extends AppCompatActivity {
                 });
 
                 AlertDialog alertDialog = builder.create();
-                alertDialog.setCancelable(false);
                 alertDialog.show();
             }
         });
@@ -210,7 +209,6 @@ public class CoordinatorEditActivity extends AppCompatActivity {
                 });
 
                 AlertDialog alertDialog = builder.create();
-                alertDialog.setCancelable(false);
                 alertDialog.show();
             }
         });

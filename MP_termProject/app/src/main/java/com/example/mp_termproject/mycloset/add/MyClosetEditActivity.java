@@ -98,10 +98,14 @@ public class MyClosetEditActivity extends AppCompatActivity {
         String userid1 = intent.getStringExtra("userID");
         String price1 = null;
         if (shared1.equals("공유")) {
+            sharedButton.setBackgroundColor(Color.parseColor("#ffffff"));
+            unsharedButton.setBackgroundColor(Color.parseColor("#e6ebed"));
             price1 = intent.getStringExtra("price");
             imgDto = new ImageDTO(userid1, imgurl1, category1, name1, color1, brand1, season1, size1, shared1, price1, imgnum[0]);
 
         } else {
+            sharedButton.setBackgroundColor(Color.parseColor("#e6ebed"));
+            unsharedButton.setBackgroundColor(Color.parseColor("#ffffff"));
             price1 = "가격";
             imgDto = new ImageDTO(userid1, imgurl1, category1, name1, color1, brand1, season1, size1, shared1, imgnum[0]);
         }
@@ -185,7 +189,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
                 });
 
                 AlertDialog alertDialog = builder.create();
-                alertDialog.setCancelable(false); //화면 밖에 선택 시 팝업 꺼지는거
                 alertDialog.show();
 
             }
@@ -231,7 +234,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
                 });
 
                 AlertDialog alertDialog = builder.create();
-                alertDialog.setCancelable(false);
                 alertDialog.show();
             }
         });
@@ -302,7 +304,6 @@ public class MyClosetEditActivity extends AppCompatActivity {
                 });
 
                 AlertDialog alertDialog = builder.create();
-                alertDialog.setCancelable(false);
                 alertDialog.show();
             }
         });

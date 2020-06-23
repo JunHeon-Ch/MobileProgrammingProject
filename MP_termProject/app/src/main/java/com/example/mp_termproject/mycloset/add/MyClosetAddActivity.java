@@ -11,12 +11,10 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
@@ -42,12 +40,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -69,7 +63,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +85,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
     TextView brand;
     TextView season;
     TextView size;
-    String shared="공유";
+    String shared = "공유";
     TextView price;
     LinearLayout layout;
     Button sharedButton;
@@ -109,6 +102,13 @@ public class MyClosetAddActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
 
+        int permission = ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.CAMERA);
+        if (permission == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(MyClosetAddActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+        } else {
+            sendTakePhotoIntent();
+        }
+
         layout = findViewById(R.id.layout);
         price = findViewById(R.id.my_closet_add_price);
         sharedButton = findViewById(R.id.shareBtn);
@@ -118,7 +118,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 layout.setVisibility(View.INVISIBLE);
-                shared="비공유";
+                shared = "비공유";
                 unsharedButton.setBackgroundColor(Color.parseColor("#e6ebed"));
                 sharedButton.setBackgroundColor(Color.parseColor("#ffffff"));
                 infoText.setText("비공유 제품 정보");
@@ -128,7 +128,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 layout.setVisibility(View.VISIBLE);
-                shared="공유";
+                shared = "공유";
                 unsharedButton.setBackgroundColor(Color.parseColor("#ffffff"));
                 sharedButton.setBackgroundColor(Color.parseColor("#e6ebed"));
                 infoText.setText("공유 제품 정보");
@@ -147,19 +147,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
 
         image = findViewById(R.id.my_closet_add_image);
-        image.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int permission = ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.CAMERA);
-                if (permission == PackageManager.PERMISSION_DENIED) {
-                    ActivityCompat.requestPermissions(MyClosetAddActivity.this, new String[]{Manifest.permission.CAMERA}, 0);
-                } else {
-                    sendTakePhotoIntent();
-                }
-
-                return true;
-            }
-        });
 
         // itemName text 클릭시 item name 입력 popup 띄우기
         itemName = findViewById(R.id.my_closet_add_name);
@@ -204,7 +191,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 });
 
                 AlertDialog alertDialog = builder.create();
-                alertDialog.setCancelable(false); //화면 밖에 선택 시 팝업 꺼지는거
                 alertDialog.show();
 
             }
@@ -249,7 +235,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 });
 
                 AlertDialog alertDialog = builder.create();
-                alertDialog.setCancelable(false);
                 alertDialog.show();
             }
         });
@@ -318,7 +303,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 });
 
                 AlertDialog alertDialog = builder.create();
-                alertDialog.setCancelable(false);
                 alertDialog.show();
             }
         });
@@ -484,7 +468,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
                 Log.d(TAG, "new2 data: " + imgnum[0]);
                 ImageDTO imgDto = new ImageDTO(userID, imgURL, categoryText, imgNameText,
-                        colorText, brandText, seasonText, sizeText, sharedText,priceText, imgnum[0]);
+                        colorText, brandText, seasonText, sizeText, sharedText, priceText, imgnum[0]);
 
                 //Log.d("test1", imgnum[0].toString());
 
@@ -568,36 +552,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
             saveBitmapToJpeg(imageBitmap);
             grabcut();
         }
-
-        if (requestCode == REQUEST_GET_GALLERY && resultCode == RESULT_OK) {
-//            try {
-//                InputStream is = getContentResolver().openInputStream(data.getData());
-//                Bitmap imageBitmap = BitmapFactory.decodeStream(is);
-//                saveBitmapToJpeg(imageBitmap);
-//                grabcut();
-//
-//                is.close();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            Uri selectedImage = data.getData();
-            if (data == null) {
-                return;
-            }
-            Uri selectedImage = data.getData();
-            try {
-//                InputStream in = getContentResolver().openInputStream(data.getData());
-//
-//                Bitmap imageBitmap = BitmapFactory.decodeStream(in);
-//                in.close();
-                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                saveBitmapToJpeg(imageBitmap);
-                grabcut();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void saveBitmapToJpeg(Bitmap bitmap) {
@@ -669,7 +623,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
         Mat source = new Mat(1, 1, CvType.CV_8UC3, new Scalar(Imgproc.GC_PR_FGD));
 
         Core.compare(mask, source, mask, Core.CMP_EQ);
-        Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255,255));
+        Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255, 255));
         img.copyTo(foreground, mask);
         Imgproc.rectangle(img, p1, p2, color);
 
@@ -678,7 +632,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         background = tmp;
 
-        Mat tempMask = new Mat(foreground.size(), CvType.CV_8UC1, new Scalar(255, 255, 255,255));
+        Mat tempMask = new Mat(foreground.size(), CvType.CV_8UC1, new Scalar(255, 255, 255, 255));
         // convert imgae to grayscale
         Imgproc.cvtColor(foreground, tempMask, Imgproc.COLOR_BGR2GRAY);
         // threshold the bitmap to create alpha channel with complete transparency in black background region and zero transparency in foreground object region.
