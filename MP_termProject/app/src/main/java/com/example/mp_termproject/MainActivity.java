@@ -26,12 +26,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 //        로그인 정보가 없다면
