@@ -26,6 +26,7 @@ public class ViewClosetInfoActivity extends AppCompatActivity {
     TextView brand;
     TextView season;
     TextView size;
+    TextView price;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class ViewClosetInfoActivity extends AppCompatActivity {
         brand = findViewById(R.id.my_closet_add_brand);
         season = findViewById(R.id.my_closet_add_season);
         size = findViewById(R.id.my_closet_add_size);
+        price = findViewById(R.id.my_closet_price);
 
         Intent intent = getIntent();
         StorageReference imagePath = storageRef.child(intent.getStringExtra("image"));
@@ -52,6 +54,7 @@ public class ViewClosetInfoActivity extends AppCompatActivity {
                 .load(imagePath)
                 .into(image);
 
+        price.setText(intent.getStringExtra("price"));
         itemName.setText(intent.getStringExtra("name"));
         category.setText(intent.getStringExtra("category"));
         color.setText(intent.getStringExtra("color"));

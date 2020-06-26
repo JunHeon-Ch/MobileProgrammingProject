@@ -447,6 +447,7 @@ public class OurClosetFragment extends Fragment {
                             switch (pos) {
                                 case 0:
                                     intent = new Intent(getContext(), ViewClosetInfoActivity.class);
+                                    bundle.putString("price", infoDTOList.get(index).getImageDTO().getPrice());
                                     bundle.putString("name", infoDTOList.get(index).getImageDTO().getItemName());
                                     bundle.putString("category", infoDTOList.get(index).getImageDTO().getCategory());
                                     bundle.putString("color", infoDTOList.get(index).getImageDTO().getColor());

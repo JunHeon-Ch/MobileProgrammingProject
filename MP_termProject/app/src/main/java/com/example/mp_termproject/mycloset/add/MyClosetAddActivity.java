@@ -144,8 +144,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
         imgnum[0] = intent.getDoubleExtra("imgNum", 0.0);
 
         // 번들로 받은 배경제거된 이미지 image 변수에 저장
-
-
         image = findViewById(R.id.my_closet_add_image);
 
         // itemName text 클릭시 item name 입력 popup 띄우기
@@ -421,9 +419,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 String priceText = price.getText().toString();
                 // 문서 갖고오기
 
-                Log.d("CheckTest", "1");
-
-
                 imgnum[0] += 1;
                 Log.d(TAG, "new3 data: " + imgnum[0]);
                 Log.d(TAG, "new1 data: " + imgnum[0]);
@@ -550,7 +545,20 @@ public class MyClosetAddActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             saveBitmapToJpeg(imageBitmap);
-            grabcut();
+
+            File file = new File(getCacheDir().toString());
+            File[] files = file.listFiles();
+
+            String target = null;
+            for (File tempFile : files) {
+                if (tempFile.getName().contains("temp")) {
+                    target = tempFile.getName();
+                }
+            }
+
+            String filePath = getCacheDir() + "/" + target;
+
+            grabcut(filePath);
         }
     }
 
@@ -572,22 +580,13 @@ public class MyClosetAddActivity extends AppCompatActivity {
         }
     }
 
-    private void grabcut() {
+    private void grabcut(String filePath) {
         if (!isOpenCvLoaded)
             return;
 
-        File file = new File(getCacheDir().toString());
-        File[] files = file.listFiles();
 
-        String target = null;
-        for (File tempFile : files) {
-            Log.d("test", tempFile.getName());
-            if (tempFile.getName().contains("temp")) {
-                target = tempFile.getName();
-            }
-        }
 
-        Bitmap bitmap = BitmapFactory.decodeFile(getCacheDir() + "/" + target);
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
         Scalar color = new Scalar(255, 0, 0, 255);
 
         //Mat dst = new Mat();
@@ -712,6 +711,4 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         return bytes;
     }
-
-
 }

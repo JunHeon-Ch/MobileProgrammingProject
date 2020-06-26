@@ -40,6 +40,22 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/my_closet_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="@string/price"
+                android:textColor="@color/text_color"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/text_color" />
+            <TextView
                 android:id="@+id/my_closet_add_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
