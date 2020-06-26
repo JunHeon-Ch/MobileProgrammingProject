@@ -44,11 +44,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/firstLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:orientation="horizontal"></LinearLayout>
+                android:orientation="horizontal" />
         </LinearLayout>
     </ScrollView>
 

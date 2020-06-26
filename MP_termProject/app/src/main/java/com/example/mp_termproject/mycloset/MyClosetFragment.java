@@ -300,7 +300,6 @@ public class MyClosetFragment extends Fragment {
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             imageParams.setMargins(5, 5, 5, 5);
             imageParams.weight = 1;
-            imageParams.gravity = Gravity.LEFT;
 
             final ImageView imageView = new ImageView(linearLayout.getContext());
             imageView.setLayoutParams(imageParams);
