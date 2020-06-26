@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -155,6 +156,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 alert.setMessage("상품명");
 
                 final EditText name = new EditText(MyClosetAddActivity.this);
+                Typeface face= Typeface.createFromAsset(getAssets(), "font/ourfont.ttf");
+                name.setTypeface(face);
                 alert.setView(name);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {

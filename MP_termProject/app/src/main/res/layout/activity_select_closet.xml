@@ -5,16 +5,14 @@
     android:id="@+id/imageContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eeeeee"
     tools:context=".lookbook.add.SelectClosetActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/empty_image_button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="#eeeeee">
+        android:background="@color/main_color">
 
         <LinearLayout
             android:id="@+id/imageLayout"
