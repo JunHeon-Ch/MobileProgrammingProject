@@ -159,7 +159,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 alert.setMessage("상품명");
 
                 final EditText name = new EditText(MyClosetAddActivity.this);
-
                 Typeface typeface = getResources().getFont(R.font.ourfont);
                 name.setTypeface(typeface);
                 alert.setView(name);
