@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -154,6 +155,8 @@ public class MyClosetEditActivity extends AppCompatActivity {
                 alert.setMessage("상품명");
 
                 final EditText name = new EditText(MyClosetEditActivity.this);
+                Typeface typeface = getResources().getFont(R.font.ourfont);
+                name.setTypeface(typeface);
                 alert.setView(name);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -248,6 +251,8 @@ public class MyClosetEditActivity extends AppCompatActivity {
                 alert.setMessage("브랜드");
 
                 final EditText brandName = new EditText(MyClosetEditActivity.this);
+                Typeface typeface = getResources().getFont(R.font.ourfont);
+                brandName.setTypeface(typeface);
                 alert.setView(brandName);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -318,6 +323,8 @@ public class MyClosetEditActivity extends AppCompatActivity {
                 alert.setMessage("사이즈");
 
                 final EditText sizeText = new EditText(MyClosetEditActivity.this);
+                Typeface typeface = getResources().getFont(R.font.ourfont);
+                sizeText.setTypeface(typeface);
                 alert.setView(sizeText);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -348,6 +355,8 @@ public class MyClosetEditActivity extends AppCompatActivity {
                 alert.setMessage("가격");
 
                 final EditText priceText = new EditText(MyClosetEditActivity.this);
+                Typeface typeface = getResources().getFont(R.font.ourfont);
+                priceText.setTypeface(typeface);
                 alert.setView(priceText);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {

@@ -27,6 +27,7 @@
         android:layout_toEndOf="@+id/textView_dialog_placeTitle"
         android:layout_toRightOf="@+id/textView_dialog_placeTitle"
         android:ems="10"
+        android:fontFamily="@font/ourfont"
         android:inputType="textPersonName"
         android:text="" />
 
@@ -48,6 +49,7 @@
         android:layout_alignStart="@+id/editText_dialog_placeTitle"
         android:layout_below="@+id/editText_dialog_placeTitle"
         android:ems="10"
+        android:fontFamily="@font/ourfont"
         android:inputType="textPersonName"
         android:text="" />
 
