@@ -156,8 +156,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 alert.setMessage("상품명");
 
                 final EditText name = new EditText(MyClosetAddActivity.this);
-                Typeface face= Typeface.createFromAsset(getAssets(), "font/ourfont.ttf");
-                name.setTypeface(face);
                 alert.setView(name);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
