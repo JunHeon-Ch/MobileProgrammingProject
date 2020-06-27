@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -597,8 +598,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
         if (!isOpenCvLoaded)
             return;
 
-
-
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
         Scalar color = new Scalar(255, 0, 0, 255);
 
@@ -670,7 +669,10 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         Utils.matToBitmap(foreground, output);
 
-        image.setImageBitmap(output);
+        final int width = image.getWidth();
+        final int height = image.getHeight();
+        Bitmap bm = Bitmap.createScaledBitmap( output, width, height, true);
+        image.setImageBitmap(bm);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         output.compress(Bitmap.CompressFormat.PNG, 100, stream);
