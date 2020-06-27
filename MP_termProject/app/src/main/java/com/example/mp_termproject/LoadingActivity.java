@@ -6,6 +6,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mp_termproject.login.LoginActivity;
 import com.example.mp_termproject.signup.SignUpActivity;
 
 public class LoadingActivity extends AppCompatActivity {
@@ -15,7 +16,7 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1500);
         }
         catch (InterruptedException e) {
             e.printStackTrace();
