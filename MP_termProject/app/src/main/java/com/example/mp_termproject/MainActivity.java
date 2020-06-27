@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
                             if (document.exists()) {
                                 Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                                 myStartActivity(ModeActivity.class);
+                                finish();
                             } else {
 //                                회워정보가 입력되지 않았다면
                                 Log.d(TAG, "No such document");
