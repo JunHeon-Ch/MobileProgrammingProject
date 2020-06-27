@@ -58,22 +58,9 @@ public class CoordinatorActivity extends AppCompatActivity {
     private static final String IMAGEVIEW_TAG = "drag image";
     private static final int RESULT_CODE = 1;
 
-//    RelativeLayout mainContainer;
-//    RelativeLayout imageContainer;
-//    LinearLayout imageLayout;
-
-    //    ImageView hatImage;
-////    ImageView topImage;
-////    ImageView bottomImage;
-////    ImageView shoesImage;
-////    ImageView outerImage;
-////    ImageView bagImage;
-////    ImageView accessoryImage;
-////    LinearLayout resetButton;
     TextView occasionText;
     TextView seasonText;
     RelativeLayout coordinatorLayout;
-//    LinearLayout emptyImageButton;
 
     ImageView addClosetButton;
 

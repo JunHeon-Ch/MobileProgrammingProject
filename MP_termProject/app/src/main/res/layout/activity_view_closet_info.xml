@@ -20,7 +20,7 @@
             <ImageView
                 android:id="@+id/my_closet_add_image"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="150dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="50dp"
                 app:srcCompat="@drawable/closesample" />
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/price"
-                android:textColor="@color/text_color"
+                android:textColor="@color/colorAccent"
                 android:textSize="15sp" />
 
             <View
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_item_name"
-                android:textColor="@color/text_color"
+                android:textColor="@color/colorAccent"
                 android:textSize="15sp" />
 
             <View
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_category"
-                android:textColor="@color/text_color"
+                android:textColor="@color/colorAccent"
                 android:textSize="15sp" />
 
             <View
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_color"
-                android:textColor="@color/text_color"
+                android:textColor="@color/colorAccent"
                 android:textSize="15sp" />
 
             <View
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_brand"
-                android:textColor="@color/text_color"
+                android:textColor="@color/colorAccent"
                 android:textSize="15sp" />
 
             <View
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_season"
-                android:textColor="@color/text_color"
+                android:textColor="@color/colorAccent"
                 android:textSize="15sp" />
 
             <View
@@ -146,7 +146,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="@string/popup_size"
-                android:textColor="@color/text_color"
+                android:textColor="@color/colorAccent"
                 android:textSize="15sp" />
 
             <View

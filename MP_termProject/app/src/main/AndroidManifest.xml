@@ -16,6 +16,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAtkZxbRwKwtzOI0vLOEHSORAjKU9UwMOw" />
+
+        <activity
+            android:name=".LoadingActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/LoadingTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".lookbook.add.SelectClosetActivity" />
         <activity android:name=".ourcloset.viewinfo.ViewClosetInfoActivity" />
         <activity android:name=".lookbook.filter.LookbookFilterActivity" />
@@ -25,26 +41,13 @@
         <activity android:name=".mycloset.add.MyClosetAddActivity" />
         <activity android:name=".mycloset.add.MyClosetEditActivity" />
         <activity android:name=".lookbook.add.CoordinatorEditActivity" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAtkZxbRwKwtzOI0vLOEHSORAjKU9UwMOw" />
-
         <activity android:name=".ModeActivity" />
         <activity android:name=".ourcloset.gps.ShowMapWithDistanceActivity" />
         <activity android:name=".signup.SignUpActivity" />
         <activity android:name=".signup.MemberInitActivity" />
         <activity android:name=".login.LoginActivity" />
-        <activity android:name="MainActivity"/>
-        <activity android:name=".LoadingActivity"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/LoadingTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name="MainActivity" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

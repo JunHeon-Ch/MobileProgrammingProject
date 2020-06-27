@@ -8,7 +8,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -149,12 +152,15 @@ public class MyClosetAddActivity extends AppCompatActivity {
         // itemName text 클릭시 item name 입력 popup 띄우기
         itemName = findViewById(R.id.my_closet_add_name);
         itemName.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(MyClosetAddActivity.this);
                 alert.setMessage("상품명");
 
                 final EditText name = new EditText(MyClosetAddActivity.this);
+                Typeface typeface = getResources().getFont(R.font.ourfont);
+                name.setTypeface(typeface);
                 alert.setView(name);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -162,6 +168,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
                         if (name.getText() != null) {
                             itemName.setText(name.getText().toString());
                             itemName.setTextColor(Color.parseColor("#000000"));
+
                         }
                     }
                 });
@@ -246,6 +253,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 alert.setMessage("브랜드");
 
                 final EditText brandName = new EditText(MyClosetAddActivity.this);
+                Typeface typeface = getResources().getFont(R.font.ourfont);
+                brandName.setTypeface(typeface);
                 alert.setView(brandName);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -314,6 +323,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 alert.setMessage("사이즈");
 
                 final EditText sizeText = new EditText(MyClosetAddActivity.this);
+                Typeface typeface = getResources().getFont(R.font.ourfont);
+                sizeText.setTypeface(typeface);
                 alert.setView(sizeText);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -339,6 +350,8 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 alert.setMessage("가격");
 
                 final EditText priceText = new EditText(MyClosetAddActivity.this);
+                Typeface typeface = getResources().getFont(R.font.ourfont);
+                priceText.setTypeface(typeface);
                 alert.setView(priceText);
 
                 alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {

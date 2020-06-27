@@ -20,7 +20,9 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
+            android:fontFamily="@font/ourfont"
             android:hint="@string/search"
+            android:fontFamily="@font/ourfont"
             android:inputType="textPersonName" />
 
         <ImageView

@@ -2,6 +2,7 @@ package com.example.mp_termproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,14 +15,12 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         try {
-            Thread.sleep(1500);
+            Thread.sleep(2000);
         }
-        catch (InterruptedException e)
-        {
+        catch (InterruptedException e) {
             e.printStackTrace();
         }
         startActivity(new Intent(this, MainActivity.class));
         finish();
-
     }
 }
