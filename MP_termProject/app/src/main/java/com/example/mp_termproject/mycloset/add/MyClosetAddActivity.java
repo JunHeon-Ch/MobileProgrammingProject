@@ -67,6 +67,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,12 +107,31 @@ public class MyClosetAddActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Info");
         setContentView(R.layout.activity_my_closet_add);
 
-        int permission = ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.CAMERA);
-        if (permission == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(MyClosetAddActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
-        } else {
-            sendTakePhotoIntent();
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(MyClosetAddActivity.this);
+
+        final String[] option = new String[]{"카메라", "갤러리"};
+
+        builder.setItems(option, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int pos) {
+                if (pos == 0) {
+                    int permission = ContextCompat.checkSelfPermission(MyClosetAddActivity.this, Manifest.permission.CAMERA);
+                    if (permission == PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(MyClosetAddActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+                    } else {
+                        sendTakePhotoIntent();
+                    }
+                } else if (pos == 1) {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+                    startActivityForResult(intent, REQUEST_GET_GALLERY);
+                }
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCancelable(false);
+        alertDialog.show();
 
         layout = findViewById(R.id.layout);
         price = findViewById(R.id.my_closet_add_price);
@@ -174,7 +194,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                     }
                 });
 
-                alert.setCancelable(false);
                 alert.show();
             }
         });
@@ -267,7 +286,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                     }
                 });
 
-                alert.setCancelable(false);
                 alert.show();
             }
         });
@@ -337,7 +355,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                     }
                 });
 
-                alert.setCancelable(false);
                 alert.show();
             }
         });
@@ -364,7 +381,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                     }
                 });
 
-                alert.setCancelable(false);
                 alert.show();
             }
         });
@@ -558,21 +574,49 @@ public class MyClosetAddActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == -1) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            saveBitmapToJpeg(imageBitmap);
+//            saveBitmapToJpeg(imageBitmap);
+//
+//            File file = new File(getCacheDir().toString());
+//            File[] files = file.listFiles();
+//
+//            String target = null;
+//            for (File tempFile : files) {
+//                if (tempFile.getName().contains("temp")) {
+//                    target = tempFile.getName();
+//                }
+//            }
+//
+//            String filePath = getCacheDir() + "/" + target;
 
-            File file = new File(getCacheDir().toString());
-            File[] files = file.listFiles();
+            grabcut(imageBitmap);
+        }
 
-            String target = null;
-            for (File tempFile : files) {
-                if (tempFile.getName().contains("temp")) {
-                    target = tempFile.getName();
-                }
+        if (requestCode == REQUEST_GET_GALLERY && resultCode == RESULT_OK) {
+            // Make sure the request was successful
+            try {
+                // 선택한 이미지에서 비트맵 생성
+                InputStream in = getContentResolver().openInputStream(data.getData());
+                Bitmap imageBitmap = BitmapFactory.decodeStream(in);
+                in.close();
+//                saveBitmapToJpeg(imageBitmap);
+//
+//                File file = new File(getCacheDir().toString());
+//                File[] files = file.listFiles();
+//
+//                String target = null;
+//                for (File tempFile : files) {
+//                    if (tempFile.getName().contains("temp")) {
+//                        target = tempFile.getName();
+//                    }
+//                }
+//
+//                String filePath = getCacheDir() + "/" + target;
+
+                grabcut(imageBitmap);
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            String filePath = getCacheDir() + "/" + target;
-
-            grabcut(filePath);
         }
     }
 
@@ -594,11 +638,11 @@ public class MyClosetAddActivity extends AppCompatActivity {
         }
     }
 
-    private void grabcut(String filePath) {
+    private void grabcut(Bitmap bitmap) {
         if (!isOpenCvLoaded)
             return;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+//        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
         Scalar color = new Scalar(255, 0, 0, 255);
 
         //Mat dst = new Mat();
@@ -632,15 +676,15 @@ public class MyClosetAddActivity extends AppCompatActivity {
         Log.d(TAG, "Grabcut begins");
         Imgproc.grabCut(imgC3, mask, rect, bgModel, fgModel, 5, 0);
         Mat source = new Mat(1, 1, CvType.CV_8UC3, new Scalar(Imgproc.GC_PR_FGD));
-
+        Log.d(TAG, "Grabcut begins2");
         Core.compare(mask, source, mask, Core.CMP_EQ);
         Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255, 255));
         img.copyTo(foreground, mask);
         Imgproc.rectangle(img, p1, p2, color);
-
+        Log.d(TAG, "Grabcut begins3");
         Mat tmp = new Mat();
         Imgproc.resize(background, tmp, img.size());
-
+        Log.d(TAG, "Grabcut begins4");
         background = tmp;
 
         Mat tempMask = new Mat(foreground.size(), CvType.CV_8UC1, new Scalar(255, 255, 255, 255));
@@ -671,7 +715,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
 
         final int width = image.getWidth();
         final int height = image.getHeight();
-        Bitmap bm = Bitmap.createScaledBitmap( output, width, height, true);
+        Bitmap bm = Bitmap.createScaledBitmap(output, width, height, true);
         image.setImageBitmap(bm);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
