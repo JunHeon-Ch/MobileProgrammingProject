@@ -179,7 +179,6 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
             public void onClick(View v) {
                 String string_placeTitle = editText_placeTitle.getText().toString();
                 String string_placeDesc = editText_placeDesc.getText().toString();
-                Toast.makeText(ShowMapWithDistanceActivity.this, string_placeTitle + "\n" + string_placeDesc, Toast.LENGTH_SHORT).show();
 
                 //맵을 클릭시 현재 위치에 마커 추가
                 MarkerOptions markerOptions = new MarkerOptions();

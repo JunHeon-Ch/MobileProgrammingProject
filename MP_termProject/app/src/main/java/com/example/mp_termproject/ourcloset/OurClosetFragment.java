@@ -550,8 +550,16 @@ public class OurClosetFragment extends Fragment {
 
                 filterList.clear();
                 filterList.addAll(filterCategory(infoDTOList, categoryItemList));
-                filterList.addAll(filterColor(filterList, colorItemList));
-                filterList.addAll(filterSeason(filterList, seasonItemList));
+                HashSet<InfoDTO> temp1 = filterColor(filterList, colorItemList);
+                if(temp1 != null) {
+                    filterList.clear();
+                    filterList.addAll(temp1);
+                }
+                HashSet<InfoDTO> temp2 = filterSeason(filterList, seasonItemList);
+                if(temp2 != null) {
+                    filterList.clear();
+                    filterList.addAll(temp2);
+                }
 
                 if (filterList.size() == 0) {
                     check = NORMAL;
@@ -588,7 +596,7 @@ public class OurClosetFragment extends Fragment {
         HashSet<InfoDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
-            return list;
+            return null;
         } else {
             for (InfoDTO dto : list) {
                 String[] tempColor = dto.getImageDTO().getColor().split(" ");
@@ -617,7 +625,7 @@ public class OurClosetFragment extends Fragment {
         HashSet<InfoDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
-            return list;
+            return null;
         } else {
             for (InfoDTO dto : list) {
                 String[] temSeason = dto.getImageDTO().getSeason().split(" ");
