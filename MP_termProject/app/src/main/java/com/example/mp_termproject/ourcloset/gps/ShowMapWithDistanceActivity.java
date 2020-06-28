@@ -157,7 +157,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
         double latitude = extras.getDouble("latitude");
         double longitude = extras.getDouble("longitude");
         String address = extras.getString("address");
-        String itemName = extras.getString("itemName");
+        String name = extras.getString("name");
 
         setDefaultLocation();
 
@@ -168,7 +168,7 @@ public class ShowMapWithDistanceActivity extends AppCompatActivity
 
         final Button button_submit = view.findViewById(R.id.button_dialog_placeInfo);
         final EditText editText_placeTitle = view.findViewById(R.id.editText_dialog_placeTitle);
-        editText_placeTitle.setText(itemName);
+        editText_placeTitle.setText(name);
         final EditText editText_placeDesc = view.findViewById(R.id.editText_dialog_placeDesc);
         editText_placeDesc.setText(address);
 
