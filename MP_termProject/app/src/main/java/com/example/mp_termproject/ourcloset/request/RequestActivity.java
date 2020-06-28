@@ -138,7 +138,7 @@ public class RequestActivity extends AppCompatActivity {
                             }
                         });
                 // response DTO 저장
-                db.collection("responses").document(user.getUid()).collection("response").document(responseNum.toString()).set(responseDTO)
+                db.collection("responses").document(UIDB).collection("response").document(responseNum.toString()).set(responseDTO)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -151,6 +151,7 @@ public class RequestActivity extends AppCompatActivity {
                             }
                         });
                 requestNum++;
+                responseNum++;
                 docRef = db.collection("users").document(user.getUid());
                 docRef
                         .update("requestNum", requestNum)
