@@ -1,42 +1,5 @@
 -- Merging decision tree log ---
 manifest
-<<<<<<< HEAD
-ADDED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
-	package
-		ADDED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:3:7-27
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-	android:versionName
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-		ADDED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-	android:versionCode
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-		ADDED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-	xmlns:android
-		ADDED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:11-69
-uses-sdk
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-	android:targetSdkVersion
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-		ADDED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-	android:minSdkVersion
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-		ADDED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-		INJECTED from C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
-=======
 ADDED from C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
 INJECTED from C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
 INJECTED from C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml:2:1-4:12
@@ -72,4 +35,3 @@ INJECTED from C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termPr
 		INJECTED from C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
 		ADDED from C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
 		INJECTED from C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
->>>>>>> cec14e83904d10a123738ba60b0c7a27e4f08894
