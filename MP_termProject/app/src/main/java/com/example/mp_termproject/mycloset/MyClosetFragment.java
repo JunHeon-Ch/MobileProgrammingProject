@@ -259,9 +259,21 @@ public class MyClosetFragment extends Fragment {
 
                 filterList.clear();
                 filterList.addAll(filterCategory(dtoList, categoryItemList));
-                filterList.addAll(filterColor(filterList, colorItemList));
-                filterList.addAll(filterSeason(filterList, seasonItemList));
-                filterList.addAll(filterShared(filterList, sharedItem));
+                HashSet<ImageDTO> temp1 = filterColor(filterList, colorItemList);
+                if(temp1 != null) {
+                    filterList.clear();
+                    filterList.addAll(temp1);
+                }
+                HashSet<ImageDTO> temp2 = filterSeason(filterList, seasonItemList);
+                if(temp2 != null) {
+                    filterList.clear();
+                    filterList.addAll(temp2);
+                }
+                HashSet<ImageDTO> temp3 = filterShared(filterList, sharedItem);
+                if(temp3 != null) {
+                    filterList.clear();
+                    filterList.addAll(temp3);
+                }
 
                 if (filterList.size() == 0) {
                     check = NORMAL;
@@ -458,7 +470,7 @@ public class MyClosetFragment extends Fragment {
         HashSet<ImageDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
-            return list;
+            return null;
         } else {
             for (ImageDTO dto : list) {
                 String[] tempColor = dto.getColor().split(" ");
@@ -466,6 +478,8 @@ public class MyClosetFragment extends Fragment {
                     int flag = 0;
                     for (int j = 0; j < arrayList.size(); j++) {
                         if (tempColor[k].equals(arrayList.get(j))) {
+                            Log.d("!!!", tempColor[k]);
+                            Log.d("###", arrayList.get(j));
                             temp.add(dto);
                             flag = 1;
                             break;
@@ -486,7 +500,7 @@ public class MyClosetFragment extends Fragment {
         HashSet<ImageDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
-            return list;
+            return null;
         } else {
             for (ImageDTO dto : list) {
                 String[] temSeason = dto.getColor().split(" ");
@@ -514,7 +528,7 @@ public class MyClosetFragment extends Fragment {
         HashSet<ImageDTO> temp = new HashSet<>();
 
         if (shared == null) {
-            return list;
+            return null;
         } else {
             for (ImageDTO dto : list) {
                 if (dto.getShared().equals(shared)) {
