@@ -16,7 +16,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:textColor="@color/colorAccent"
-        android:text="@string/request_title" />
+        android:text="@string/response_title" />
 
     <View
         android:layout_width="match_parent"
