@@ -28,6 +28,7 @@ import com.example.mp_termproject.lookbook.add.CoordinatorActivity;
 import com.example.mp_termproject.lookbook.add.CoordinatorEditActivity;
 import com.example.mp_termproject.lookbook.dto.LookbookDTO;
 import com.example.mp_termproject.lookbook.filter.LookbookFilterActivity;
+import com.example.mp_termproject.mycloset.dto.ImageDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -355,6 +356,11 @@ public class LookbookFragment extends Fragment {
                 filterList.clear();
                 filterList.addAll(filterOccasion(dtoList, occasionItemList));
                 filterList.addAll(filterSeason(filterList, seasonItemList));
+                HashSet<LookbookDTO> temp = filterSeason(filterList, seasonItemList);
+                if(temp != null) {
+                    filterList.clear();
+                    filterList.addAll(temp);
+                }
 
                 if (filterList.size() == 0) {
                     check = NORMAL;
@@ -399,7 +405,7 @@ public class LookbookFragment extends Fragment {
         HashSet<LookbookDTO> temp = new HashSet<>();
 
         if (arrayList.size() == 0) {
-            return list;
+            return null;
         } else {
             for (LookbookDTO dto : list) {
                 String[] tempColor = dto.getSeason().split(" ");
