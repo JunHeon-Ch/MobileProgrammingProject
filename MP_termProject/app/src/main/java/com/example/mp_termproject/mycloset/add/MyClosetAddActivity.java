@@ -450,8 +450,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 // 문서 갖고오기
 
                 imgnum[0] += 1;
-                Log.d(TAG, "new3 data: " + imgnum[0]);
-                Log.d(TAG, "new1 data: " + imgnum[0]);
                 // storage에 저장할 값들 저장해두기
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();

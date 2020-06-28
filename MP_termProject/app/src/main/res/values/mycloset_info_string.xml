@@ -3,6 +3,7 @@
     <string name="info">비공유 제품 정보</string>
     <string name="info1">공유 제품 정보</string>
     <string name="share_info">공유 여부</string>
+    <string name="request">공유 요청</string>
     <string name="popup_item_name">상품명</string>
     <string name="popup_category">카테고리</string>
     <string name="popup_color">컬러</string>
@@ -12,5 +13,10 @@
     <string name="price">가격</string>
     <string name="shared">공유</string>
     <string name="unShared">비공유</string>
+    <string name="name">이름</string>
+    <string name="age">나이</string>
+    <string name="phone">전화번호</string>
+    <string name="address1">주소</string>
+    <string name="request1">요청</string>
 
 </resources>

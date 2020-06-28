@@ -8,8 +8,24 @@ public class UserInfo {
     private String address;
     private Double imgNum;
     private Double lookNum;
+    private Double requestNum;
+    private Double responseNum;
     private Double latitude;
     private Double longitude;
+
+    public UserInfo(String userId, String name, String phoneNumber, String birthDay, String address, Double imgNum, Double lookNum, Double requestNum, Double responseNum, Double latitude, Double longitude) {
+        this.userId = userId;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.birthDay = birthDay;
+        this.address = address;
+        this.imgNum = imgNum;
+        this.lookNum = lookNum;
+        this.requestNum = requestNum;
+        this.responseNum = responseNum;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     public UserInfo(String userId, String name, String phoneNumber, String birthDay, String address,
                     Double imgNum, Double lookNum, Double latitude, Double longitude) {
@@ -24,13 +40,14 @@ public class UserInfo {
         this.longitude = longitude;
     }
 
-    public UserInfo(String userId, String name, String phoneNumber, String address, Double latitude, Double longitude) {
+    public UserInfo(String userId, String name, String phoneNumber, String address, Double latitude, Double longitude, Double responseNum) {
         this.userId = userId;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.responseNum = responseNum;
     }
 
     public String getUserId() {
@@ -103,6 +120,22 @@ public class UserInfo {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public Double getRequestNum() {
+        return requestNum;
+    }
+
+    public void setRequestNum(Double requestNum) {
+        this.requestNum = requestNum;
+    }
+
+    public Double getResponseNum() {
+        return responseNum;
+    }
+
+    public void setResponseNum(Double responseNum) {
+        this.responseNum = responseNum;
     }
 
 
