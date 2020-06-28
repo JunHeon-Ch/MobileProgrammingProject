@@ -40,7 +40,7 @@ public class UserInfo {
         this.longitude = longitude;
     }
 
-    public UserInfo(String userId, String name, String phoneNumber, String address, Double latitude, Double longitude, Double responseNum) {
+    public UserInfo(String userId, String name, String phoneNumber, String address, Double latitude, Double longitude, Double responseNum,Double requestNum,String birthDay) {
         this.userId = userId;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -48,6 +48,8 @@ public class UserInfo {
         this.latitude = latitude;
         this.longitude = longitude;
         this.responseNum = responseNum;
+        this.requestNum = requestNum;
+        this.birthDay = birthDay;
     }
 
     public String getUserId() {

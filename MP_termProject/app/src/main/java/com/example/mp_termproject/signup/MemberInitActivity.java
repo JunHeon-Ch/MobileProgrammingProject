@@ -119,7 +119,7 @@ public class MemberInitActivity extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            userInfo = new UserInfo(user.getUid(), name, phoneNumber, birthDay, address, 0.0, 0.0, latitude, longitude);
+            userInfo = new UserInfo(user.getUid(), name, phoneNumber, birthDay, address, 0.0, 0.0,0.0,0.0, latitude, longitude);
 //            userInfo.setLatitude(latitude);
 //            userInfo.setLongitude(longitude);
 
