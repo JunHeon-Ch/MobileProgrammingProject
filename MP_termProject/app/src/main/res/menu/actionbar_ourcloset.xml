@@ -13,4 +13,10 @@
         android:icon="@drawable/pin"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:title="@string/actionbar_message"
+        android:id="@+id/actionbar_message"
+        android:icon="@drawable/message"
+        app:showAsAction="ifRoom"/>
+
 </menu>

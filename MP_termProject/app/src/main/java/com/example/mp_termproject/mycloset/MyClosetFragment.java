@@ -177,9 +177,9 @@ public class MyClosetFragment extends Fragment {
                                                     String size = (String) temp.get("size");
                                                     String shared = (String) temp.get("shared");
                                                     Double imgNum = (Double) temp.get("imgNum");
-                                                    String price = (String)temp.get("price");
+                                                    String price = (String) temp.get("price");
                                                     ImageDTO dto = new ImageDTO(id, url, category, name,
-                                                            color, brand, season, size, shared,price, imgNum);
+                                                            color, brand, season, size, shared, price, imgNum);
                                                     dtoList.add(dto);
 
                                                     int count = addPathReference(check);
@@ -299,7 +299,8 @@ public class MyClosetFragment extends Fragment {
             LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, height);
             imageParams.setMargins(5, 5, 5, 5);
-            imageParams.gravity=Gravity.LEFT;
+            imageParams.gravity = Gravity.LEFT;
+            imageParams.weight = 1;
 
             final ImageView imageView = new ImageView(linearLayout.getContext());
             imageView.setLayoutParams(imageParams);
@@ -326,19 +327,19 @@ public class MyClosetFragment extends Fragment {
                                 case 0:
                                     Intent intent = new Intent(getContext(), MyClosetEditActivity.class);
                                     Bundle bundle = new Bundle();
-                                    Log.d("brand",temp.getBrand()+"");
+                                    Log.d("brand", temp.getBrand() + "");
                                     bundle.putDouble("imgNum1", temp.getImgNum());
-                                    bundle.putString("brand",temp.getBrand());
-                                    bundle.putString("category",temp.getCategory());
-                                    bundle.putString("color",temp.getColor());
-                                    bundle.putString("url",temp.getImgURL());
-                                    bundle.putString("name",temp.getItemName());
-                                    bundle.putString("season",temp.getSeason());
-                                    bundle.putString("shared",temp.getShared());
-                                    bundle.putString("size",temp.getSize());
-                                    bundle.putString("userID",temp.getUserID());
-                                    if(temp.getShared()!=null){
-                                        bundle.putString("price",temp.getPrice());
+                                    bundle.putString("brand", temp.getBrand());
+                                    bundle.putString("category", temp.getCategory());
+                                    bundle.putString("color", temp.getColor());
+                                    bundle.putString("url", temp.getImgURL());
+                                    bundle.putString("name", temp.getItemName());
+                                    bundle.putString("season", temp.getSeason());
+                                    bundle.putString("shared", temp.getShared());
+                                    bundle.putString("size", temp.getSize());
+                                    bundle.putString("userID", temp.getUserID());
+                                    if (temp.getShared() != null) {
+                                        bundle.putString("price", temp.getPrice());
                                     }
                                     intent.putExtras(bundle);
                                     startActivity(intent);
