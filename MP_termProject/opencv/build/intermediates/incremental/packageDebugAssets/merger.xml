@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< Updated upstream
-<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\src\main\assets"/><source path="C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\build\intermediates\shader_assets\debug\out"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\src\debug\assets"/></dataSet></merger>
-=======
+<<<<<<< HEAD
 <merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\src\main\assets"/><source path="C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\build\intermediates\shader_assets\debug\out"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\src\debug\assets"/></dataSet></merger>
->>>>>>> Stashed changes
+=======
+<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\src\main\assets"/><source path="C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\build\intermediates\shader_assets\debug\out"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\src\debug\assets"/></dataSet></merger>
+>>>>>>> cec14e83904d10a123738ba60b0c7a27e4f08894

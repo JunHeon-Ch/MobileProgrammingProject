@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -221,6 +222,11 @@ public class MyClosetFilterActivity extends AppCompatActivity {
                 bundle.putStringArrayList("season", seasonSelectedList);
                 bundle.putString("share", shareSelected);
                 intent.putExtras(bundle);
+
+//                Toast.makeText(this, categorySelectedList.toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, colorSelectedList.toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, seasonSelectedList.toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, shareSelected, Toast.LENGTH_SHORT).show();
 
                 setResult(RESULT_OK, intent);
                 finish();
