@@ -2,6 +2,8 @@ package com.example.mp_termproject.ourcloset;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,11 +28,13 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
+import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.dto.ImageDTO;
 import com.example.mp_termproject.ourcloset.dto.InfoDTO;
 import com.example.mp_termproject.ourcloset.dto.RequestDTO;
 import com.example.mp_termproject.ourcloset.filter.OurClosetFilterActivity;
 import com.example.mp_termproject.ourcloset.gps.ShowMapWithDistanceActivity;
+import com.example.mp_termproject.ourcloset.request.RequestActivity;
 import com.example.mp_termproject.ourcloset.viewinfo.ViewClosetInfoActivity;
 import com.example.mp_termproject.signup.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,6 +51,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -235,15 +240,18 @@ public class OurClosetFragment extends Fragment {
 
                             if (user.getUid().equals(document_id)) {
                                 String address = (String) data.get("address");
-                                String birthDay = (String) data.get("birthday");
+                                String birthDay = (String) data.get("birthDay");
                                 Double imgNum = (Double) data.get("imgNum");
                                 Double latitude = (Double) data.get("latitude");
                                 Double longitude = (Double) data.get("longitude");
                                 Double lookNum = (Double) data.get("lookNum");
+                                Double requestNum = (Double) data.get("requestNum");
+                                Double responseNum = (Double) data.get("responseNum");
                                 String name = (String) data.get("name");
                                 String phoneNumber = (String) data.get("phoneNumber");
                                 String userId = (String) data.get("userId");
-                                myDTO = new UserInfo(userId, name, phoneNumber, birthDay, address, imgNum, lookNum, latitude, longitude);
+                                myDTO = new UserInfo(userId, name, phoneNumber, birthDay, address,
+                                        imgNum, lookNum, requestNum, responseNum, latitude, longitude);
 
                                 myLoc[0] = (Double) data.get("latitude");
                                 myLoc[1] = (Double) data.get("longitude");
@@ -254,9 +262,10 @@ public class OurClosetFragment extends Fragment {
                                 Double longitude = (Double) data.get("longitude");
                                 String name = (String) data.get("name");
                                 String phoneNumber = (String) data.get("phoneNumber");
+                                Double responseNum = (Double) data.get("responseNum");
 
                                 final UserInfo userInfo = new UserInfo(userId, name, phoneNumber,
-                                        address, latitude, longitude);
+                                        address, latitude, longitude, responseNum);
 
                                 accessImageInfoDB(userInfo, document_id);
                             }
@@ -436,7 +445,7 @@ public class OurClosetFragment extends Fragment {
                 public void onClick(View v) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-                    String[] option = {"정보 보기", "전화 걸기", "지도로 보기"};
+                    String[] option = {"정보 보기", "공유 요청 보내기"};
                     builder.setItems(option, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int pos) {
@@ -460,34 +469,26 @@ public class OurClosetFragment extends Fragment {
                                     break;
 
                                 case 1:
-                                    // 전화 걸기
-                                    intent = new Intent(Intent.ACTION_DIAL,
-                                            Uri.parse("tel:" +
-                                                    userInfoList
-                                                            .get(index)
-                                                            .getPhoneNumber()));
-                                    startActivity(intent);
-
-                                    break;
-                                case 2:
-                                    // 길찾기
-                                    double latitude = infoDTOList.get(index).getUserInfo().getLatitude();
-                                    double longitude = infoDTOList.get(index).getUserInfo().getLongitude();
-                                    String itemName = infoDTOList.get(index).getImageDTO().getItemName();
-                                    String address = userInfoList.get(index).getAddress();
-
-                                    intent = new Intent(getContext(), ShowMapWithDistanceActivity.class);
-                                    bundle.putDouble("latitude", latitude);
-                                    bundle.putDouble("longitude", longitude);
-                                    bundle.putString("itemName", itemName);
-                                    bundle.putString("address", address);
+                                    intent = new Intent(getContext(), RequestActivity.class);
+                                    bundle = new Bundle();
+                                    bundle.putString("name", myDTO.getName());
+                                    bundle.putString("age", myDTO.getBirthDay());
+                                    bundle.putString("phone", myDTO.getPhoneNumber());
+                                    bundle.putString("address", myDTO.getAddress());
+                                    bundle.putDouble("latitude", myDTO.getLatitude());
+                                    bundle.putDouble("longitude", myDTO.getLongitude());
+                                    bundle.putDouble("request", myDTO.getRequestNum());
+                                    bundle.putDouble("response", infoDTOList.get(index).getUserInfo().getResponseNum());
+                                    bundle.putString("target", infoDTOList.get(index).getUserInfo().getUserId());
+                                    bundle.putString("url", infoDTOList.get(index).getImageDTO().getImgURL());
                                     intent.putExtras(bundle);
                                     startActivity(intent);
+
                                     break;
+
                             }
                         }
                     });
-
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
@@ -495,115 +496,174 @@ public class OurClosetFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+//                    String[] option = {"정보 보기", "전화 걸기", "지도로 보기"};
+//                    builder.setItems(option, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int pos) {
+//                            // "전화 걸기", "길찾기"
+//                            Intent intent;
+//                            Bundle bundle = new Bundle();
+//                            switch (pos) {
+//                                case 0:
+//                                    intent = new Intent(getContext(), ViewClosetInfoActivity.class);
+//                                    bundle.putString("price", infoDTOList.get(index).getImageDTO().getPrice());
+//                                    bundle.putString("name", infoDTOList.get(index).getImageDTO().getItemName());
+//                                    bundle.putString("category", infoDTOList.get(index).getImageDTO().getCategory());
+//                                    bundle.putString("color", infoDTOList.get(index).getImageDTO().getColor());
+//                                    bundle.putString("brand", infoDTOList.get(index).getImageDTO().getBrand());
+//                                    bundle.putString("season", infoDTOList.get(index).getImageDTO().getSeason());
+//                                    bundle.putString("size", infoDTOList.get(index).getImageDTO().getSize());
+//                                    bundle.putString("image", infoDTOList.get(index).getImageDTO().getImgURL());
+//                                    intent.putExtras(bundle);
+//                                    startActivity(intent);
+//
+//                                    break;
+//
+//                                case 1:
+//                                    // 전화 걸기
+//                                    intent = new Intent(Intent.ACTION_DIAL,
+//                                            Uri.parse("tel:" +
+//                                                    userInfoList
+//                                                            .get(index)
+//                                                            .getPhoneNumber()));
+//                                    startActivity(intent);
+//
+//                                    break;
+//                                case 2:
+//                                    // 길찾기
+//                                    double latitude = infoDTOList.get(index).getUserInfo().getLatitude();
+//                                    double longitude = infoDTOList.get(index).getUserInfo().getLongitude();
+//                                    String itemName = infoDTOList.get(index).getImageDTO().getItemName();
+//                                    String address = userInfoList.get(index).getAddress();
+//
+//                                    intent = new Intent(getContext(), ShowMapWithDistanceActivity.class);
+//                                    bundle.putDouble("latitude", latitude);
+//                                    bundle.putDouble("longitude", longitude);
+//                                    bundle.putString("itemName", itemName);
+//                                    bundle.putString("address", address);
+//                                    intent.putExtras(bundle);
+//                                    startActivity(intent);
+//                                    break;
+//                            }
+//                        }
+//                    });
 
-        if (requestCode == REQUEST_FILTER) {
-            if (resultCode == -1) {
-                Bundle bundle = data.getExtras();
+//                                AlertDialog alertDialog = builder.create();
+//                                alertDialog.show();
+//                            }
+//                        });
+//                    }
+//                }
 
-                ArrayList<String> categoryItemList = bundle.getStringArrayList("category");
-                ArrayList<String> colorItemList = bundle.getStringArrayList("color");
-                ArrayList<String> seasonItemList = bundle.getStringArrayList("season");
+                @Override
+                public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+                    super.onActivityResult(requestCode, resultCode, data);
 
-                filterList.clear();
-                filterList.addAll(filterCategory(infoDTOList, categoryItemList));
-                filterList.addAll(filterColor(filterList, colorItemList));
-                filterList.addAll(filterSeason(filterList, seasonItemList));
+                    if (requestCode == REQUEST_FILTER) {
+                        if (resultCode == -1) {
+                            Bundle bundle = data.getExtras();
 
-                if (filterList.size() == 0) {
-                    check = NORMAL;
-                    Toast.makeText(getContext(), "해당하는 값이 없습니다.", Toast.LENGTH_SHORT).show();
-                } else {
-                    check = FILTER;
-                }
-            }
-        }
-    }
+                            ArrayList<String> categoryItemList = bundle.getStringArrayList("category");
+                            ArrayList<String> colorItemList = bundle.getStringArrayList("color");
+                            ArrayList<String> seasonItemList = bundle.getStringArrayList("season");
 
-    private ArrayList<InfoDTO> filterCategory
-            (ArrayList<InfoDTO> list, ArrayList<String> arrayList) {
-        ArrayList<InfoDTO> temp = new ArrayList<>();
+                            filterList.clear();
+                            filterList.addAll(filterCategory(infoDTOList, categoryItemList));
+                            filterList.addAll(filterColor(filterList, colorItemList));
+                            filterList.addAll(filterSeason(filterList, seasonItemList));
 
-        if (arrayList.size() == 0) {
-            return list;
-        } else {
-            for (int i = 0; i < list.size(); i++) {
-                for (int j = 0; j < arrayList.size(); j++) {
-                    if (list.get(i).getImageDTO().getCategory().equals(arrayList.get(j))) {
-                        temp.add(list.get((i)));
-                        break;
+                            if (filterList.size() == 0) {
+                                check = NORMAL;
+                                Toast.makeText(getContext(), "해당하는 값이 없습니다.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                check = FILTER;
+                            }
+                        }
                     }
                 }
-            }
-        }
 
-        return temp;
-    }
+                private ArrayList<InfoDTO> filterCategory
+                        (ArrayList<InfoDTO> list, ArrayList<String> arrayList) {
+                    ArrayList<InfoDTO> temp = new ArrayList<>();
 
-    private HashSet<InfoDTO> filterColor
-            (HashSet<InfoDTO> list, ArrayList<String> arrayList) {
-        HashSet<InfoDTO> temp = new HashSet<>();
-
-        if (arrayList.size() == 0) {
-            return list;
-        } else {
-            for (InfoDTO dto : list) {
-                String[] tempColor = dto.getImageDTO().getColor().split(" ");
-                for (int k = 0; k < tempColor.length; k++) {
-                    int flag = 0;
-                    for (int j = 0; j < arrayList.size(); j++) {
-                        if (tempColor[k].equals(arrayList.get(j))) {
-                            temp.add(dto);
-                            flag = 1;
-                            break;
+                    if (arrayList.size() == 0) {
+                        return list;
+                    } else {
+                        for (int i = 0; i < list.size(); i++) {
+                            for (int j = 0; j < arrayList.size(); j++) {
+                                if (list.get(i).getImageDTO().getCategory().equals(arrayList.get(j))) {
+                                    temp.add(list.get((i)));
+                                    break;
+                                }
+                            }
                         }
                     }
 
-                    if (flag == 1) {
-                        break;
-                    }
+                    return temp;
                 }
-            }
-        }
 
-        return temp;
-    }
+                private HashSet<InfoDTO> filterColor
+                        (HashSet<InfoDTO> list, ArrayList<String> arrayList) {
+                    HashSet<InfoDTO> temp = new HashSet<>();
 
-    private HashSet<InfoDTO> filterSeason
-            (HashSet<InfoDTO> list, ArrayList<String> arrayList) {
-        HashSet<InfoDTO> temp = new HashSet<>();
+                    if (arrayList.size() == 0) {
+                        return list;
+                    } else {
+                        for (InfoDTO dto : list) {
+                            String[] tempColor = dto.getImageDTO().getColor().split(" ");
+                            for (int k = 0; k < tempColor.length; k++) {
+                                int flag = 0;
+                                for (int j = 0; j < arrayList.size(); j++) {
+                                    if (tempColor[k].equals(arrayList.get(j))) {
+                                        temp.add(dto);
+                                        flag = 1;
+                                        break;
+                                    }
+                                }
 
-        if (arrayList.size() == 0) {
-            return list;
-        } else {
-            for (InfoDTO dto : list) {
-                String[] temSeason = dto.getImageDTO().getSeason().split(" ");
-                for (int k = 0; k < temSeason.length; k++) {
-                    int flag = 0;
-                    for (int j = 0; j < arrayList.size(); j++) {
-                        if (temSeason[k].equals(arrayList.get(j))) {
-                            temp.add(dto);
-                            flag = 1;
-                            break;
+                                if (flag == 1) {
+                                    break;
+                                }
+                            }
                         }
                     }
 
-                    if (flag == 1) {
-                        break;
+                    return temp;
+                }
+
+                private HashSet<InfoDTO> filterSeason
+                        (HashSet<InfoDTO> list, ArrayList<String> arrayList) {
+                    HashSet<InfoDTO> temp = new HashSet<>();
+
+                    if (arrayList.size() == 0) {
+                        return list;
+                    } else {
+                        for (InfoDTO dto : list) {
+                            String[] temSeason = dto.getImageDTO().getSeason().split(" ");
+                            for (int k = 0; k < temSeason.length; k++) {
+                                int flag = 0;
+                                for (int j = 0; j < arrayList.size(); j++) {
+                                    if (temSeason[k].equals(arrayList.get(j))) {
+                                        temp.add(dto);
+                                        flag = 1;
+                                        break;
+                                    }
+                                }
+
+                                if (flag == 1) {
+                                    break;
+                                }
+                            }
+                        }
                     }
+
+                    return temp;
+                }
+
+                @Override
+                public void onStop() {
+                    super.onStop();
+                    Log.d("test", "our closet onStop");
+                    imageContainer.removeAllViews();
                 }
             }
-        }
-
-        return temp;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("test", "our closet onStop");
-        imageContainer.removeAllViews();
-    }
-}

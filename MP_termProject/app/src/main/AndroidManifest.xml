@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ourcloset.request.RequestActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -31,7 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".lookbook.add.SelectClosetActivity" />
         <activity android:name=".ourcloset.viewinfo.ViewClosetInfoActivity" />
         <activity android:name=".lookbook.filter.LookbookFilterActivity" />
@@ -46,8 +46,7 @@
         <activity android:name=".signup.SignUpActivity" />
         <activity android:name=".signup.MemberInitActivity" />
         <activity android:name=".login.LoginActivity" />
-        <activity android:name="MainActivity" />
-
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
