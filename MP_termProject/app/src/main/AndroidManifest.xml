@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ourcloset.request.RequestActivity"></activity>
+        <activity android:name=".ourcloset.message.ResponseMessageActivity"></activity>
+        <activity android:name=".ourcloset.message.RequestMessageActivity" />
+        <activity android:name=".ourcloset.request.RequestActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
