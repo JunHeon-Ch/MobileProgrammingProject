@@ -49,6 +49,11 @@ public class RequestMessageActivity extends AppCompatActivity {
     StorageReference storageRef;
 
     LinearLayout messageLayout;
+    LinearLayout layout;
+    LinearLayout image;
+    LinearLayout text;
+
+    ArrayList<RequestDTO> requestDTOArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,162 +66,176 @@ public class RequestMessageActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
+        layout = findViewById(R.id.layout);
+        image = findViewById(R.id.image);
+        text = findViewById(R.id.text);
+
         messageLayout = findViewById(R.id.messageLayout);
+
+        requestDTOArrayList = new ArrayList<>();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        requestDTOArrayList.clear();
 
-        db.collection("requests").get()
+        db
+                .collection("requests")
+                .document(user.getUid())
+                .collection("request")
+                .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (user.getUid().equals(document.getId())) {
-                                    db
-                                            .collection("requests")
-                                            .document(document.getId())
-                                            .collection("request")
-                                            .get()
-                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                            Map<String, Object> data = document.getData();
+                                Map<String, Object> data = document.getData();
 
-                                                            String targetName = (String) data.get("targetName");
-                                                            String targetAge = (String) data.get("targetAge");
-                                                            String targetPhoneNumber = (String) data.get("targetPhoneNumber");
-                                                            String targetAddress = (String) data.get("targetAddress");
-                                                            Double targetLatitude = (Double) data.get("targetLatitude");
-                                                            Double targetLongitude = (Double) data.get("targetLongitude");
-                                                            String url = (String) data.get("url");
+                                String targetName = (String) data.get("targetName");
+                                String targetAge = (String) data.get("targetAge");
+                                String targetPhoneNumber = (String) data.get("targetPhoneNumber");
+                                String targetAddress = (String) data.get("targetAddress");
+                                Double targetLatitude = (Double) data.get("targetLatitude");
+                                Double targetLongitude = (Double) data.get("targetLongitude");
+                                String url = (String) data.get("url");
 
-                                                            RequestDTO requestDTO = new RequestDTO(targetName, targetAge, targetPhoneNumber, targetAddress, targetLatitude, targetLongitude, url);
+                                RequestDTO requestDTO = new RequestDTO(targetName, targetAge, targetAddress, targetPhoneNumber, targetLatitude, targetLongitude, url);
 
-                                                            messageLayout.removeAllViews();
-                                                            floatTotalMessage(requestDTO);
-                                                        }
-                                                    } else {
-                                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                                    }
-                                                }
-                                            });
-                                }
+                                requestDTOArrayList.add(requestDTO);
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
+
+                        floatTotalMessage();
                     }
                 });
     }
 
-    private void floatTotalMessage(final RequestDTO requestDTO) {
+    private void floatTotalMessage() {
         LinearLayout linearLayout = null;
+        messageLayout.removeAllViews();
 
-        int height = findViewById(R.id.layout).getHeight();
+        int i = 0;
+        while (i < requestDTOArrayList.size()) {
+            int height = layout.getHeight();
 
-        final StorageReference pathReference = storageRef.child(requestDTO.getUrl());
+            final StorageReference pathReference = storageRef.child(requestDTOArrayList.get(i).getUrl());
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, height);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, height);
 
-        linearLayout = new LinearLayout(messageLayout.getContext());
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setLayoutParams(layoutParams);
+            linearLayout = new LinearLayout(messageLayout.getContext());
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setLayoutParams(layoutParams);
 
-        messageLayout.addView(linearLayout);
+            messageLayout.addView(linearLayout);
 
-        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
-                findViewById(R.id.image).getWidth(), height);
-        imageParams.setMargins(5, 5, 5, 5);
+            int width = image.getWidth();
+            LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
+                    width, height);
+            imageParams.setMargins(5, 5, 5, 5);
 
-        ImageView imageView = new ImageView(linearLayout.getContext());
-        imageView.setLayoutParams(imageParams);
+            ImageView imageView = new ImageView(linearLayout.getContext());
+            imageView.setLayoutParams(imageParams);
 
-        Glide.with(linearLayout)
-                .load(pathReference)
-                .into(imageView);
-        linearLayout.addView(imageView);
+            Glide.with(linearLayout)
+                    .load(pathReference)
+                    .into(imageView);
+            linearLayout.addView(imageView);
 
-        layoutParams = new LinearLayout.LayoutParams(
-                findViewById(R.id.text).getWidth(), height);
-        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+            width = text.getWidth();
+            layoutParams = new LinearLayout.LayoutParams(
+                    width, height);
+            layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
 
-        LinearLayout textLayout = new LinearLayout(linearLayout.getContext());
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        textLayout.setLayoutParams(layoutParams);
+            LinearLayout textLayout = new LinearLayout(linearLayout.getContext());
+            textLayout.setOrientation(LinearLayout.VERTICAL);
+            textLayout.setLayoutParams(layoutParams);
 
-        linearLayout.addView(textLayout);
+            linearLayout.addView(textLayout);
 
-        layoutParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
+            layoutParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(10, 30, 20, 10);
 
-        TextView name = new TextView(textLayout.getContext());
-        name.setLayoutParams(layoutParams);
-        name.setText(requestDTO.getTargetName());
-        textLayout.addView(name);
+            TextView name = new TextView(textLayout.getContext());
+            name.setLayoutParams(layoutParams);
+            name.setText(requestDTOArrayList.get(i).getTargetName());
+            textLayout.addView(name);
 
-        TextView age = new TextView(textLayout.getContext());
-        age.setLayoutParams(layoutParams);
-        age.setText(requestDTO.getTargetAge());
-        textLayout.addView(age);
+            layoutParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(10, 10, 20, 10);
 
-        TextView phone = new TextView(textLayout.getContext());
-        phone.setLayoutParams(layoutParams);
-        phone.setText(requestDTO.getTargetPhoneNumber());
-        textLayout.addView(phone);
+            TextView age = new TextView(textLayout.getContext());
+            age.setLayoutParams(layoutParams);
+            age.setText(requestDTOArrayList.get(i).getTargetAge());
+            textLayout.addView(age);
 
-        TextView address = new TextView(textLayout.getContext());
-        address.setLayoutParams(layoutParams);
-        address.setText(requestDTO.getTargetAddress());
-        textLayout.addView(address);
+            TextView phone = new TextView(textLayout.getContext());
+            phone.setLayoutParams(layoutParams);
+            phone.setText(requestDTOArrayList.get(i).getTargetPhoneNumber());
+            textLayout.addView(phone);
 
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            TextView address = new TextView(textLayout.getContext());
+            address.setLayoutParams(layoutParams);
+            address.setText(requestDTOArrayList.get(i).getTargetAddress());
+            textLayout.addView(address);
 
-                String[] option = {"전화 걸기", "지도로 보기"};
-                builder.setItems(option, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int pos) {
-                        Intent intent;
-                        Bundle bundle = new Bundle();
-                        switch (pos) {
-                            case 0:
-                                intent = new Intent(Intent.ACTION_DIAL,
-                                        Uri.parse("tel:" + requestDTO.getTargetPhoneNumber()));
-                                startActivity(intent);
+            final int index = i;
+            linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(RequestMessageActivity.this);
 
-                                break;
+                    String[] option = {"전화 걸기", "지도로 보기"};
+                    builder.setItems(option, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int pos) {
+                            Intent intent;
+                            Bundle bundle = new Bundle();
+                            switch (pos) {
+                                case 0:
+                                    intent = new Intent(Intent.ACTION_DIAL,
+                                            Uri.parse("tel:" + requestDTOArrayList.get(index).getTargetPhoneNumber()));
+                                    startActivity(intent);
 
-                            case 1:
-                                double latitude = requestDTO.getTargetLatitude();
-                                double longitude = requestDTO.getTargetLongitude();
-                                String name = requestDTO.getTargetName();
-                                String address = requestDTO.getTargetAddress();
+                                    break;
 
-                                intent = new Intent(getApplicationContext(), ShowMapWithDistanceActivity.class);
-                                bundle.putDouble("latitude", latitude);
-                                bundle.putDouble("longitude", longitude);
-                                bundle.putString("name", name);
-                                bundle.putString("address", address);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
+                                case 1:
+                                    double latitude = requestDTOArrayList.get(index).getTargetLatitude();
+                                    double longitude = requestDTOArrayList.get(index).getTargetLongitude();
+                                    String name = requestDTOArrayList.get(index).getTargetName();
+                                    String address = requestDTOArrayList.get(index).getTargetAddress();
 
-                                break;
+                                    intent = new Intent(RequestMessageActivity.this, ShowMapWithDistanceActivity.class);
+                                    bundle.putDouble("latitude", latitude);
+                                    bundle.putDouble("longitude", longitude);
+                                    bundle.putString("name", name);
+                                    bundle.putString("address", address);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
 
+                                    break;
+
+                            }
                         }
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            });
+
+            i++;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        messageLayout.removeAllViews();
     }
 }

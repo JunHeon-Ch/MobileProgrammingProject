@@ -11,7 +11,7 @@
         android:layout_height="200dp"
         android:gravity="center"
         android:text="@string/sign_up"
-        android:textColor="#000000"
+        android:textColor="@color/colorAccent"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -27,6 +27,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
+            android:textColor="@color/colorAccent"
             android:ems="10"
             android:fontFamily="@font/ourfont"
             android:hint="@string/email"
@@ -39,6 +40,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
+            android:textColor="@color/colorAccent"
             android:ems="10"
             android:fontFamily="@font/ourfont"
             android:hint="@string/password"
@@ -50,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:textColor="@color/colorAccent"
             android:ems="10"
             android:fontFamily="@font/ourfont"
             android:hint="@string/passwordCheck"

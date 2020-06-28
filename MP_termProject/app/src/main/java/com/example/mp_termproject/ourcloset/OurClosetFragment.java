@@ -175,15 +175,15 @@ public class OurClosetFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int pos) {
                         if (pos == 0) {
                             Intent intent1 = new Intent(getContext(), RequestMessageActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putDouble("request", myDTO.getRequestNum());
-                            intent1.putExtras(bundle);
+//                            Bundle bundle = new Bundle();
+//                            bundle.putDouble("request", myDTO.getRequestNum());
+//                            intent1.putExtras(bundle);
                             startActivity(intent1);
                         } else if (pos == 1) {
                             Intent intent1 = new Intent(getContext(), ResponseMessageActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putDouble("response", myDTO.getResponseNum());
-                            intent1.putExtras(bundle);
+//                            Bundle bundle = new Bundle();
+//                            bundle.putDouble("response", myDTO.getResponseNum());
+//                            intent1.putExtras(bundle);
                             startActivity(intent1);
                         }
                     }
