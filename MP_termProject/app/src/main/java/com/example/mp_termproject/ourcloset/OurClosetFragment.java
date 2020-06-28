@@ -290,11 +290,12 @@ public class OurClosetFragment extends Fragment {
                                 Double latitude = (Double) data.get("latitude");
                                 Double longitude = (Double) data.get("longitude");
                                 String name = (String) data.get("name");
+                                String age = (String)data.get("birthDay");
                                 String phoneNumber = (String) data.get("phoneNumber");
                                 Double responseNum = (Double) data.get("responseNum");
-
+                                Double requestNum = (Double) data.get("requestNum");
                                 final UserInfo userInfo = new UserInfo(userId, name, phoneNumber,
-                                        address, latitude, longitude, responseNum);
+                                        address, latitude, longitude, responseNum,requestNum,age);
 
                                 accessImageInfoDB(userInfo, document_id);
                             }
@@ -501,6 +502,7 @@ public class OurClosetFragment extends Fragment {
                                 case 1:
                                     intent = new Intent(getContext(), RequestActivity.class);
                                     bundle = new Bundle();
+
                                     bundle.putString("name", myDTO.getName());
                                     bundle.putString("age", myDTO.getBirthDay());
                                     bundle.putString("phone", myDTO.getPhoneNumber());
@@ -508,9 +510,17 @@ public class OurClosetFragment extends Fragment {
                                     bundle.putDouble("latitude", myDTO.getLatitude());
                                     bundle.putDouble("longitude", myDTO.getLongitude());
                                     bundle.putDouble("request", myDTO.getRequestNum());
-                                    bundle.putDouble("response", infoDTOList.get(index).getUserInfo().getResponseNum());
-                                    bundle.putString("target", infoDTOList.get(index).getUserInfo().getUserId());
+
                                     bundle.putString("url", infoDTOList.get(index).getImageDTO().getImgURL());
+                                    bundle.putDouble("response", infoDTOList.get(index).getUserInfo().getResponseNum());
+                                    bundle.putString("nameB", infoDTOList.get(index).getUserInfo().getName());
+                                    bundle.putString("ageB", infoDTOList.get(index).getUserInfo().getBirthDay());
+                                    bundle.putString("phoneB", infoDTOList.get(index).getUserInfo().getPhoneNumber());
+                                    bundle.putString("addressB", infoDTOList.get(index).getUserInfo().getAddress());
+                                    bundle.putDouble("latitudeB", infoDTOList.get(index).getUserInfo().getLatitude());
+                                    bundle.putDouble("longitudeB", infoDTOList.get(index).getUserInfo().getLongitude());
+                                    bundle.putString("UIDB", infoDTOList.get(index).getUserInfo().getUserId());
+
                                     intent.putExtras(bundle);
                                     startActivity(intent);
 
