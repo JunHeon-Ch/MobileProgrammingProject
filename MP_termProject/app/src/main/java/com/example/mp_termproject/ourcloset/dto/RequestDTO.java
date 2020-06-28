@@ -2,71 +2,70 @@ package com.example.mp_termproject.ourcloset.dto;
 
 public class RequestDTO {
 
-    String targetUserId;
-    String myName;
-    String myAge;
-    String myAddress;
-    Double latitude;
-    Double longitude;
+    String targetName;
+    String targetAge;
+    String targetAddress;
+    String targetPhoneNumber;
+    Double targetLatitude;
+    Double targetLongitude;
     String url;
 
-
-    public RequestDTO(String targetUserId, String myName, String myAge, String myAddress, Double latitude, Double longitude, String url) {
-        this.targetUserId = targetUserId;
-        this.myName = myName;
-        this.myAge = myAge;
-        this.myAddress = myAddress;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public RequestDTO(String targetName, String targetAge, String targetAddress, String targetPhoneNumber, Double targetLatitude, Double targetLongitude, String url) {
+        this.targetName = targetName;
+        this.targetAge = targetAge;
+        this.targetAddress = targetAddress;
+        this.targetPhoneNumber = targetPhoneNumber;
+        this.targetLatitude = targetLatitude;
+        this.targetLongitude = targetLongitude;
         this.url = url;
     }
 
-    public String getTargetUserId() {
-        return targetUserId;
+    public String getTargetName() {
+        return targetName;
     }
 
-    public void setTargetUserId(String targetUserId) {
-        this.targetUserId = targetUserId;
+    public void setTargetName(String targetName) {
+        this.targetName = targetName;
     }
 
-    public String getMyName() {
-        return myName;
+    public String getTargetAge() {
+        return targetAge;
     }
 
-    public void setMyName(String myName) {
-        this.myName = myName;
+    public void setTargetAge(String targetAge) {
+        this.targetAge = targetAge;
     }
 
-    public String getMyAge() {
-        return myAge;
+    public String getTargetAddress() {
+        return targetAddress;
     }
 
-    public void setMyAge(String myAge) {
-        this.myAge = myAge;
+    public void setTargetAddress(String targetAddress) {
+        this.targetAddress = targetAddress;
     }
 
-    public String getMyAddress() {
-        return myAddress;
+    public String getTargetPhoneNumber() {
+        return targetPhoneNumber;
     }
 
-    public void setMyAddress(String myAddress) {
-        this.myAddress = myAddress;
+    public void setTargetPhoneNumber(String targetPhoneNumber) {
+        this.targetPhoneNumber = targetPhoneNumber;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public Double getTargetLatitude() {
+        return targetLatitude;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public void setTargetLatitude(Double targetLatitude) {
+        this.targetLatitude = targetLatitude;
     }
 
-    public Double getLongitude() {
-        return longitude;
+    public Double getTargetLongitude() {
+        return targetLongitude;
     }
 
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setTargetLongitude(Double targetLongitude) {
+        this.targetLongitude = targetLongitude;
     }
 
     public String getUrl() {
