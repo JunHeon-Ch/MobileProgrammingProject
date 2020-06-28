@@ -20,6 +20,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
+            android:textColor="@color/colorAccent"
             android:hint="@string/search"
             android:inputType="textPersonName" />
 

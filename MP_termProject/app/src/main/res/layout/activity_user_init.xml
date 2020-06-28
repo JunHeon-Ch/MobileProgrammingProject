@@ -12,7 +12,7 @@
         android:layout_height="200dp"
         android:gravity="center"
         android:text="회원정보"
-        android:textColor="#000000"
+        android:textColor="@color/colorAccent"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -32,7 +32,8 @@
             android:ems="10"
             android:fontFamily="@font/ourfont"
             android:hint="이름"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColor="@color/colorAccent" />
 
         <EditText
             android:id="@+id/phoneNumberEditText"
@@ -44,7 +45,8 @@
             android:ems="10"
             android:fontFamily="@font/ourfont"
             android:hint="전화번호"
-            android:inputType="phone" />
+            android:inputType="phone"
+            android:textColor="@color/colorAccent" />
 
         <EditText
             android:id="@+id/birthDayEditText"
@@ -56,7 +58,8 @@
             android:ems="10"
             android:fontFamily="@font/ourfont"
             android:hint="생년월일"
-            android:inputType="date" />
+            android:inputType="date"
+            android:textColor="@color/colorAccent" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,7 +77,8 @@
                 android:enabled="false"
                 android:fontFamily="@font/ourfont"
                 android:hint="주소"
-                android:inputType="textPostalAddress" />
+                android:inputType="textPostalAddress"
+                android:textColor="@color/colorAccent" />
 
             <ImageView
                 android:id="@+id/search_image"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ourcloset.message.ResponseMessageActivity">
+    tools:context=".ourcloset.message.RequestMessageActivity">
 
     <TextView
         android:id="@+id/title"
