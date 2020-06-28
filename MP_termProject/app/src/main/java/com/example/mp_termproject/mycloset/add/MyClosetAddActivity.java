@@ -644,6 +644,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
         Scalar color = new Scalar(255, 0, 0, 255);
 
         //Mat dst = new Mat();
+
         //Grabcut part
         Mat img = new Mat(); //container
         Utils.bitmapToMat(bitmap, img);
@@ -653,14 +654,19 @@ public class MyClosetAddActivity extends AppCompatActivity {
         int r = img.rows();
         int c = img.cols();
 
+        //Point p1 = new Point(c/5, r/5);
+        //Point p2 = new Point(c-c/5, r-r/8);
         Point p1 = new Point(25, 25);
         Point p2 = new Point(c - 64, r - 64);
+        //Rect rect = new Rect(p1,p2);
 
-        Rect rect = new Rect(25, 25, c - 64, r - 64);
+
+       Rect rect = new Rect(25, 25, c - 64, r - 64);
         Log.d(TAG, "rect: " + rect);
 
         Mat background = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
         Mat mask = new Mat();
+
         mask.setTo(new Scalar(125));
         Mat fgModel = new Mat();
         fgModel.setTo(new Scalar(0, 0, 0));
@@ -672,11 +678,11 @@ public class MyClosetAddActivity extends AppCompatActivity {
         Log.d(TAG, "imgC3: " + imgC3);
 
         Log.d(TAG, "Grabcut begins");
-        Imgproc.grabCut(imgC3, mask, rect, bgModel, fgModel, 5, 0);
+        Imgproc.grabCut(imgC3, mask, rect, bgModel, fgModel, 1, Imgproc.GC_INIT_WITH_RECT);
         Mat source = new Mat(1, 1, CvType.CV_8UC3, new Scalar(Imgproc.GC_PR_FGD));
         Log.d(TAG, "Grabcut begins2");
         Core.compare(mask, source, mask, Core.CMP_EQ);
-        Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255, 255));
+        Mat foreground = new Mat(img.size(), CvType.CV_8UC3, new Scalar(255, 255, 255,255));
         img.copyTo(foreground, mask);
         Imgproc.rectangle(img, p1, p2, color);
         Log.d(TAG, "Grabcut begins3");
@@ -685,7 +691,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
         Log.d(TAG, "Grabcut begins4");
         background = tmp;
 
-        Mat tempMask = new Mat(foreground.size(), CvType.CV_8UC1, new Scalar(255, 255, 255, 255));
+        Mat tempMask = new Mat(foreground.size(), CvType.CV_8UC1, new Scalar(255, 255, 255));
         // convert imgae to grayscale
         Imgproc.cvtColor(foreground, tempMask, Imgproc.COLOR_BGR2GRAY);
         // threshold the bitmap to create alpha channel with complete transparency in black background region and zero transparency in foreground object region.
