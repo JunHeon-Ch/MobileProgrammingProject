@@ -6,8 +6,14 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="21"
+<<<<<<< Updated upstream
 8-->C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
 9        android:targetSdkVersion="26" />
 9-->C:\Users\MSI\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
+=======
+8-->C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
+9        android:targetSdkVersion="26" />
+9-->C:\Users\jw\Documents\GitHub\Mobile-Programming-Project\MP_termProject\opencv\java\AndroidManifest.xml
+>>>>>>> Stashed changes
 10
 11</manifest>
