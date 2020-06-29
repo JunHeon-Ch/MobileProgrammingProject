@@ -120,6 +120,8 @@ public class MyClosetFragment extends Fragment {
                 if (!searchText.getText().toString().equals("")) {
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
                     check = SEARCH;
+                } else {
+                    check = NORMAL;
                 }
                 onStart();
             }
@@ -431,6 +433,7 @@ public class MyClosetFragment extends Fragment {
                         imageDTOList.add(dtoList.get(i));
                     }
                 }
+                searchText.setText("");
 
                 break;
 
