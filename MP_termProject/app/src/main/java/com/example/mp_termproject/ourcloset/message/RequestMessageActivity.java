@@ -6,18 +6,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.mp_termproject.R;
+import com.example.mp_termproject.mycloset.add.MyClosetAddActivity;
 import com.example.mp_termproject.mycloset.dto.ImageDTO;
 import com.example.mp_termproject.ourcloset.dto.RequestDTO;
 import com.example.mp_termproject.ourcloset.gps.ShowMapWithDistanceActivity;
@@ -28,9 +33,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -184,7 +191,7 @@ public class RequestMessageActivity extends AppCompatActivity {
             address.setText(requestDTOArrayList.get(i).getTargetAddress());
             textLayout.addView(address);
 
-            final int index = i;
+            final int index1 = i;
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -199,16 +206,16 @@ public class RequestMessageActivity extends AppCompatActivity {
                             switch (pos) {
                                 case 0:
                                     intent = new Intent(Intent.ACTION_DIAL,
-                                            Uri.parse("tel:" + requestDTOArrayList.get(index).getTargetPhoneNumber()));
+                                            Uri.parse("tel:" + requestDTOArrayList.get(index1).getTargetPhoneNumber()));
                                     startActivity(intent);
 
                                     break;
 
                                 case 1:
-                                    double latitude = requestDTOArrayList.get(index).getTargetLatitude();
-                                    double longitude = requestDTOArrayList.get(index).getTargetLongitude();
-                                    String name = requestDTOArrayList.get(index).getTargetName();
-                                    String address = requestDTOArrayList.get(index).getTargetAddress();
+                                    double latitude = requestDTOArrayList.get(index1).getTargetLatitude();
+                                    double longitude = requestDTOArrayList.get(index1).getTargetLongitude();
+                                    String name = requestDTOArrayList.get(index1).getTargetName();
+                                    String address = requestDTOArrayList.get(index1).getTargetAddress();
 
                                     intent = new Intent(RequestMessageActivity.this, ShowMapWithDistanceActivity.class);
                                     bundle.putDouble("latitude", latitude);
@@ -225,6 +232,45 @@ public class RequestMessageActivity extends AppCompatActivity {
                     });
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
+                }
+            });
+
+
+            final RequestDTO requestDTO = requestDTOArrayList.get(i);
+            final int index2 = i;
+            linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(RequestMessageActivity.this);
+                    alert.setMessage("메시지를 삭제하겠습니까?");
+
+                    alert.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            final CollectionReference itemsRef = db.collection("requests").document(user.getUid()).collection("request");
+                            Query query = itemsRef.whereEqualTo("url", requestDTO.getUrl());
+                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (DocumentSnapshot document : task.getResult()) {
+                                            itemsRef.document(document.getId()).delete();
+                                            requestDTOArrayList.remove(index2);
+                                            floatTotalMessage();
+                                        }
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
+                            Log.d("test", "test " + requestDTO.getUrl());
+                            onStart();
+                            Toast.makeText(getApplicationContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                            // 삭제
+                        }
+                    });
+                    alert.show();
+
+                    return true;
                 }
             });
 
