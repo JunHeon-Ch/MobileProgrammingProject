@@ -23,7 +23,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/request_title"
+                android:text="@string/response_title"
                 android:textColor="@color/colorAccent"
                 android:textSize="20sp" />
 
