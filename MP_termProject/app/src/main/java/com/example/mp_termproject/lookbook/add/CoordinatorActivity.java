@@ -146,7 +146,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                                 if (isChecked == true) {
                                     selectedItems.add(items[pos]);
                                 } else {
-                                    selectedItems.remove(pos);
+                                    selectedItems.remove(items[pos]);
                                 }
                             }
                         });
@@ -188,7 +188,7 @@ public class CoordinatorActivity extends AppCompatActivity {
                         if (isChecked == true) {
                             selectedItems.add(items[pos]);
                         } else {
-                            selectedItems.remove(pos);
+                            selectedItems.remove(items[pos]);
                         }
                     }
                 });
