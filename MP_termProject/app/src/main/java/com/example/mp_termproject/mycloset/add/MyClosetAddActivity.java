@@ -236,7 +236,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
                         if (isChecked == true) {
                             selectedItems.add(items[pos]);
                         } else {
-                            selectedItems.remove(pos);
+                            selectedItems.remove(items[pos]);
                         }
                     }
                 });
@@ -305,7 +305,7 @@ public class MyClosetAddActivity extends AppCompatActivity {
                         if (isChecked == true) {
                             selectedItems.add(items[pos]);
                         } else {
-                            selectedItems.remove(pos);
+                            selectedItems.remove(items[pos]);
                         }
                     }
                 });
@@ -572,19 +572,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == -1) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            saveBitmapToJpeg(imageBitmap);
-//
-//            File file = new File(getCacheDir().toString());
-//            File[] files = file.listFiles();
-//
-//            String target = null;
-//            for (File tempFile : files) {
-//                if (tempFile.getName().contains("temp")) {
-//                    target = tempFile.getName();
-//                }
-//            }
-//
-//            String filePath = getCacheDir() + "/" + target;
 
             grabcut(imageBitmap);
         }
@@ -596,19 +583,6 @@ public class MyClosetAddActivity extends AppCompatActivity {
                 InputStream in = getContentResolver().openInputStream(data.getData());
                 Bitmap imageBitmap = BitmapFactory.decodeStream(in);
                 in.close();
-//                saveBitmapToJpeg(imageBitmap);
-//
-//                File file = new File(getCacheDir().toString());
-//                File[] files = file.listFiles();
-//
-//                String target = null;
-//                for (File tempFile : files) {
-//                    if (tempFile.getName().contains("temp")) {
-//                        target = tempFile.getName();
-//                    }
-//                }
-//
-//                String filePath = getCacheDir() + "/" + target;
 
                 grabcut(imageBitmap);
 

@@ -132,6 +132,8 @@ public class OurClosetFragment extends Fragment {
                 if (!searchText.getText().toString().equals("")) {
 //                  edit text에 있는 string값과 같은 상품명을 확인해서 보여줌
                     check = SEARCH;
+                } else {
+                    check = NORMAL;
                 }
                 onStart();
             }
@@ -290,12 +292,12 @@ public class OurClosetFragment extends Fragment {
                                 Double latitude = (Double) data.get("latitude");
                                 Double longitude = (Double) data.get("longitude");
                                 String name = (String) data.get("name");
-                                String age = (String)data.get("birthDay");
+                                String age = (String) data.get("birthDay");
                                 String phoneNumber = (String) data.get("phoneNumber");
                                 Double responseNum = (Double) data.get("responseNum");
                                 Double requestNum = (Double) data.get("requestNum");
                                 final UserInfo userInfo = new UserInfo(userId, name, phoneNumber,
-                                        address, latitude, longitude, responseNum,requestNum,age);
+                                        address, latitude, longitude, responseNum, requestNum, age);
 
                                 accessImageInfoDB(userInfo, document_id);
                             }
@@ -417,6 +419,7 @@ public class OurClosetFragment extends Fragment {
                         userInfoList.add(infoDTOList.get(i).getUserInfo());
                     }
                 }
+                searchText.setText("");
 
                 break;
 
@@ -551,12 +554,12 @@ public class OurClosetFragment extends Fragment {
                 filterList.clear();
                 filterList.addAll(filterCategory(infoDTOList, categoryItemList));
                 HashSet<InfoDTO> temp1 = filterColor(filterList, colorItemList);
-                if(temp1 != null) {
+                if (temp1 != null) {
                     filterList.clear();
                     filterList.addAll(temp1);
                 }
                 HashSet<InfoDTO> temp2 = filterSeason(filterList, seasonItemList);
-                if(temp2 != null) {
+                if (temp2 != null) {
                     filterList.clear();
                     filterList.addAll(temp2);
                 }
